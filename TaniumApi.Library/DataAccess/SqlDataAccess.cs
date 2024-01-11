@@ -27,7 +27,7 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
 
     public async Task<List<T>> GetAllDataAsync<T>(
         string storedProcedure,
-        DynamicParameters parameters,
+        DynamicParameters parameters = null,
         string connectionStringName = DefaultDatabase)
     {
         string connectionString = GetConnectionString(connectionStringName);
@@ -53,7 +53,7 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         return row;
     }
 
-    public async Task<int> SaveDataAsync(
+    public async Task<T> SaveDataAsync<T>(
         string storedProcedure,
         DynamicParameters parameters = null,
         string connectionStringName = DefaultDatabase)
@@ -61,7 +61,7 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         string connectionString = GetConnectionString(connectionStringName);
 
         using var connection = new SqlConnection(connectionString);
-        int result = await connection.ExecuteAsync(storedProcedure,
+        var result = await connection.ExecuteScalarAsync<T>(storedProcedure,
             parameters, commandType: CommandType.StoredProcedure);
 
         return result;
@@ -113,5 +113,15 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
             commandType: CommandType.StoredProcedure);
 
         return row;
+    }
+
+    public async Task<T> SaveInTransactionAsync<T>(
+        string storedProcedure,
+        DynamicParameters parameters = null)
+    {
+        var result = await _connection?.ExecuteScalarAsync<T>(storedProcedure, parameters,
+            commandType: CommandType.StoredProcedure);
+
+        return result;
     }
 }

@@ -72,6 +72,7 @@
     <Build Include="dbo\StoredProcedures\spUser_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spUser_Update.sql" />
     <Build Include="dbo\StoredProcedures\spUser_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spUser_GetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

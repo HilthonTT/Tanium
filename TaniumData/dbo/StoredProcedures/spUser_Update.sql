@@ -14,4 +14,8 @@ BEGIN
 		[LastName] = @LastName,
 		[EmailAddress] = @EmailAddress
 	WHERE [Id] = @Id;
+
+	SELECT [Id], [ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress], [DateCreated], [DateUpdated]
+	FROM [dbo].[User]
+	WHERE [Id] = @Id;
 END
