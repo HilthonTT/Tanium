@@ -12,7 +12,8 @@ BEGIN
 	SET [Username] = @Username,
 		[FirstName] = @FirstName,
 		[LastName] = @LastName,
-		[EmailAddress] = @EmailAddress
+		[EmailAddress] = @EmailAddress,
+		[DateUpdated] = GETUTCDATE()
 	WHERE [Id] = @Id;
 
 	SELECT [Id], [ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress], [DateCreated], [DateUpdated]

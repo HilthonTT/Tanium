@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Caching.Memory;
+using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;

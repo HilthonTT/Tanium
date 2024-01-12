@@ -1,6 +1,6 @@
 ﻿using Dapper;
 
-namespace TaniumApi.Library.DataAccess;
+namespace TaniumApi.Library.DataAccess.Interfaces;
 public interface ISqlDataAccess
 {
     void CommitTransaction();

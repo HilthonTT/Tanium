@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using TaniumApi.Library.DataAccess.Interfaces;
 
 namespace TaniumApi.Library.DataAccess;
 public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
@@ -61,7 +62,7 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         string connectionString = GetConnectionString(connectionStringName);
 
         using var connection = new SqlConnection(connectionString);
-        var result = await connection.ExecuteScalarAsync<T>(storedProcedure,
+        var result = await connection.QueryFirstOrDefaultAsync<T>(storedProcedure,
             parameters, commandType: CommandType.StoredProcedure);
 
         return result;

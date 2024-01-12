@@ -1,4 +1,5 @@
 ﻿using TaniumApi.Library.DataAccess;
+using TaniumApi.Library.DataAccess.Interfaces;
 
 namespace TaniumApi;
 

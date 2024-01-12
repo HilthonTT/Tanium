@@ -1,6 +1,6 @@
 ﻿using TaniumApi.Library.Models;
 
-namespace TaniumApi.Library.DataAccess;
+namespace TaniumApi.Library.DataAccess.Interfaces;
 public interface IUserData
 {
     Task<UserModel> CreateUserAsync(UserModel user);

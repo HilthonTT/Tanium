@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaniumApi.Library.DataAccess;
+using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 using TaniumApi.Models;
 
