@@ -1,7 +1,9 @@
 ﻿using Clerk.Net.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Threading.RateLimiting;
 using TaniumApi.Authentication;
 using TaniumApi.Authentication.Interfaces;
 using TaniumApi.Library.DataAccess;
@@ -18,6 +20,7 @@ public static class RegisterServices
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+
         builder.Services.AddMemoryCache();
 
         builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
@@ -25,6 +28,23 @@ public static class RegisterServices
         builder.Services.AddTransient<ICommunityData, CommunityData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin",
+            policy => policy.WithOrigins(builder.Configuration["AllowedOrigins:Url"])
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+        });
+
+        builder.Services.AddRateLimiter(_ => _
+         .AddFixedWindowLimiter(policyName: "fixed", options =>
+         {
+             options.PermitLimit = 10;
+             options.Window = TimeSpan.FromSeconds(12);
+             options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+             options.QueueLimit = 2;
+         }));
 
         builder.Services.AddClerkApiClient(config =>
         {
