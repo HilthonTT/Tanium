@@ -27,6 +27,26 @@ public class UserController(IUserData userData, ILogger<UserController> logger) 
         }
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserAsync(int id)
+    {
+        try
+        {
+            var user = await _userData.GetUserByIdAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[USER_CONTROLLER_ID]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("auth")]
     public async Task<IActionResult> GetUserAuthAsync()
     {
