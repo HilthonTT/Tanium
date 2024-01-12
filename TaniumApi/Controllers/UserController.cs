@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TaniumApi.Authentication.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 using TaniumApi.Models;
@@ -6,9 +8,13 @@ using TaniumApi.Models;
 namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(IUserData userData, ILogger<UserController> logger) : ControllerBase
+public class UserController(
+    IUserData userData,
+    IAuthService authService,
+    ILogger<UserController> logger) : ControllerBase
 {
     private readonly IUserData _userData = userData;
+    private readonly IAuthService _authService = authService;
     private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet]
@@ -52,9 +58,13 @@ public class UserController(IUserData userData, ILogger<UserController> logger) 
     {
         try
         {
-            // TODO Check for clerk user ID
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return NotFound();
+            }
 
-            return Ok(null);
+            return Ok(loggedInUser);
         }
         catch (Exception ex)
         {
@@ -94,6 +104,7 @@ public class UserController(IUserData userData, ILogger<UserController> logger) 
     }
 
     [HttpPatch]
+    [Authorize]
     public async Task<IActionResult> UpdateUserAsync(UpdateUserModel body)
     {
         try
@@ -101,6 +112,12 @@ public class UserController(IUserData userData, ILogger<UserController> logger) 
             if (ModelState.IsValid is false)
             {
                 return BadRequest(ModelState);
+            }
+
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return StatusCode(401, "Unauthorized");
             }
 
             var data = new UserModel()
@@ -127,6 +144,17 @@ public class UserController(IUserData userData, ILogger<UserController> logger) 
     {
         try
         {
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+
+            if (id != loggedInUser.Id)
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+
             await _userData.DeleteUserAsync(id);
 
             return Ok("User Deleted!");
