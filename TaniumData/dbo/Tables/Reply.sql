@@ -2,6 +2,7 @@
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
     [Content] NVARCHAR(500) NOT NULL, 
+    [ImageUrl] NVARCHAR(MAX) NULL, 
     [UserId] INT NOT NULL, 
     [PostId] INT NOT NULL, 
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
