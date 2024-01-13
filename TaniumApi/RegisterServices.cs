@@ -26,6 +26,7 @@ public static class RegisterServices
         builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
         builder.Services.AddTransient<IUserData, UserData>();
         builder.Services.AddTransient<ICommunityData, CommunityData>();
+        builder.Services.AddTransient<IPostData, PostData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
 

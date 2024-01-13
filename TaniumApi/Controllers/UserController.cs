@@ -41,7 +41,7 @@ public class UserController(
             var user = await _userData.GetUserByIdAsync(id);
             if (user is null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
             return Ok(user);
@@ -61,7 +61,7 @@ public class UserController(
             var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
             if (loggedInUser is null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
             return Ok(loggedInUser);
