@@ -13,5 +13,6 @@ public class CreateReplyModel
     public string ImageUrl { get; set; }
 
     [Required]
+    [Range(0, int.MaxValue)]
     public int PostId { get; set; }
 }

@@ -5,6 +5,7 @@ namespace TaniumApi.Models;
 public class UpdateCommunityModel
 {
     [Required]
+    [Range(0, int.MaxValue)]
     public int Id { get; set; }
 
     [Required]

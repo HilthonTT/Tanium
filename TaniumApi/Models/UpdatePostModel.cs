@@ -5,6 +5,7 @@ namespace TaniumApi.Models;
 public class UpdatePostModel
 {
     [Required]
+    [Range(0, int.MaxValue)]
     public int Id { get; set; }
 
     [Required]

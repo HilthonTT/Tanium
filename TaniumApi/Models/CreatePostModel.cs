@@ -15,6 +15,7 @@ public class CreatePostModel
     public string Description { get; set; }
 
     [Required]
+    [Range(0, int.MaxValue)]
     public int CommunityId { get; set; }
 
     [Url]

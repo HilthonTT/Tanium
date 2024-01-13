@@ -28,6 +28,7 @@ public static class RegisterServices
         builder.Services.AddTransient<ICommunityData, CommunityData>();
         builder.Services.AddTransient<IPostData, PostData>();
         builder.Services.AddTransient<IReplyData, ReplyData>();
+        builder.Services.AddTransient<IMemberData, MemberData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
 

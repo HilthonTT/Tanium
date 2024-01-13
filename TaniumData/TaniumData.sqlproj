@@ -91,6 +91,8 @@
     <Build Include="dbo\StoredProcedures\spMember_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spMember_Delete.sql" />
     <Build Include="dbo\StoredProcedures\spReply_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spMember_GetByCommunityIdAndUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spMember_GetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />
