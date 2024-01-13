@@ -9,6 +9,8 @@ public class PostModel
     public UserModel User { get; set; }
     public int CommunityId { get; set; }
     public CommunityModel Community { get; set; }
+    public List<UpvoteModel> Upvotes { get; set; } = [];
+    public List<DownvoteModel> Downvotes { get; set; } = [];
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public DateTime DateUpdated { get; set; }
 }

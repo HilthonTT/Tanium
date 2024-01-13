@@ -15,7 +15,7 @@ BEGIN
 
     SET @InsertedId = SCOPE_IDENTITY();
 
-   SELECT [Id], [ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress], [DateCreated], [DateUpdated] 
-   FROM [dbo].[User]
-   WHERE [Id] = @InsertedId
+    SELECT [Id], [ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress], [DateCreated], [DateUpdated] 
+    FROM [dbo].[User]
+    WHERE [Id] = @InsertedId
 END

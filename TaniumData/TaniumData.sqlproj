@@ -93,6 +93,18 @@
     <Build Include="dbo\StoredProcedures\spReply_GetById.sql" />
     <Build Include="dbo\StoredProcedures\spMember_GetByCommunityIdAndUserId.sql" />
     <Build Include="dbo\StoredProcedures\spMember_GetById.sql" />
+    <Build Include="dbo\Tables\Upvote.sql" />
+    <Build Include="dbo\Tables\DownVote.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_GetByPostIdAndUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_GetByPostIdAndUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_GetByPostId.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_GetByPostId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

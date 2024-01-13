@@ -8,6 +8,14 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
+	DECLARE @InsertedId INT;
+
 	INSERT [dbo].[Post] ([Title], [Description], [CommunityId], [UserId], [ImageUrl])
 	VALUES (@Title, @Description, @CommunityId, @UserId, @ImageUrl);
+
+	SET @InsertedId = SCOPE_IDENTITY();
+
+	SELECT [Id], [Title], [Description], [ImageUrl], [UserId], [CommunityId], [DateCreated], [DateUpdated]
+	FROM [dbo].[Post]
+	WHERE [Id] = @InsertedId;
 END
