@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   ArrowUpRightFromCircle,
   ChevronDown,
@@ -21,11 +22,11 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface SelectorProps {
-  username: string;
-  imageUrl: string;
+  self: User | null;
+  communities: community[] | null;
 }
 
-export const Selector = ({ username, imageUrl }: SelectorProps) => {
+export const Selector = ({ self, communities }: SelectorProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -53,9 +54,30 @@ export const Selector = ({ username, imageUrl }: SelectorProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom" className="w-56 space-y-2">
-        <DropdownMenuLabel className="text-xs text-muted-foreground">
-          Your communities
-        </DropdownMenuLabel>
+        {communities?.length !== 0 && (
+          <>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              Your communities
+            </DropdownMenuLabel>
+            {communities?.map((community) => (
+              <DropdownMenuItem key={community.id}>
+                <div className="flex items-center justify-center">
+                  <div className="relative h-8 w-8">
+                    <Image
+                      src={community.imageUrl}
+                      alt="Community"
+                      className="object-cover"
+                      fill
+                    />
+                  </div>
+                  <div className="ml-2">
+                    <p className="font-semibold truncate">{community.name}</p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+            ))}
+          </>
+        )}
 
         <DropdownMenuLabel className="text-xs text-muted-foreground">
           Feeds
@@ -85,7 +107,7 @@ export const Selector = ({ username, imageUrl }: SelectorProps) => {
           </div>
         </DropdownMenuItem>
 
-        {username && imageUrl && (
+        {self && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-muted-foreground text-xs">
@@ -96,8 +118,8 @@ export const Selector = ({ username, imageUrl }: SelectorProps) => {
               onClick={() => onClick("/settings")}>
               <div className="flex items-center justify-center">
                 <UserAvatar
-                  username={username}
-                  imageUrl={imageUrl}
+                  username={self?.username}
+                  imageUrl={self?.imageUrl}
                   size="sm"
                   className="mr-2"
                 />

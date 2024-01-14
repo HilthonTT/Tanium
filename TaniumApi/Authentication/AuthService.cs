@@ -42,6 +42,7 @@ public class AuthService(IUserData userData, ClerkApiClient client) : IAuthServi
             Username = user?.Username,
             FirstName = user?.FirstName,
             LastName = user?.LastName,
+            ImageUrl = user?.ImageUrl,
             EmailAddress = user?.EmailAddresses.FirstOrDefault().EmailAddressProp,
         };
 

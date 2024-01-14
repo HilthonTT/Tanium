@@ -90,6 +90,7 @@ public class UserController(
                 FirstName = body.FirstName,
                 LastName = body.LastName,
                 EmailAddress = body.EmailAddress,
+                ImageUrl = body.ImageUrl,
             };
 
             var createdUser = await _userData.CreateUserAsync(data);
@@ -127,6 +128,7 @@ public class UserController(
                 FirstName = body.FirstName,
                 LastName = body.LastName,
                 EmailAddress = body.EmailAddress,
+                ImageUrl = body.ImageUrl,
             };
 
             var updatedUser = await _userData.UpdateUserAsync(data);

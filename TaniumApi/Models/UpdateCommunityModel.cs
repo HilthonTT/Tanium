@@ -17,4 +17,11 @@ public class UpdateCommunityModel
     [MinLength(1)]
     [MaxLength(500)]
     public string Description { get; set; }
+
+
+    [Url]
+    public string ImageUrl { get; set; }
+
+    [Url]
+    public string BannerUrl { get; set; }
 }

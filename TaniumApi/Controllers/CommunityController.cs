@@ -55,6 +55,28 @@ public class CommunityController(
         }
 	}
 
+	[HttpGet("user")]
+	public async Task<IActionResult> GetUserCommunitiesAsync()
+	{
+		try
+		{
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+
+			var userCommunities = await _communityData.GetCommunitiesUserAsync(loggedInUser.Id);
+
+			return Ok(userCommunities);
+        }
+		catch (Exception ex)
+		{
+            _logger.LogError("[COMMUNITY_CONTROLLER_USER]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+	}
+
 	[HttpPost]
 	[AllowAnonymous]
 	public async Task<IActionResult> CreateCommunityAsync(CreateCommunityModel body)
@@ -77,6 +99,8 @@ public class CommunityController(
 				UserId = loggedInUser.Id,
 				Name = body.Name,
 				Description = body.Description,
+				ImageUrl = body.ImageUrl,
+				BannerUrl = body.BannerUrl,
 			};
 
 			var createdCommunity = await _communityData.CreateCommunityAsync(data);
@@ -124,6 +148,8 @@ public class CommunityController(
 				Name = body.Name,
 				Description = body.Description,
 				UserId = loggedInUser.Id,
+				ImageUrl = body.ImageUrl,
+				BannerUrl = body.BannerUrl,
 			};
 
             var createdCommunity = await _communityData.CreateCommunityAsync(data);

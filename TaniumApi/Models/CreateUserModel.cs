@@ -29,4 +29,7 @@ public class CreateUserModel
     [MinLength(1)]
     [MaxLength(100)]
     public string LastName { get; set; }
+
+    [Url]
+    public string ImageUrl { get; set; }
 }

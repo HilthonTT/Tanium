@@ -3,15 +3,16 @@
     @Username NVARCHAR(256),
     @FirstName NVARCHAR(100),
     @LastName NVARCHAR(100),
-    @EmailAddress NVARCHAR(500)
+    @EmailAddress NVARCHAR(500),
+    @ImageUrl NVARCHAR(MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @InsertedId INT;
 
-    INSERT INTO [dbo].[User] ([ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress])
-    VALUES (@ExternalUserId, @Username, @FirstName, @LastName, @EmailAddress);
+    INSERT INTO [dbo].[User] ([ExternalUserId], [Username], [FirstName], [LastName], [EmailAddress], [ImageUrl])
+    VALUES (@ExternalUserId, @Username, @FirstName, @LastName, @EmailAddress, @ImageUrl);
 
     SET @InsertedId = SCOPE_IDENTITY();
 

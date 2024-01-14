@@ -52,6 +52,7 @@ public class UserData(ISqlDataAccess sql, IMemoryCache cache) : IUserData
         parameters.Add("EmailAddress", user.EmailAddress);
         parameters.Add("FirstName", user.FirstName);
         parameters.Add("LastName", user.LastName);
+        parameters.Add("ImageUrl", user.ImageUrl);
 
         var output = await _sql.SaveDataAsync<UserModel>("dbo.spUser_Insert", parameters);
 
@@ -66,6 +67,7 @@ public class UserData(ISqlDataAccess sql, IMemoryCache cache) : IUserData
         parameters.Add("EmailAddress", user.EmailAddress);
         parameters.Add("FirstName", user.FirstName);
         parameters.Add("LastName", user.LastName);
+        parameters.Add("ImageUrl", user.ImageUrl);
 
         var output = await _sql.SaveDataAsync<UserModel>("dbo.spUser_Update", parameters);
 

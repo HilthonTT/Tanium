@@ -36,14 +36,45 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         return communities;
     }
 
+    
+    public async Task<List<CommunityModel>> GetCommunitiesUserAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+        var userMembers = await _sql.GetAllDataAsync<MemberModel>("dbo.spMember_GetByUserId", parameters);
+
+        var communityIds = new HashSet<int>(userMembers.Select(m => m.CommunityId));
+
+        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
+        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+
+        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        foreach (var community in communities)
+        {
+            if (userDictionary.TryGetValue(community.UserId, out var user))
+            {
+                community.User = user;
+            }
+        }
+
+        var userCommunities = communities.Where(c => communityIds.Contains(c.Id)).ToList();
+
+        return userCommunities;
+    }
+
     public async Task<CommunityModel> GetCommunityAsync(int id)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
+        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
 
-        var output = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        parameters = new DynamicParameters();
+        parameters.Add("Id", community.UserId);
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
 
-        return output;
+        community.User = user;
+
+        return community;
     }
 
     public async Task<CommunityModel> CreateCommunityAsync(CommunityModel community)
@@ -52,6 +83,8 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         parameters.Add("Name", community.Name);
         parameters.Add("Description", community.Description);
         parameters.Add("UserId", community.UserId);
+        parameters.Add("ImageUrl", community.ImageUrl);
+        parameters.Add("BannerUrl", community.BannerUrl);
 
         var output = await _sql.SaveDataAsync<CommunityModel>("dbo.spCommunity_Insert", parameters);
 
@@ -64,6 +97,8 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         parameters.Add("Id", community.Id);
         parameters.Add("Name", community.Name);
         parameters.Add("Description", community.Description);
+        parameters.Add("ImageUrl", community.ImageUrl);
+        parameters.Add("BannerUrl", community.BannerUrl);
 
         var output = await _sql.SaveDataAsync<CommunityModel>("dbo.spCommunity_Update", parameters);
 
