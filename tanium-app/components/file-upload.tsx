@@ -10,10 +10,9 @@ import { UploadDropzone } from "@/lib/uploadthing";
 interface FileUploadProps {
   onChange: (url?: string) => void;
   value: string;
-  endpoint: "communityImage" | "communityBanner";
 }
 
-export const FileUpload = ({ onChange, value, endpoint }: FileUploadProps) => {
+export const FileUpload = ({ onChange, value }: FileUploadProps) => {
   if (value) {
     return (
       <div className="relative h-40 w-40">
@@ -35,7 +34,7 @@ export const FileUpload = ({ onChange, value, endpoint }: FileUploadProps) => {
 
   return (
     <UploadDropzone
-      endpoint={endpoint}
+      endpoint="image"
       onClientUploadComplete={(res) => {
         onChange(res?.[0].url);
       }}

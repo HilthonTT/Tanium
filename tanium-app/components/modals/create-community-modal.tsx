@@ -119,7 +119,6 @@ export const CreateCommunityModal = () => {
                   <FormItem>
                     <FormControl>
                       <FileUpload
-                        endpoint="communityImage"
                         value={field.value}
                         onChange={field.onChange}
                       />

@@ -7,6 +7,7 @@ import {
   Home,
   LineChart,
   Plus,
+  UserPlus,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -21,15 +22,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useModal } from "@/store/use-modal-store";
 
 interface SelectorProps {
   self: User | null;
+  token: string | null;
   communities: Community[] | null;
 }
 
-export const Selector = ({ self, communities }: SelectorProps) => {
+export const Selector = ({ self, communities, token }: SelectorProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { onOpen } = useModal((state) => state);
 
   const onClick = (url: string) => {
     router.push(url);
@@ -47,12 +51,20 @@ export const Selector = ({ self, communities }: SelectorProps) => {
           className="w-56 border border-white/10  hover:border-white/50 transition">
           <div className="flex items-center justify-between w-full">
             <div>
-              {pathname === "/" && (
-                <div className="flex items-center justify-center">
-                  <Home className="h-6 w-6 mr-2" />
-                  Home
-                </div>
-              )}
+              <div className="flex items-center justify-center">
+                {pathname === "/" && (
+                  <>
+                    <Home className="h-6 w-6 mr-2" />
+                    Home
+                  </>
+                )}
+                {pathname === "/submit" && (
+                  <>
+                    <Plus className="h-6 w-6 mr-2" />
+                    Create Post
+                  </>
+                )}
+              </div>
             </div>
             <ChevronDown />
           </div>
@@ -152,6 +164,14 @@ export const Selector = ({ self, communities }: SelectorProps) => {
               <div className="flex items-center justify-center">
                 <Plus className="h-6 w-6 mr-2" />
                 Create Post
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => onOpen("createCommunity", { token })}>
+              <div className="flex items-center justify-center">
+                <UserPlus className="h-6 w-6 mr-2" />
+                Create Community
               </div>
             </DropdownMenuItem>
           </>

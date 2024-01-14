@@ -22,7 +22,7 @@ export const Navbar = async () => {
       <div className="flex items-center justify-between mx-4 my-1">
         <div className="flex items-center justify-center space-x-4">
           <Logo />
-          <Selector self={self} communities={communities} />
+          <Selector self={self} communities={communities} token={token} />
         </div>
         <div className="flex items-center justify-center w-full">
           <Search />
