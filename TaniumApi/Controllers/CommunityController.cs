@@ -11,10 +11,12 @@ namespace TaniumApi.Controllers;
 [Authorize]
 public class CommunityController(
     ICommunityData communityData,
+	IMemberData memberData,
     IAuthService authService,
     ILogger<CommunityController> logger) : ControllerBase
 {
     private readonly ICommunityData _communityData = communityData;
+    private readonly IMemberData _memberData = memberData;
     private readonly IAuthService _authService = authService;
     private readonly ILogger<CommunityController> _logger = logger;
 
@@ -78,7 +80,6 @@ public class CommunityController(
 	}
 
 	[HttpPost]
-	[AllowAnonymous]
 	public async Task<IActionResult> CreateCommunityAsync(CreateCommunityModel body)
 	{
 		try
@@ -88,13 +89,13 @@ public class CommunityController(
 				return BadRequest(ModelState);
 			}
 
-            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
-            if (loggedInUser is null)
-            {
-                return StatusCode(401, "Unauthorized");
-            }
+			var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+			if (loggedInUser is null)
+			{
+				return StatusCode(401, "Unauthorized");
+			}
 
-            var data = new CommunityModel()
+			var communityData = new CommunityModel()
 			{
 				UserId = loggedInUser.Id,
 				Name = body.Name,
@@ -103,7 +104,15 @@ public class CommunityController(
 				BannerUrl = body.BannerUrl,
 			};
 
-			var createdCommunity = await _communityData.CreateCommunityAsync(data);
+			var createdCommunity = await _communityData.CreateCommunityAsync(communityData);
+
+			var memberData = new MemberModel()
+			{
+				UserId = loggedInUser.Id,
+				CommunityId = createdCommunity.Id,
+			};
+
+			var userMember = await _memberData.CreateMemberAsync(memberData);
 
 			return Ok(createdCommunity);
 		}

@@ -6,4 +6,7 @@ export const instance = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
   }),
+  headers: {
+    "Content-Type": "application/json",
+  },
 });

@@ -18,7 +18,7 @@ export const getUserCommunity = async () => {
       },
     });
 
-    return response.data as community[];
+    return response.data as Community[];
   } catch (error) {
     console.error("[COMMUNITY_SERVICE_USER]", error);
     return null;

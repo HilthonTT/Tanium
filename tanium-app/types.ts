@@ -10,12 +10,12 @@ type User = {
   dateUpdated: Date;
 };
 
-type community = {
+type Community = {
   id: number;
   name: string;
   description: string;
-  imageUrl: string;
-  bannerUrl: string;
+  imageUrl: string | null;
+  bannerUrl: string | null;
   userId: string;
   user: User;
   dateCreated: Date;

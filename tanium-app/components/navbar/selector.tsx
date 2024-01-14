@@ -20,10 +20,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface SelectorProps {
   self: User | null;
-  communities: community[] | null;
+  communities: Community[] | null;
 }
 
 export const Selector = ({ self, communities }: SelectorProps) => {
@@ -32,6 +33,10 @@ export const Selector = ({ self, communities }: SelectorProps) => {
 
   const onClick = (url: string) => {
     router.push(url);
+  };
+
+  const onCommunityClick = (community: Community) => {
+    router.push(`/community/${community.id}`);
   };
 
   return (
@@ -60,17 +65,32 @@ export const Selector = ({ self, communities }: SelectorProps) => {
               Your communities
             </DropdownMenuLabel>
             {communities?.map((community) => (
-              <DropdownMenuItem key={community.id}>
+              <DropdownMenuItem
+                key={community.id}
+                onClick={() => onCommunityClick(community)}
+                className="cursor-pointer flex items-center">
                 <div className="flex items-center justify-center">
                   <div className="relative h-8 w-8">
-                    <Image
-                      src={community.imageUrl}
-                      alt="Community"
-                      className="object-cover"
-                      fill
-                    />
+                    {community.imageUrl && (
+                      <Image
+                        src={community.imageUrl}
+                        alt="Community"
+                        className="object-cover rounded-full"
+                        fill
+                      />
+                    )}
+                    {!community.imageUrl && (
+                      <Avatar className="bg-secondary">
+                        <AvatarFallback>
+                          <p className="capitalize">
+                            {community.name[0]}{" "}
+                            {community.name[community.name.length - 1]}
+                          </p>
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
                   </div>
-                  <div className="ml-2">
+                  <div className="ml-2 flex items-center justify-center">
                     <p className="font-semibold truncate">{community.name}</p>
                   </div>
                 </div>

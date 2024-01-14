@@ -1,19 +1,20 @@
-import { UserButton } from "@clerk/nextjs";
-import { Plus } from "lucide-react";
+import { auth } from "@clerk/nextjs";
 
-import { Button } from "@/components/ui/button";
-import { Hint } from "@/components/hint";
 import { getSelf } from "@/lib/user-service";
 import { getUserCommunity } from "@/lib/community-service";
 
 import { Logo } from "./logo";
 import { Selector } from "./selector";
 import { Search } from "./search";
+import { Options } from "./options";
 
 export const Navbar = async () => {
-  const [self, communities] = await Promise.all([
+  const { getToken } = auth();
+
+  const [self, communities, token] = await Promise.all([
     getSelf(),
     getUserCommunity(),
+    getToken(),
   ]);
 
   return (
@@ -27,12 +28,7 @@ export const Navbar = async () => {
           <Search />
         </div>
         <div className="flex items-center justify-center space-x-4">
-          <Hint label="Create post" asChild>
-            <Button aria-label="Create post" variant="ghost" className="p-1">
-              <Plus className="h-6 w-6" />
-            </Button>
-          </Hint>
-          <UserButton afterSignOutUrl="/" />
+          <Options token={token} />
         </div>
       </div>
     </div>
