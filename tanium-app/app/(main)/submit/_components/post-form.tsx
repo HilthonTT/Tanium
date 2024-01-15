@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 interface PostFormProps {
   token: string | null;
   communities: Community[];
+  media?: boolean;
 }
 
 const formSchema = z.object({
@@ -59,7 +60,11 @@ const formSchema = z.object({
   imageUrl: z.string().optional(),
 });
 
-export const PostForm = ({ communities, token }: PostFormProps) => {
+export const PostForm = ({
+  communities,
+  token,
+  media = false,
+}: PostFormProps) => {
   const router = useRouter();
 
   const firstCommunity = communities[0];
@@ -155,7 +160,7 @@ export const PostForm = ({ communities, token }: PostFormProps) => {
             )}
           />
           <div className="bg-background rounded-xl p-3 space-y-4">
-            <Tabs defaultValue="post" className="w-full">
+            <Tabs defaultValue={media ? "files" : "post"} className="w-full">
               <TabsList className="w-full">
                 <TabsTrigger value="post" className="w-full">
                   <div className="flex items-center justify-center">

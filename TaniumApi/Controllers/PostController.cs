@@ -20,9 +20,26 @@ public class PostController(
     private readonly IAuthService _authService = authService;
     private readonly ILogger<PostController> _logger = logger;
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllPostsAsync()
+    {
+        try
+        {
+            var posts = await _postData.GetAllPostsAsync();
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_GET_ALL]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("community/{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllPostsAsync(int id)
+    public async Task<IActionResult> GetAllCommunityPostsAsync(int id)
     {
         try
         {
@@ -38,7 +55,7 @@ public class PostController(
         }
         catch (Exception ex)
         {
-            _logger.LogError("[POST_CONTROLLER_GET_ALL]: {error}", ex.Message);
+            _logger.LogError("[POST_CONTROLLER_GET_COMMUNITY_ALL]: {error}", ex.Message);
             return StatusCode(500, "Internal Error");
         }
     }

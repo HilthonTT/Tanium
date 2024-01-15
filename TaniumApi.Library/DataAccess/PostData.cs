@@ -11,6 +11,45 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
     private readonly ISqlDataAccess _sql = sql;
     private readonly IMemoryCache _cache = cache;
 
+    public async Task<List<PostModel>> GetAllPostsAsync()
+    {
+        var output = _cache.Get<List<PostModel>>(CacheName);
+        if (output is not null)
+        {
+            return output;
+        }
+
+        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetAll");
+
+        var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
+        var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
+
+        var communityDictionary = communities.ToFrozenDictionary(c => c.Id);
+        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+
+        foreach (var post in posts)
+        {
+            if (communityDictionary.TryGetValue(post.CommunityId, out var community))
+            {
+                post.Community = community;
+            }
+
+            if (userDictionary.TryGetValue(post.UserId, out var user))
+            {
+                post.User = user;
+            }
+
+            post.Downvotes = downvotes.Where(d => d.PostId == post.Id).ToList();
+            post.Upvotes = upvotes.Where(u => u.PostId == post.Id).ToList();
+        }
+
+        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));  
+
+        return posts;
+    }
+
     public async Task<List<PostModel>> GetPostsByCommunityIdAsync(int communityId)
     {
         string key = $"{CacheName}_{communityId}";

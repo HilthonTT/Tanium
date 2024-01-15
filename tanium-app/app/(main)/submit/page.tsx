@@ -6,7 +6,13 @@ import { getUserCommunity } from "@/lib/community-service";
 
 import { PostForm } from "./_components/post-form";
 
-const SubmitPage = async () => {
+interface SubmitPageProps {
+  searchParams: {
+    media: boolean;
+  };
+}
+
+const SubmitPage = async ({ searchParams }: SubmitPageProps) => {
   const { getToken } = auth();
   const token = await getToken();
   if (!token) {
@@ -19,7 +25,11 @@ const SubmitPage = async () => {
     <div className="h-full p-4 space-y-2 max-w-4xl mx-auto">
       <h1 className="font-bold text-xl">Create a post</h1>
       <Separator />
-      <PostForm communities={communities} token={token} />
+      <PostForm
+        communities={communities}
+        token={token}
+        media={searchParams.media}
+      />
     </div>
   );
 };
