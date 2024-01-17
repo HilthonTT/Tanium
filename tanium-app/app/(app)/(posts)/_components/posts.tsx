@@ -30,8 +30,8 @@ export const Posts = ({ posts, self, token }: PostsProps) => {
   };
 
   return (
-    <div className="mt-4 flex space-x-2">
-      <div className="flex-1 space-y-4 ">
+    <div className="pt-4 flex space-x-2">
+      <div className="flex-1 space-y-4">
         <div className="space-y-4">
           <CreatePostTab self={self} />
           <FilterTab />

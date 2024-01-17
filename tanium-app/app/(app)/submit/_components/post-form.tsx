@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { ImageIcon, Mail } from "lucide-react";
 
 import {
   Form,
@@ -28,7 +29,6 @@ import { FileUpload } from "@/components/file-upload";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ImageIcon, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface PostFormProps {
