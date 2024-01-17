@@ -37,6 +37,52 @@ public class PostController(
         }
     }
 
+    [HttpGet("best")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllBestPostsAsync()
+    {
+        try
+        {
+            var posts = await _postData.GetAllPostsAsync();
+
+            posts = [.. posts.OrderByDescending(p => p.Upvotes.Count - p.Downvotes.Count)];
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_GET_BEST]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("hot")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllHotPostsAsync()
+    {
+        try
+        {
+            DateTime startDateOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            DateTime endDateOfWeek = startDateOfWeek.AddDays(7);
+
+            var posts = await _postData.GetAllPostsAsync();
+
+            posts =
+            [
+                .. posts
+                    .Where(p => p.DateCreated >= startDateOfWeek && p.DateCreated <= endDateOfWeek)
+                    .OrderByDescending(p => p.Upvotes.Count),
+            ];
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_GET_HOT]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("community/{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetAllCommunityPostsAsync(int id)

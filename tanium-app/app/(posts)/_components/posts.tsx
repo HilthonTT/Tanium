@@ -1,14 +1,15 @@
 "use client";
 
+import { Home, ShieldPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useModal } from "@/store/use-modal-store";
 
-import { Home, ShieldPlus } from "lucide-react";
 import { CreatePostTab } from "./create-post-tab";
 import { PostCard } from "./post-card";
-import { useModal } from "@/store/use-modal-store";
+import { FilterTab } from "./filter-tab";
 
 interface PostsProps {
   posts: Post[];
@@ -33,6 +34,7 @@ export const Posts = ({ posts, self, token }: PostsProps) => {
       <div className="flex-1 space-y-4 ">
         <div className="space-y-4">
           <CreatePostTab self={self} />
+          <FilterTab />
           {posts.map((post) => (
             <PostCard key={post.id} post={post} self={self} />
           ))}
