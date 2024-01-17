@@ -35,13 +35,20 @@ public class VoteController(
                 return BadRequest("Post not found");
             }
 
+            var existingUpvote = await _voteData.GetUpvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
+            if (existingUpvote is not null)
+            {
+                await _voteData.DeleteUpvoteAsync(loggedInUser.Id, postId);
+                return Ok(existingUpvote);
+            }
+
             var existingDownVote = await _voteData.GetDownvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
             if (existingDownVote is not null)
             {
                 await _voteData.DeleteDownvoteAsync(loggedInUser.Id, postId);
             }
 
-            var createdUpvote = await _voteData.CreateDownvoteAsync(loggedInUser.Id, postId);
+            var createdUpvote = await _voteData.CreateUpvoteAsync(loggedInUser.Id, postId);
             return Ok(createdUpvote);
         }
         catch (Exception ex)
@@ -66,6 +73,13 @@ public class VoteController(
             if (post is null)
             {
                 return BadRequest("Post not found");
+            }
+
+            var existingDownvote = await _voteData.GetDownvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
+            if (existingDownvote is not null)
+            {
+                await _voteData.DeleteDownvoteAsync(loggedInUser.Id, postId);
+                return Ok(existingDownvote);
             }
 
             var existingUpvote = await _voteData.GetUpvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);

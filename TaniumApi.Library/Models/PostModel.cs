@@ -11,6 +11,7 @@ public class PostModel
     public CommunityModel Community { get; set; }
     public List<UpvoteModel> Upvotes { get; set; } = [];
     public List<DownvoteModel> Downvotes { get; set; } = [];
+    public List<ReplyModel> Replies { get; set; } = [];
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public DateTime DateUpdated { get; set; }
 }

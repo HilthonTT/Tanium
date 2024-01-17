@@ -25,6 +25,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
         var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
         var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
+        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
 
         var communityDictionary = communities.ToFrozenDictionary(c => c.Id);
         var userDictionary = users.ToFrozenDictionary(u => u.Id);
@@ -43,6 +44,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
             post.Downvotes = downvotes.Where(d => d.PostId == post.Id).ToList();
             post.Upvotes = upvotes.Where(u => u.PostId == post.Id).ToList();
+            post.Replies = replies.Where(r => r.PostId  == post.Id).ToList();
         }
 
         _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));  
@@ -67,6 +69,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
         var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
         var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
+        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
 
         parameters = new DynamicParameters();
         parameters.Add("CommunityId", community.Id);
@@ -83,6 +86,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
             post.Upvotes = upvotes.Where(u => u.PostId == post.Id).ToList();
             post.Downvotes = downvotes.Where(d => d.PostId == post.Id).ToList();
+            post.Replies = replies.Where(r => r.PostId == post.Id).ToList();
         }
 
         _cache.Set(key, output, TimeSpan.FromMinutes(20));
@@ -105,14 +109,16 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
 
         parameters = new DynamicParameters();
-        parameters.Add("Id", post.Id);
+        parameters.Add("PostId", post.Id);
         var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetByPostId", parameters);
         var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetByPostId", parameters);
+        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetByPostId", parameters);
 
         post.User = user;
         post.Community = community;
         post.Upvotes = upvotes;
         post.Downvotes = downvotes;
+        post.Replies = replies;
 
         return post;
     }

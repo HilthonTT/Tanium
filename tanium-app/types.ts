@@ -40,6 +40,18 @@ type Downvote = {
   dateCreated: Date;
 };
 
+type Reply = {
+  id: number;
+  content: string;
+  imageUrl: string;
+  userId: number;
+  User: User;
+  postId: number;
+  post: Post;
+  dateCreated: Date;
+  dateUpdated: Date;
+};
+
 type Post = {
   id: number;
   title: string;
@@ -51,6 +63,7 @@ type Post = {
   community: Community;
   upvotes: Upvote[];
   downvotes: Downvote[];
+  replies: Reply[];
   dateCreated: Date;
   dateUpdated: Date;
 };

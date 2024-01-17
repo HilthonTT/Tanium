@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, MoveDown, MoveUp } from "lucide-react";
@@ -7,18 +8,22 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { instance } from "@/lib/axios-config";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface PostCardProps {
   post: Post;
-  self: User | null;
+  token: string | null;
 }
 
-export const PostCard = ({ post, self }: PostCardProps) => {
+export const PostCard = ({ post, token }: PostCardProps) => {
   const router = useRouter();
 
-  const calculatedUpvotes = post.upvotes.length - post.downvotes.length;
-  const [upvotes, setUpvotes] = useState<number>(calculatedUpvotes);
+  const [upvotes, setUpvotes] = useState<Upvote[]>(post.upvotes);
+  const [downvotes, setDownvotes] = useState<Downvote[]>(post.downvotes);
+  const [calculatedUpvotes, setCalculatedUpvotes] = useState<number>(
+    post.upvotes.length - post.downvotes.length
+  );
 
   const formattedUploadedDate = formatDistanceToNow(post.dateCreated, {
     addSuffix: true,
@@ -34,17 +39,101 @@ export const PostCard = ({ post, self }: PostCardProps) => {
     router.push(`/community/${post.communityId}`);
   };
 
+  const onUpvote = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      const response = await instance.post(
+        `/api/vote/upvote/${post.id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const upvote = response.data as Upvote;
+
+      // Check if the user has already upvoted
+      const upvoteIndex = upvotes.findIndex((u) => u.userId === upvote.userId);
+
+      if (upvoteIndex !== -1) {
+        // Remove the upvote
+        const newUpvotes = [...upvotes];
+        newUpvotes.splice(upvoteIndex, 1);
+        setUpvotes(newUpvotes);
+
+        // Update calculatedUpvotes
+        setCalculatedUpvotes(
+          (prevCalculatedUpvotes) => prevCalculatedUpvotes - 1
+        );
+      } else {
+        // Add the upvote
+        setUpvotes([...upvotes, upvote]);
+
+        // Update calculatedUpvotes
+        setCalculatedUpvotes(
+          (prevCalculatedUpvotes) => prevCalculatedUpvotes + 2
+        );
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const onDownvote = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      const response = await instance.post(
+        `/api/vote/downvote/${post.id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const downvote = response.data as Downvote;
+
+      // Check if the user has already downvoted
+      const downvoteIndex = downvotes.findIndex(
+        (d) => d.userId === downvote.userId
+      );
+
+      if (downvoteIndex !== -1) {
+        // Remove the downvote
+        const newDownvotes = [...downvotes];
+        newDownvotes.splice(downvoteIndex, 1);
+        setDownvotes(newDownvotes);
+
+        // Update calculatedUpvotes
+        setCalculatedUpvotes(upvotes.length - newDownvotes.length);
+      } else {
+        // Add the downvote
+        setDownvotes([...downvotes, downvote]);
+
+        // Update calculatedUpvotes
+        setCalculatedUpvotes(upvotes.length - (downvotes.length + 2));
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <div
       onClick={onClick}
       className="relative bg-secondary rounded-md flex space-x-1 w-full h-full cursor-pointer border-[0.1px] hover:border-zinc-500 transition">
       <div className="bg-primary/5 flex-shrink-0 p-3">
         <div className="flex items-center justify-start flex-col space-y-2">
-          <Button variant="ghost" className="p-1">
+          <Button onClick={onUpvote} variant="ghost" className="p-1">
             <MoveUp className={cn("h-5 w-5 text-muted-foreground")} />
           </Button>
-          <span className="text-muted-foreground">{upvotes}</span>
-          <Button variant="ghost" className="p-1">
+          <span className="text-muted-foreground">{calculatedUpvotes}</span>
+          <Button onClick={onDownvote} variant="ghost" className="p-1">
             <MoveDown className={cn("h-5 w-5 text-muted-foreground")} />
           </Button>
         </div>
@@ -78,7 +167,7 @@ export const PostCard = ({ post, self }: PostCardProps) => {
         <div className="mt-4">
           <Button variant="ghost" className="text-muted-foreground">
             <MessageSquare className="mr-2" />
-            <p className="text-xs">0 Comments</p>
+            <p className="text-xs">{post.replies.length} Comments</p>
           </Button>
         </div>
       </div>
