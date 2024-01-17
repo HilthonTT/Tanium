@@ -9,9 +9,10 @@ export const Logo = () => {
       <div className="flex items-center justify-center space-x-2">
         <div className="relative h-14 w-14">
           <Image
-            src="logo.svg"
+            src="/logo.svg"
             className="object-cover bg-white rounded-full"
             alt="Logo"
+            priority
             fill
           />
         </div>

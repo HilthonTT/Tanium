@@ -67,3 +67,13 @@ type Post = {
   dateCreated: Date;
   dateUpdated: Date;
 };
+
+type Member = {
+  id: number;
+  userId: number;
+  user: User;
+  communityId: number;
+  community: Community;
+  dateCreated: Date;
+  dateUpdated: Date;
+};

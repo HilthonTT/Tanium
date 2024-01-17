@@ -14,6 +14,9 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         parameters.Add("Id", id);
 
         var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("CommunityId", id);
         var members = await _sql.GetAllDataAsync<MemberModel>("dbo.spMember_GetByCommunityId", parameters);
 
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");

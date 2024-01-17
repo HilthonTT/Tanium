@@ -24,3 +24,14 @@ export const getUserCommunity = async (): Promise<Community[]> => {
     return [];
   }
 };
+
+export const getCommunity = async (id: number) => {
+  try {
+    const response = await instance.get(`/api/community/${id}`);
+
+    return response.data as Community;
+  } catch (error) {
+    console.error("[COMMUNITY_SERVICE_GET_ID]", error);
+    return null;
+  }
+};
