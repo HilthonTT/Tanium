@@ -134,6 +134,19 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
         var output = await _sql.SaveDataAsync<PostModel>("dbo.spPost_Insert", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("Id", post.CommunityId);
+
+        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", post.UserId);
+
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
+
+        post.User = user;
+        post.Community = community;
+
         return output;
     }
 
@@ -146,6 +159,19 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         parameters.Add("ImageUrl", post.ImageUrl);
 
         var output = await _sql.SaveDataAsync<PostModel>("dbo.spPost_Update", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", post.CommunityId);
+
+        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", post.UserId);
+
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
+
+        post.User = user;
+        post.Community = community;
 
         return output;
     }

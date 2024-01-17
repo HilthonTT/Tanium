@@ -88,6 +88,13 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
 
         var output = await _sql.SaveDataAsync<CommunityModel>("dbo.spCommunity_Insert", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("Id", output.UserId);
+
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
+
+        output.User = user;
+
         return output;
     }
 
@@ -101,6 +108,13 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         parameters.Add("BannerUrl", community.BannerUrl);
 
         var output = await _sql.SaveDataAsync<CommunityModel>("dbo.spCommunity_Update", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", output.UserId);
+
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
+
+        output.User = user;
 
         return output;
     }

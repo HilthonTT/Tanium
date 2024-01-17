@@ -57,6 +57,19 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
 
         var output = await _sql.SaveDataAsync<MemberModel>("dbo.spMember_Insert", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("Id", output.UserId);
+
+        var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", output.CommunityId);
+
+        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+
+        output.User = user;
+        output.Community = community;
+
         return output;
     }
 

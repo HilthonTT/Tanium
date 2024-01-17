@@ -56,6 +56,13 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
 
         var output = await _sql.SaveDataAsync<ReplyModel>("dbo.spReply_Insert", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("Id", reply.PostId);
+
+        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+
+        output.Post = post;
+
         return output;
     }
 
@@ -67,6 +74,13 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
         parameters.Add("ImageUrl", reply.ImageUrl);
 
         var output = await _sql.SaveDataAsync<ReplyModel>("dbo.spReply_Update", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", reply.PostId);
+
+        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+
+        output.Post = post;
 
         return output;
     }
