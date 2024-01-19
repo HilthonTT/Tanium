@@ -9,6 +9,7 @@ import { PostForm } from "./_components/post-form";
 interface SubmitPageProps {
   searchParams: {
     media: boolean;
+    communityId: number;
   };
 }
 
@@ -29,6 +30,7 @@ const SubmitPage = async ({ searchParams }: SubmitPageProps) => {
         communities={communities}
         token={token}
         media={searchParams.media}
+        communityId={searchParams.communityId}
       />
     </div>
   );

@@ -82,7 +82,6 @@
     <Build Include="dbo\StoredProcedures\spReply_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spReply_Update.sql" />
     <Build Include="dbo\StoredProcedures\spReply_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\spPost_GetCommunityId.sql" />
     <Build Include="dbo\StoredProcedures\spPost_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spPost_Update.sql" />
     <Build Include="dbo\StoredProcedures\spPost_GetById.sql" />
@@ -108,6 +107,7 @@
     <Build Include="dbo\StoredProcedures\spMember_GetByUserId.sql" />
     <Build Include="dbo\StoredProcedures\spPost_GetAll.sql" />
     <Build Include="dbo\StoredProcedures\spReply_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spPost_GetByCommunityId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

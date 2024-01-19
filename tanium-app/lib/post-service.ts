@@ -32,3 +32,40 @@ export const getBestPosts = async () => {
     return [];
   }
 };
+
+export const getCommunityPosts = async (communityId: number) => {
+  try {
+    const response = await instance.get(`/api/post/community/${communityId}`);
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_COMMUNITY_POSTS]", error);
+    return [];
+  }
+};
+
+export const getHotCommunityPosts = async (communityId: number) => {
+  try {
+    const response = await instance.get(
+      `/api/post/community/hot/${communityId}`
+    );
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_COMMUNITY_POSTS_HOT]", error);
+    return [];
+  }
+};
+
+export const getBestCommunityPosts = async (communityId: number) => {
+  try {
+    const response = await instance.get(
+      `/api/post/community/best/${communityId}`
+    );
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_COMMUNITY_POSTS_BEST]", error);
+    return [];
+  }
+};

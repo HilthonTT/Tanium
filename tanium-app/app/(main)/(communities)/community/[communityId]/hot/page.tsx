@@ -4,17 +4,17 @@ import { auth } from "@clerk/nextjs";
 import { getCommunity } from "@/lib/community-service";
 import { getSelf } from "@/lib/user-service";
 import { getCommunityMembers, isCommunityMember } from "@/lib/member-service";
-import { getCommunityPosts } from "@/lib/post-service";
+import { getBestCommunityPosts } from "@/lib/post-service";
 
-import { CommunityDetails } from "./_components/details";
+import { CommunityDetails } from "../_components/details";
 
-interface CommunityIdPageProps {
+interface CommunityHotPageProps {
   params: {
     communityId: number;
   };
 }
 
-const CommunityIdPage = async ({ params }: CommunityIdPageProps) => {
+const CommunityHotPage = async ({ params }: CommunityHotPageProps) => {
   const community = await getCommunity(params.communityId);
 
   if (!community) {
@@ -28,7 +28,7 @@ const CommunityIdPage = async ({ params }: CommunityIdPageProps) => {
     isCommunityMember(community.id),
     getCommunityMembers(community.id),
     getToken(),
-    getCommunityPosts(community.id),
+    getBestCommunityPosts(community.id),
   ]);
 
   return (
@@ -43,4 +43,4 @@ const CommunityIdPage = async ({ params }: CommunityIdPageProps) => {
   );
 };
 
-export default CommunityIdPage;
+export default CommunityHotPage;

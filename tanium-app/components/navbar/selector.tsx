@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import {
   ArrowUpRightFromCircle,
   ChevronDown,
+  Flame,
   Home,
   LineChart,
   Plus,
+  Rocket,
   UserPlus,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -83,6 +85,18 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
                   <>
                     <Plus className="h-6 w-6 mr-2" />
                     Create Post
+                  </>
+                )}
+                {pathname === "/best" && (
+                  <>
+                    <Rocket className="h-6 w-6 mr-2" />
+                    Best
+                  </>
+                )}
+                {pathname === "/hot" && (
+                  <>
+                    <Flame className="h-6 w-6 mr-2" />
+                    Hot
                   </>
                 )}
                 {pathname.includes("/community") && community && (

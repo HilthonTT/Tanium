@@ -35,6 +35,7 @@ interface PostFormProps {
   token: string | null;
   communities: Community[];
   media?: boolean;
+  communityId: number;
 }
 
 const formSchema = z.object({
@@ -64,6 +65,7 @@ export const PostForm = ({
   communities,
   token,
   media = false,
+  communityId = 0,
 }: PostFormProps) => {
   const router = useRouter();
 
@@ -74,7 +76,7 @@ export const PostForm = ({
     defaultValues: {
       title: "",
       description: "",
-      communityId: firstCommunity?.id || 0,
+      communityId: communityId || firstCommunity.id || 0,
       imageUrl: "",
     },
   });
