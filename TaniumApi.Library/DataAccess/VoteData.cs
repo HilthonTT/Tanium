@@ -70,6 +70,8 @@ public class VoteData(ISqlDataAccess sql) : IVoteData
 
         var output = await _sql.SaveDataAsync<UpvoteModel>("dbo.spDownvote_Insert", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("Id", userId);
         var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
 
         parameters = new DynamicParameters();

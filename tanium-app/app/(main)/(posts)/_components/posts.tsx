@@ -36,7 +36,7 @@ export const Posts = ({ posts, self, token }: PostsProps) => {
           <CreatePostTab self={self} />
           <FilterTab />
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} token={token} />
+            <PostCard key={post.id} post={post} token={token} self={self} />
           ))}
         </div>
       </div>

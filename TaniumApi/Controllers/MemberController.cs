@@ -128,6 +128,15 @@ public class MemberController(
             }
 
             var community = await _communityData.GetCommunityAsync(member.CommunityId);
+            if (community is null)
+            {
+                return BadRequest("Community not found");
+            }
+
+            if (loggedInUser.Id == member.UserId)
+            {
+                return BadRequest("You are the owner of the community");
+            }
 
             bool isCommunityOwner = community.UserId == loggedInUser.Id;
             bool isFetchedMember = member.UserId == loggedInUser.Id;

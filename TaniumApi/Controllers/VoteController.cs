@@ -49,6 +49,7 @@ public class VoteController(
             }
 
             var createdUpvote = await _voteData.CreateUpvoteAsync(loggedInUser.Id, postId);
+
             return Ok(createdUpvote);
         }
         catch (Exception ex)

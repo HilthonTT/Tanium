@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import {
   ArrowUpRightFromCircle,
   ChevronDown,
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useModal } from "@/store/use-modal-store";
+import { instance } from "@/lib/axios-config";
 
 interface SelectorProps {
   self: User | null;
@@ -33,6 +35,7 @@ interface SelectorProps {
 export const Selector = ({ self, communities, token }: SelectorProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  const [community, setCommunity] = useState<Community | null>(null);
   const { onOpen } = useModal((state) => state);
 
   const onClick = (url: string) => {
@@ -42,6 +45,24 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
   const onCommunityClick = (community: Community) => {
     router.push(`/community/${community.id}`);
   };
+
+  useEffect(() => {
+    const hasCommunity = pathname.includes("/community");
+    if (!hasCommunity) {
+      return;
+    }
+
+    const getCurrentCommunity = async () => {
+      const [initialSlash, community, id] = pathname.split("/");
+
+      const response = await instance.get(`/api/community/${id}`);
+      const data = response.data as Community;
+
+      setCommunity(data);
+    };
+
+    getCurrentCommunity();
+  }, [pathname]);
 
   return (
     <DropdownMenu>
@@ -63,6 +84,35 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
                     <Plus className="h-6 w-6 mr-2" />
                     Create Post
                   </>
+                )}
+                {pathname.includes("/community") && community && (
+                  <div className="flex items-center justify-center">
+                    <div className="relative h-8 w-8">
+                      {community.imageUrl && (
+                        <Image
+                          src={community.imageUrl}
+                          alt="Community"
+                          className="object-cover rounded-full"
+                          fill
+                        />
+                      )}
+                      {!community.imageUrl && (
+                        <Avatar className="bg-secondary">
+                          <AvatarFallback>
+                            <p className="capitalize">
+                              {community.name[0]}{" "}
+                              {community.name[community.name.length - 1]}
+                            </p>
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                    </div>
+                    <div className="ml-2 flex items-center justify-center">
+                      <p className="font-semibold truncate text-xs max-w-[90%]">
+                        {community.name}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

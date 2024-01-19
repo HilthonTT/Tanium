@@ -14,15 +14,21 @@ import { UserAvatar } from "@/components/user-avatar";
 interface PostCardProps {
   post: Post;
   token: string | null;
+  self: User | null;
 }
 
-export const PostCard = ({ post, token }: PostCardProps) => {
+export const PostCard = ({ post, token, self }: PostCardProps) => {
   const router = useRouter();
 
   const [upvotes, setUpvotes] = useState<Upvote[]>(post.upvotes);
   const [downvotes, setDownvotes] = useState<Downvote[]>(post.downvotes);
   const [calculatedUpvotes, setCalculatedUpvotes] = useState<number>(
     post.upvotes.length - post.downvotes.length
+  );
+
+  const hasUpvoted = !!upvotes.find((upvote) => upvote.userId === self?.id);
+  const hasDownvoted = !!downvotes.find(
+    (downvote) => downvote.userId === self?.id
   );
 
   const formattedUploadedDate = formatDistanceToNow(post.dateCreated, {
@@ -118,8 +124,8 @@ export const PostCard = ({ post, token }: PostCardProps) => {
         // Update calculatedUpvotes
         setCalculatedUpvotes(upvotes.length - (downvotes.length + 2));
       }
-    } catch {
-      toast.error("Something went wrong");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -130,11 +136,21 @@ export const PostCard = ({ post, token }: PostCardProps) => {
       <div className="bg-primary/5 flex-shrink-0 p-3">
         <div className="flex items-center justify-start flex-col space-y-2">
           <Button onClick={onUpvote} variant="ghost" className="p-1">
-            <MoveUp className={cn("h-5 w-5 text-muted-foreground")} />
+            <MoveUp
+              className={cn(
+                "h-5 w-5 text-muted-foreground",
+                hasUpvoted && "text-emerald-500"
+              )}
+            />
           </Button>
           <span className="text-muted-foreground">{calculatedUpvotes}</span>
           <Button onClick={onDownvote} variant="ghost" className="p-1">
-            <MoveDown className={cn("h-5 w-5 text-muted-foreground")} />
+            <MoveDown
+              className={cn(
+                "h-5 w-5 text-muted-foreground",
+                hasDownvoted && "text-red-500"
+              )}
+            />
           </Button>
         </div>
       </div>

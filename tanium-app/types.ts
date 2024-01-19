@@ -16,7 +16,7 @@ type Community = {
   description: string;
   imageUrl: string | null;
   bannerUrl: string | null;
-  userId: string;
+  userId: number;
   user: User;
   dateCreated: Date;
   dateUpdated: Date;

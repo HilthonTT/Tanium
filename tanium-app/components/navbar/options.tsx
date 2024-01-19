@@ -1,7 +1,7 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
-import { Plus } from "lucide-react";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { LogInIcon, Plus } from "lucide-react";
 
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,13 @@ export const Options = ({ token }: OptionsProps) => {
         </Button>
       </Hint>
       <UserButton afterSignOutUrl="/" />
+      {!token && (
+        <SignInButton>
+          <Button aria-label="Login" variant="ghost">
+            <LogInIcon className="h-6 w-6" />
+          </Button>
+        </SignInButton>
+      )}
     </>
   );
 };

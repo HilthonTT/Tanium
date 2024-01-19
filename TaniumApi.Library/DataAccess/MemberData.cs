@@ -38,10 +38,15 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
+
         var member = await _sql.GetDataAsync<MemberModel>("dbo.spMember_GetById", parameters);
+        if (member is null)
+        {
+            return default;
+        }
 
         parameters = new DynamicParameters();
-        parameters.Add("Id", member.User);
+        parameters.Add("Id", member?.UserId);
         var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
 
         member.User = user;
