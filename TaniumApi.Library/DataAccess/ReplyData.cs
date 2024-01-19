@@ -13,7 +13,7 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 
-        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
         var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetByPostId", parameters);
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
@@ -35,15 +35,20 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
-        var reply = await _sql.GetDataAsync<ReplyModel>("dbo.spReply_GetById", parameters);
+
+        var output = await _sql.GetDataAsync<ReplyModel>("dbo.spReply_GetById", parameters);
+        if (output is null)
+        {
+            return default;
+        }
 
         parameters = new DynamicParameters();
-        parameters.Add("Id", reply.UserId);
+        parameters.Add("Id", output.UserId);
         var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
 
-        reply.User = user;
+        output.User = user;
 
-        return reply;
+        return output;
     }
 
     public async Task<ReplyModel> CreateReplyAsync(ReplyModel reply)
@@ -59,7 +64,7 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
         parameters = new DynamicParameters();
         parameters.Add("Id", reply.PostId);
 
-        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
         output.Post = post;
 
@@ -78,7 +83,7 @@ public class ReplyData(ISqlDataAccess sql) : IReplyData
         parameters = new DynamicParameters();
         parameters.Add("Id", reply.PostId);
 
-        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
         output.Post = post;
 

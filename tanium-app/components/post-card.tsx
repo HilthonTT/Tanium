@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -154,6 +155,7 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
           </Button>
         </div>
       </div>
+
       <div className="relative w-full h-full p-1">
         <div className="flex items-center justify-start p-2 gap-x-1">
           <div className="relative" onClick={onCommunityClick}>
@@ -179,13 +181,24 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             <p className="text-sm">{post.description}</p>
           </div>
         </div>
-
         <div className="mt-4">
           <Button variant="ghost" className="text-muted-foreground">
             <MessageSquare className="mr-2" />
             <p className="text-xs">{post.replies.length} Comments</p>
           </Button>
         </div>
+      </div>
+      <div className="p-1">
+        {post.imageUrl && (
+          <div className="relative h-40 w-40">
+            <Image
+              src={post.imageUrl}
+              alt="Image"
+              className="object-cover rounded-md"
+              fill
+            />
+          </div>
+        )}
       </div>
     </div>
   );

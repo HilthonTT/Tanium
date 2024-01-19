@@ -66,15 +66,20 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+
+        var output = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        if (output is null)
+        {
+            return default;
+        }
 
         parameters = new DynamicParameters();
-        parameters.Add("Id", community.UserId);
+        parameters.Add("Id", output.UserId);
         var user = await _sql.GetDataAsync<UserModel>("dbo.spUser_GetById", parameters);
 
-        community.User = user;
+        output.User = user;
 
-        return community;
+        return output;
     }
 
     public async Task<CommunityModel> CreateCommunityAsync(CommunityModel community)

@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useModal } from "@/store/use-modal-store";
+import { PostCard } from "@/components/post-card";
 
 import { CreatePostTab } from "./create-post-tab";
-import { PostCard } from "./post-card";
 import { FilterTab } from "./filter-tab";
 
 interface PostsProps {

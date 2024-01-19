@@ -25,6 +25,10 @@ public class VoteData(ISqlDataAccess sql) : IVoteData
         parameters.Add("PostId", postId);
 
         var output = await _sql.SaveDataAsync<UpvoteModel>("dbo.spUpvote_Insert", parameters);
+        if (output is null)
+        {
+            return default;
+        }
 
         parameters = new DynamicParameters();
         parameters.Add("Id", output.UserId);
@@ -34,7 +38,7 @@ public class VoteData(ISqlDataAccess sql) : IVoteData
         parameters = new DynamicParameters();
         parameters.Add("Id", output.PostId);
 
-        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
         output.Post = post;
         output.User = user;
@@ -77,7 +81,7 @@ public class VoteData(ISqlDataAccess sql) : IVoteData
         parameters = new DynamicParameters();
         parameters.Add("Id", output.PostId);
 
-        var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
         output.Post = post;
         output.User = user;

@@ -5,7 +5,7 @@ public class MemberModel
     public int UserId { get; set; }
     public UserModel User { get; set; }
     public int CommunityId { get; set; }
-    public CommunityModel Community { get; set; }
+    public BasicCommunityModel Community { get; set; }
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public DateTime DateUpdated { get; set; }
 }

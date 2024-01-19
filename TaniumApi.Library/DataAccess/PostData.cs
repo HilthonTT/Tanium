@@ -99,6 +99,10 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
         var post = await _sql.GetDataAsync<PostModel>("dbo.spPost_GetById", parameters);
+        if (post is null)
+        {
+            return default;
+        }
 
         parameters = new DynamicParameters();
         parameters.Add("Id", post.UserId);

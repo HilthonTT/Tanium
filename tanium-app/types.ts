@@ -1,3 +1,24 @@
+type BasicPost = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  userId: number;
+  community: number;
+  dateCreated: Date;
+  dateUpdated: Date;
+};
+
+type BasicCommunity = {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string | null;
+  bannerUrl: string | null;
+  userId: number;
+  dateCreated: Date;
+  dateUpdated: Date;
+};
+
 type User = {
   id: number;
   externalUserId: string;
@@ -27,7 +48,7 @@ type Upvote = {
   userId: number;
   user: User;
   postId: number;
-  post: Post;
+  post: BasicPost;
   dateCreated: Date;
 };
 
@@ -36,7 +57,7 @@ type Downvote = {
   userId: number;
   user: User;
   postId: number;
-  post: Post;
+  post: BasicPost;
   dateCreated: Date;
 };
 
@@ -47,7 +68,7 @@ type Reply = {
   userId: number;
   User: User;
   postId: number;
-  post: Post;
+  post: BasicPost;
   dateCreated: Date;
   dateUpdated: Date;
 };
@@ -73,7 +94,7 @@ type Member = {
   userId: number;
   user: User;
   communityId: number;
-  community: Community;
+  community: BasicCommunity;
   dateCreated: Date;
   dateUpdated: Date;
 };

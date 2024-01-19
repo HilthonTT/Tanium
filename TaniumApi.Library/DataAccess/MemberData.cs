@@ -13,7 +13,7 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
 
         parameters = new DynamicParameters();
         parameters.Add("CommunityId", id);
@@ -70,7 +70,7 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         parameters = new DynamicParameters();
         parameters.Add("Id", output.CommunityId);
 
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
 
         output.User = user;
         output.Community = community;

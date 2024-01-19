@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs";
 
 import { getPosts } from "@/lib/post-service";
 import { getSelf } from "@/lib/user-service";
+import { Container } from "@/components/container";
 
 import { Posts } from "./_components/posts";
 
@@ -15,9 +16,9 @@ const MainPage = async () => {
   ]);
 
   return (
-    <div className="h-full mx-auto max-w-5xl space-y-4">
+    <Container>
       <Posts posts={posts} self={self} token={token} />
-    </div>
+    </Container>
   );
 };
 

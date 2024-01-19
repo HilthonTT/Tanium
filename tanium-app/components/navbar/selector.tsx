@@ -196,7 +196,7 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/all")}>
+          onClick={() => onClick("/")}>
           <div className="flex items-center justify-center">
             <LineChart className="h-6 w-6 mr-2" />
             All

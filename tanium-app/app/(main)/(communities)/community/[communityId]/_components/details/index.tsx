@@ -1,5 +1,7 @@
 "use client";
 
+import { Container } from "@/components/container";
+
 import { Header } from "./header";
 import { Posts } from "./posts";
 
@@ -29,9 +31,9 @@ export const CommunityDetails = ({
         members={members}
         token={token}
       />
-      <div className="max-w-4xl mx-auto pt-4">
+      <Container className="pt-4">
         <Posts posts={posts} self={self} token={token} community={community} />
-      </div>
+      </Container>
     </div>
   );
 };
