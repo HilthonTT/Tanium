@@ -104,10 +104,9 @@ public class ReplyController(
 
             var data = new ReplyModel()
             {
-                Content = body.Content,
-                ImageUrl = body.ImageUrl,
                 UserId = loggedInUser.Id,
                 PostId = body.PostId,
+                Content = body.Content,
             };
 
             var createdReply = await _replyData.CreateReplyAsync(data);
@@ -152,7 +151,6 @@ public class ReplyController(
             {
                 Id = body.Id,
                 Content = reply.Content,
-                ImageUrl = reply.ImageUrl,
             };
 
             var updatedReply = await _replyData.UpdateReplyAsync(data);

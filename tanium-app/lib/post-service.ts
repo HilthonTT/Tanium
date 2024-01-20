@@ -80,3 +80,14 @@ export const searchPosts = async (query: string) => {
     return [];
   }
 };
+
+export const getPost = async (id: number) => {
+  try {
+    const response = await instance.get(`/api/post/${id}`);
+
+    return response.data as Post;
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_ID]", error);
+    return null;
+  }
+};

@@ -21,3 +21,14 @@ export const searchReplies = async (query: string) => {
     return [];
   }
 };
+
+export const getPostReplies = async (postId: number) => {
+  try {
+    const response = await instance.get(`/api/reply/post/${postId}`);
+
+    return response.data as Reply[];
+  } catch (error) {
+    console.log("[REPLY_SERVICE_GET_POST_REPLIES]", error);
+    return [];
+  }
+};

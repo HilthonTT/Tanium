@@ -14,7 +14,7 @@ export const ReplyCard = ({ reply }: ReplyCardProps) => {
   const router = useRouter();
 
   const onClick = () => {
-    router.push(`/post/${reply.postId}`);
+    router.push(`/community/${reply.post.communityId}/post/${reply.postId}`);
   };
 
   return (

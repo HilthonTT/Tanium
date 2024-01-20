@@ -12,7 +12,4 @@ public class UpdateReplyModel
     [MinLength(1)]
     [MaxLength(500)]
     public string Content { get; set; }
-
-    [Url]
-    public string ImageUrl { get; set; }
 }

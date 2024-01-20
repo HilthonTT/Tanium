@@ -4,7 +4,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT [Id], [Content], [ImageUrl], [UserId], [PostId], [DateCreated], [DateUpdated]
+	SELECT [Id], [Content], [UserId], [PostId], [DateCreated], [DateUpdated]
 	FROM [dbo].[Reply]
 	WHERE [PostId] = @PostId;
 END

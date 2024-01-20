@@ -4,7 +4,7 @@ type BasicPost = {
   description: string;
   imageUrl: string;
   userId: number;
-  community: number;
+  communityId: number;
   dateCreated: Date;
   dateUpdated: Date;
 };
@@ -61,7 +61,6 @@ type Downvote = {
 type Reply = {
   id: number;
   content: string;
-  imageUrl: string;
   userId: number;
   user: User;
   postId: number;

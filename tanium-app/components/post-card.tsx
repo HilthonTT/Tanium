@@ -32,6 +32,9 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
     (downvote) => downvote.userId === self?.id
   );
 
+  const [upvoted, setUpvoted] = useState<boolean>(hasUpvoted);
+  const [downvoted, setDownvoted] = useState<boolean>(hasDownvoted);
+
   const formattedUploadedDate = formatDistanceToNow(post.dateCreated, {
     addSuffix: true,
   });
@@ -48,6 +51,13 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
 
   const onUpvote = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (!token) {
+      return router.push("/sign-in");
+    }
+
+    setUpvoted(true);
+    setDownvoted(false);
 
     try {
       const response = await instance.post(
@@ -81,7 +91,7 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
 
         // Update calculatedUpvotes
         setCalculatedUpvotes(
-          (prevCalculatedUpvotes) => prevCalculatedUpvotes + 2
+          (prevCalculatedUpvotes) => prevCalculatedUpvotes + 1
         );
       }
     } catch {
@@ -91,6 +101,13 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
 
   const onDownvote = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (!token) {
+      return router.push("/sign-in");
+    }
+
+    setUpvoted(false);
+    setDownvoted(true);
 
     try {
       const response = await instance.post(
@@ -123,7 +140,7 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
         setDownvotes([...downvotes, downvote]);
 
         // Update calculatedUpvotes
-        setCalculatedUpvotes(upvotes.length - (downvotes.length + 2));
+        setCalculatedUpvotes(upvotes.length - (downvotes.length + 1));
       }
     } catch (error) {
       console.log(error);
@@ -140,7 +157,7 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             <MoveUp
               className={cn(
                 "h-5 w-5 text-muted-foreground",
-                hasUpvoted && "text-emerald-500"
+                upvoted && "text-emerald-500"
               )}
             />
           </Button>
@@ -149,7 +166,7 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             <MoveDown
               className={cn(
                 "h-5 w-5 text-muted-foreground",
-                hasDownvoted && "text-red-500"
+                downvoted && "text-red-500"
               )}
             />
           </Button>

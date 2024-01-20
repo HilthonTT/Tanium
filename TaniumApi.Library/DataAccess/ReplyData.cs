@@ -51,6 +51,8 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
 
         var post = await _sql.GetDataAsync<BasicPostModel>("dbo.spPost_GetById", parameters);
 
+        parameters = new DynamicParameters();
+        parameters.Add("PostId", id);
         var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetByPostId", parameters);
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
 
@@ -91,7 +93,6 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
     {
         var parameters = new DynamicParameters();
         parameters.Add("Content", reply.Content);
-        parameters.Add("ImageUrl", reply.ImageUrl);
         parameters.Add("UserId", reply.UserId);
         parameters.Add("PostId", reply.PostId);
 
@@ -112,7 +113,6 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
         var parameters = new DynamicParameters();
         parameters.Add("Id", reply.Id);
         parameters.Add("Content", reply.Content);
-        parameters.Add("ImageUrl", reply.ImageUrl);
 
         var output = await _sql.SaveDataAsync<ReplyModel>("dbo.spReply_Update", parameters);
 
