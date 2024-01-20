@@ -19,7 +19,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
             return output;
         }
 
-        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+        var communities = await _sql.GetAllDataAsync<BasicCommunityModel>("dbo.spCommunity_GetAll");
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
         var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetAll");
 
@@ -64,7 +64,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         var parameters = new DynamicParameters();
         parameters.Add("Id", communityId);
 
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
 
         var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
@@ -110,7 +110,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
 
         parameters = new DynamicParameters();
         parameters.Add("Id", post.CommunityId);
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
 
         parameters = new DynamicParameters();
         parameters.Add("PostId", post.Id);
@@ -141,7 +141,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         parameters = new DynamicParameters();
         parameters.Add("Id", post.CommunityId);
 
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
 
         parameters = new DynamicParameters();
         parameters.Add("Id", post.UserId);
@@ -167,7 +167,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         parameters = new DynamicParameters();
         parameters.Add("Id", post.CommunityId);
 
-        var community = await _sql.GetDataAsync<CommunityModel>("dbo.spCommunity_GetById", parameters);
+        var community = await _sql.GetDataAsync<BasicCommunityModel>("dbo.spCommunity_GetById", parameters);
 
         parameters = new DynamicParameters();
         parameters.Add("Id", post.UserId);

@@ -5,6 +5,7 @@ public interface IReplyData
 {
     Task<ReplyModel> CreateReplyAsync(ReplyModel reply);
     Task DeleteReplyAsync(int id);
+    Task<List<ReplyModel>> GetAllRepliesAsync();
     Task<List<ReplyModel>> GetRepliesByPostIdAsync(int id);
     Task<ReplyModel> GetReplyByIdAsync(int id);
     Task<ReplyModel> UpdateReplyAsync(ReplyModel reply);

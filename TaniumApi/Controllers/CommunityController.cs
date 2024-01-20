@@ -21,6 +21,7 @@ public class CommunityController(
     private readonly ILogger<CommunityController> _logger = logger;
 
     [HttpGet]
+	[AllowAnonymous]
     public async Task<IActionResult> GetAllCommunitiesAsync()
     {
 		try
@@ -35,6 +36,27 @@ public class CommunityController(
 			return StatusCode(500, "Internal Error");
 		}
     }
+
+	[HttpGet("search/{query}")]
+	[AllowAnonymous]
+	public async Task<IActionResult> SearchCommunitiesAsync(string query)
+	{
+		try
+		{
+			var communities = await _communityData.GetAllCommunitiesAsync();
+
+			var queriedCommunities = communities.Where(
+				c => c.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase) ||
+				c.Description.Contains(query, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+			return Ok(queriedCommunities);
+		}
+		catch (Exception ex)
+		{
+            _logger.LogError("[COMMUNITY_CONTROLLER_SEARCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+	}
 
 	[HttpGet("{id}")]
 	[AllowAnonymous]

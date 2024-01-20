@@ -1,12 +1,48 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Frozen;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;
-public class ReplyData(ISqlDataAccess sql) : IReplyData
+public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
 {
+    private const string CacheName = nameof(ReplyData);
     private readonly ISqlDataAccess _sql = sql;
+    private readonly IMemoryCache _cache = cache;
+
+    public async Task<List<ReplyModel>> GetAllRepliesAsync()
+    {
+        var output = _cache.Get<List<ReplyModel>>(CacheName);
+        if (output is not null)
+        {
+            return output;
+        }
+
+        var posts = await _sql.GetAllDataAsync<BasicPostModel>("dbo.spPost_GetAll");
+        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
+        output = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
+
+        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var postDictionary = posts.ToFrozenDictionary(p => p.Id);
+
+        foreach (var reply in output)
+        {
+            if (userDictionary.TryGetValue(reply.UserId, out var user))
+            {
+                reply.User = user;
+            }
+
+            if (postDictionary.TryGetValue(reply.PostId, out var post))
+            {
+                reply.Post = post;
+            }
+        }
+
+        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));
+
+        return output;
+    }
 
     public async Task<List<ReplyModel>> GetRepliesByPostIdAsync(int id)
     {

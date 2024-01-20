@@ -8,7 +8,7 @@ public class PostModel
     public int UserId { get; set; }
     public UserModel User { get; set; }
     public int CommunityId { get; set; }
-    public CommunityModel Community { get; set; }
+    public BasicCommunityModel Community { get; set; }
     public List<UpvoteModel> Upvotes { get; set; } = [];
     public List<DownvoteModel> Downvotes { get; set; } = [];
     public List<ReplyModel> Replies { get; set; } = [];

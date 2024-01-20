@@ -1,6 +1,7 @@
 type BasicPost = {
   id: number;
   title: string;
+  description: string;
   imageUrl: string;
   userId: number;
   community: number;
@@ -46,18 +47,14 @@ type Community = {
 type Upvote = {
   id: number;
   userId: number;
-  user: User;
   postId: number;
-  post: BasicPost;
   dateCreated: Date;
 };
 
 type Downvote = {
   id: number;
   userId: number;
-  user: User;
   postId: number;
-  post: BasicPost;
   dateCreated: Date;
 };
 
@@ -66,7 +63,7 @@ type Reply = {
   content: string;
   imageUrl: string;
   userId: number;
-  User: User;
+  user: User;
   postId: number;
   post: BasicPost;
   dateCreated: Date;
@@ -81,7 +78,7 @@ type Post = {
   userId: number;
   user: User;
   communityId: number;
-  community: Community;
+  community: BasicCommunity;
   upvotes: Upvote[];
   downvotes: Downvote[];
   replies: Reply[];

@@ -69,3 +69,14 @@ export const getBestCommunityPosts = async (communityId: number) => {
     return [];
   }
 };
+
+export const searchPosts = async (query: string) => {
+  try {
+    const response = await instance.get(`/api/post/search/${query}`);
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_SEARCH]", error);
+    return [];
+  }
+};

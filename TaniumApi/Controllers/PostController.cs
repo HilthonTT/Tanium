@@ -164,6 +164,26 @@ public class PostController(
         }
     }
 
+    [HttpGet("search/{query}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> SearchPostsAsync(string query)
+    {
+        try
+        {
+            var posts = await _postData.GetAllPostsAsync();
+
+            var queriedPosts = posts.Where(p => p.Title.Contains(query, StringComparison.InvariantCultureIgnoreCase) ||
+                p.Description.Contains(query, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            return Ok(queriedPosts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_SEARCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetPostByIdAsync(int id)

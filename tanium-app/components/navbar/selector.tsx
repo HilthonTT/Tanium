@@ -10,6 +10,7 @@ import {
   LineChart,
   Plus,
   Rocket,
+  SearchIcon,
   UserPlus,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -97,6 +98,12 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
                   <>
                     <Flame className="h-6 w-6 mr-2" />
                     Hot
+                  </>
+                )}
+                {pathname === "/search" && (
+                  <>
+                    <SearchIcon className="h-6 w-6 mr-2" />
+                    Search
                   </>
                 )}
                 {pathname.includes("/community") && community && (

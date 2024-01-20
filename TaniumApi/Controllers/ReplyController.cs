@@ -20,6 +20,43 @@ public class ReplyController(
     private readonly IAuthService _authService = authService;
     private readonly ILogger<ReplyController> _logger = logger;
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllRepliesAsync()
+    {
+        try
+        {
+            var replies = await _replyData.GetAllRepliesAsync();
+
+            return Ok(replies);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[REPLY_CONTROLLER_GET_ALL]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("search/{query}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> SearchRepliesAsync(string query)
+    {
+        try
+        {
+            var replies = await _replyData.GetAllRepliesAsync();
+
+            var queriedReplies = replies.Where(r => r.Content.Contains(
+                query, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            return Ok(queriedReplies);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[REPLY_CONTROLLER_SEARCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("post/{id}")]
 	[AllowAnonymous]
     public async Task<IActionResult> GetAllRepliesByPostIdAsync(int id)

@@ -2,6 +2,17 @@ import { auth } from "@clerk/nextjs";
 
 import { instance } from "@/lib/axios-config";
 
+export const getCommunities = async () => {
+  try {
+    const response = await instance.get("/api/community");
+
+    return response.data as Community[];
+  } catch (error) {
+    console.error("[COMMUNITY_SERVICE_GET_ALL]", error);
+    return [];
+  }
+};
+
 export const getUserCommunity = async (): Promise<Community[]> => {
   try {
     const { getToken } = auth();
@@ -33,5 +44,16 @@ export const getCommunity = async (id: number) => {
   } catch (error) {
     console.error("[COMMUNITY_SERVICE_GET_ID]", error);
     return null;
+  }
+};
+
+export const searchCommunities = async (query: string) => {
+  try {
+    const response = await instance.get(`/api/community/search/${query}`);
+
+    return response.data as Community[];
+  } catch (error) {
+    console.error("[COMMUNITY_SERVICE_SEARCH]", error);
+    return [];
   }
 };

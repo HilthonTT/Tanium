@@ -3,25 +3,25 @@
 import qs from "query-string";
 import { useState } from "react";
 import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 
 export const Search = () => {
-  const [value, setValue] = useState("");
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+  const type = searchParams.get("type");
+
+  const [value, setValue] = useState(query || "");
 
   const onSearch = () => {
-    if (!value) {
-      return;
-    }
-
     const url = qs.stringifyUrl(
       {
         url: "/search",
         query: {
           q: value,
+          type,
         },
       },
       { skipEmptyString: true, skipNull: true }
