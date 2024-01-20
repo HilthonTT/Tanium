@@ -36,9 +36,9 @@ public static class RegisterServices
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowSpecificOrigin",
-            policy => policy.WithOrigins(builder.Configuration["AllowedOrigins:Url"])
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+                policy => policy.WithOrigins(builder.Configuration["AllowedOrigins:Url"])
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
         });
 
         builder.Services.AddRateLimiter(_ => _

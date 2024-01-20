@@ -74,11 +74,34 @@ public class UserData(ISqlDataAccess sql, IMemoryCache cache) : IUserData
         return output;
     }
 
+    public async Task<UserModel> UpdateUserByExternalUserIdAsync(UserModel user)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("ExternalUserId", user.ExternalUserId);
+        parameters.Add("Username", user.Username);
+        parameters.Add("EmailAddress", user.EmailAddress);
+        parameters.Add("FirstName", user.FirstName);
+        parameters.Add("LastName", user.LastName);
+        parameters.Add("ImageUrl", user.ImageUrl);
+
+        var output = await _sql.SaveDataAsync<UserModel>("dbo.spUser_UpdateByExternalUserId", parameters);
+
+        return output;
+    }
+
     public async Task DeleteUserAsync(int id)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 
         await _sql.SaveDataAsync<UserModel>("dbo.spUser_Delete", parameters);
+    }
+
+    public async Task DeleteUserByExternalUserIdAsync(string externalUserId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("ExternalUserId", externalUserId);
+
+        await _sql.SaveDataAsync<UserModel>("dbo.spUser_DeleteByExternalUserId", parameters);
     }
 }

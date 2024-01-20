@@ -4,9 +4,8 @@ namespace TaniumApi.Models;
 
 public class UpdateUserModel
 {
-    [Required]
-    [Range(0, int.MaxValue)]
-    public int Id { get; set; }
+    [MinLength(1)]
+    public string Id { get; set; }
 
     [Required]
     [MinLength(1)]

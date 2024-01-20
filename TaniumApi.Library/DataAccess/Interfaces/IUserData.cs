@@ -5,8 +5,10 @@ public interface IUserData
 {
     Task<UserModel> CreateUserAsync(UserModel user);
     Task DeleteUserAsync(int id);
+    Task DeleteUserByExternalUserIdAsync(string externalUserId);
     Task<List<UserModel>> GetAllUsersAsync();
     Task<UserModel> GetUserByExternalUserIdAsync(string externalUserId);
     Task<UserModel> GetUserByIdAsync(int id);
     Task<UserModel> UpdateUserAsync(UserModel user);
+    Task<UserModel> UpdateUserByExternalUserIdAsync(UserModel user);
 }

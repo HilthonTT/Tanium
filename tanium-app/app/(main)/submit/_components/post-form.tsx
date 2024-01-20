@@ -104,8 +104,7 @@ export const PostForm = ({
 
       form.reset();
       router.push(`/community/${post.communityId}/post/${post.id}`);
-    } catch (error) {
-      console.log(error);
+    } catch {
       toast.error("Something went wrong");
     }
   };

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using TaniumApi.Authentication.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
@@ -9,6 +10,7 @@ namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
+[EnableCors("AllowSpecificOrigin")]
 public class ReplyController(
     IReplyData replyData,
     IPostData postData,
