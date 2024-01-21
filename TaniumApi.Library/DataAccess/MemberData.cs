@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System.Collections.Frozen;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
@@ -20,7 +19,7 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         var members = await _sql.GetAllDataAsync<MemberModel>("dbo.spMember_GetByCommunityId", parameters);
 
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
 
         foreach (var member in members)
         {

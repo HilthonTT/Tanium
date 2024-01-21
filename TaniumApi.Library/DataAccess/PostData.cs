@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Frozen;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
@@ -27,8 +26,8 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
         var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
 
-        var communityDictionary = communities.ToFrozenDictionary(c => c.Id);
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var communityDictionary = communities.ToDictionary(c => c.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
 
         foreach (var post in posts)
         {
@@ -75,7 +74,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         parameters.Add("CommunityId", community.Id);
         output = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetByCommunityId", parameters);
 
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
         foreach (var post in output)
         {
             post.Community = community;

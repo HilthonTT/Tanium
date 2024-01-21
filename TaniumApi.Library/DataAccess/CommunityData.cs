@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Frozen;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
@@ -22,7 +21,7 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
         var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
 
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
         foreach (var community in communities)
         {
             if (userDictionary.TryGetValue(community.UserId, out var user))
@@ -48,7 +47,7 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
         var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
 
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
         foreach (var community in communities)
         {
             if (userDictionary.TryGetValue(community.UserId, out var user))

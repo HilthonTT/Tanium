@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Frozen;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
@@ -23,8 +22,8 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
         output = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
 
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
-        var postDictionary = posts.ToFrozenDictionary(p => p.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
+        var postDictionary = posts.ToDictionary(p => p.Id);
 
         foreach (var reply in output)
         {
@@ -56,7 +55,7 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
         var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetByPostId", parameters);
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
 
-        var userDictionary = users.ToFrozenDictionary(u => u.Id);
+        var userDictionary = users.ToDictionary(u => u.Id);
         foreach (var reply in replies)
         {
             reply.Post = post;
