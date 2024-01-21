@@ -24,7 +24,6 @@ public class CommunityController(
 
     [HttpGet]
     [AllowAnonymous]
-    
     public async Task<IActionResult> GetAllCommunitiesAsync()
     {
 		try
@@ -42,7 +41,7 @@ public class CommunityController(
 
 	[HttpGet("search/{query}")]
 	[AllowAnonymous]
-	public async Task<IActionResult> SearchCommunitiesAsync(string query)
+    public async Task<IActionResult> SearchCommunitiesAsync(string query)
 	{
 		try
 		{
@@ -63,7 +62,7 @@ public class CommunityController(
 
 	[HttpGet("{id}")]
 	[AllowAnonymous]
-	public async Task<IActionResult> GetCommunityAsync(int id)
+    public async Task<IActionResult> GetCommunityAsync(int id)
 	{
 		try
 		{
@@ -83,7 +82,7 @@ public class CommunityController(
 	}
 
 	[HttpGet("user")]
-	public async Task<IActionResult> GetUserCommunitiesAsync()
+    public async Task<IActionResult> GetUserCommunitiesAsync()
 	{
 		try
 		{
@@ -105,7 +104,7 @@ public class CommunityController(
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> CreateCommunityAsync(CreateCommunityModel body)
+    public async Task<IActionResult> CreateCommunityAsync(CreateCommunityModel body)
 	{
 		try
 		{

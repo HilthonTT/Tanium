@@ -5,7 +5,7 @@ namespace TaniumApi.Models;
 public class UpdateUserModel
 {
     [MinLength(1)]
-    public string Id { get; set; }
+    public string ExternalUserId { get; set; }
 
     [Required]
     [MinLength(1)]

@@ -11,8 +11,6 @@ using TaniumApi.Models;
 namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[EnableCors("AllowSpecificOrigin")]
-[AllowAnonymous]
 public class UserController(
     IUserData userData,
     IAuthService authService,
@@ -25,6 +23,7 @@ public class UserController(
     private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet]
+    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetAllUsersAsync()
     {
         try
@@ -41,6 +40,7 @@ public class UserController(
     }
 
     [HttpGet("{id}")]
+    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetUserAsync(int id)
     {
         try
@@ -61,6 +61,7 @@ public class UserController(
     }
 
     [HttpGet("auth")]
+    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetUserAuthAsync()
     {
         try
@@ -81,86 +82,157 @@ public class UserController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> HandleUserAsync(WebhookModel body)
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateUserAsync(CreateUserModel body)
     {
         try
         {
-            string svixId = Request.Headers["svix-id"];
-            string svixTimestamp = Request.Headers["svis-timestamp"];
-            string svixSignature = Request.Headers["svix-signature"];
-
-            if (string.IsNullOrEmpty(svixId) || string.IsNullOrEmpty(svixTimestamp) || string.IsNullOrEmpty(svixSignature))
-            {
-                return BadRequest("Error occured -- no svix headers");
-            }
-
-            using var reader = new StreamReader(Request.Body);
-            var svixBody = await reader.ReadToEndAsync();
-
-            var wh = new Webhook(_config["Clerk:WebhookSecret"]);
-
-            var headers = new WebHeaderCollection();
-            headers.Set("svix-id", svixId);
-            headers.Set("svix-timestamp", svixTimestamp);
-            headers.Set("svix-signature", svixSignature);
-
-            wh.Verify(svixBody, headers);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("[WEBHOOK_ERROR]: {error}", ex.Message);
-            return StatusCode(400, "Internal Error");
-        }
-
-        if (body.Type == "user.created")
-        {
             try
             {
-                if (ModelState.IsValid is false)
-                {
-                    return BadRequest(ModelState);
-                }
+                string svixId = Request.Headers["svix-id"];
+                string svixTimestamp = Request.Headers["svis-timestamp"];
+                string svixSignature = Request.Headers["svix-signature"];
 
-                var data = new UserModel()
-                {
-                    ExternalUserId = body.Data.Id,
-                    Username = body.Data.Username,
-                    FirstName = body.Data.FirstName,
-                    LastName = body.Data.LastName,
-                    EmailAddress = body.Data.EmailAddress,
-                    ImageUrl = body.Data.ImageUrl,
-                };
+                using var reader = new StreamReader(Request.Body);
+                var svixBody = await reader.ReadToEndAsync();
 
-                var createdUser = await _userData.CreateUserAsync(data);
+                var wh = new Webhook(_config["Clerk:WebhookSecret"]);
 
-                return Ok(createdUser);
+                var headers = new WebHeaderCollection();
+                headers.Set("svix-id", svixId);
+                headers.Set("svix-timestamp", svixTimestamp);
+                headers.Set("svix-signature", svixSignature);
+
+                wh.Verify(svixBody, headers);
             }
             catch (Exception ex)
             {
-                _logger.LogError("[USER_CONTROLLER_POST]: {error}", ex.Message);
-                return StatusCode(500, "Internal Error");
+                _logger.LogError("[USER_CONTROLLER_POST_WEBHOOK]: {error}", ex.Message);
+                return StatusCode(400, "Webhook Error");
             }
-        } 
-        else if (body.Type == "user.updated")
+
+            var user = new UserModel()
+            {
+                ExternalUserId = body.ExternalUserId,
+                Username = body.Username,
+                EmailAddress = body.EmailAddress,
+                FirstName = body.FirstName,
+                LastName = body.LastName,
+                ImageUrl = body.ImageUrl,
+            };
+
+            var createdUser = await _userData.CreateUserAsync(user);
+
+            return Ok(createdUser); 
+        }
+        catch (Exception ex)
         {
+            _logger.LogError("[USER_CONTROLLER_POST]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpPatch]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateUserAsync(UpdateUserModel body)
+    {
+        try
+        {
+            try
+            {
+                string svixId = Request.Headers["svix-id"];
+                string svixTimestamp = Request.Headers["svis-timestamp"];
+                string svixSignature = Request.Headers["svix-signature"];
+
+                using var reader = new StreamReader(Request.Body);
+                var svixBody = await reader.ReadToEndAsync();
+
+                var wh = new Webhook(_config["Clerk:WebhookSecret"]);
+
+                var headers = new WebHeaderCollection();
+                headers.Set("svix-id", svixId);
+                headers.Set("svix-timestamp", svixTimestamp);
+                headers.Set("svix-signature", svixSignature);
+
+                wh.Verify(svixBody, headers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[USER_CONTROLLER_PATCH_WEBHOOK]: {error}", ex.Message);
+                return StatusCode(400, "Webhook Error");
+            }
+
+            var fetchedUser = await _userData.GetUserByExternalUserIdAsync(body.ExternalUserId);
+            if (fetchedUser is null)
+            {
+                return BadRequest("User not found");
+            }
+
             var data = new UserModel()
             {
-                Username = body.Data.Username,
-                FirstName = body.Data.FirstName,
-                LastName = body.Data.LastName,
-                EmailAddress = body.Data.EmailAddress,
-                ImageUrl = body.Data.ImageUrl,
+                Id = fetchedUser.Id,
+                Username = body.Username,
+                EmailAddress = body.EmailAddress,
+                FirstName = body.FirstName,
+                LastName = body.LastName,
+                ImageUrl = body.ImageUrl,
             };
 
             var updatedUser = await _userData.UpdateUserAsync(data);
+
             return Ok(updatedUser);
         }
-        else if (body.Type == "user.deleted")
+        catch (Exception ex)
         {
-            await _userData.DeleteUserByExternalUserIdAsync(body.Data.Id);
-            return Ok("Success!");
+            _logger.LogError("[USER_CONTROLLER_PATCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
         }
+    }
 
-        return Ok();
+    [HttpDelete("{externalUserId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> DeleteUserAsync(string externalUserId)
+    {
+        try
+        {
+            try
+            {
+                string svixId = Request.Headers["svix-id"];
+                string svixTimestamp = Request.Headers["svis-timestamp"];
+                string svixSignature = Request.Headers["svix-signature"];
+
+                using var reader = new StreamReader(Request.Body);
+                var svixBody = await reader.ReadToEndAsync();
+
+                var wh = new Webhook(_config["Clerk:WebhookSecret"]);
+
+                var headers = new WebHeaderCollection();
+                headers.Set("svix-id", svixId);
+                headers.Set("svix-timestamp", svixTimestamp);
+                headers.Set("svix-signature", svixSignature);
+
+                wh.Verify(svixBody, headers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[USER_CONTROLLER_DELETE_WEBHOOK]: {error}", ex.Message);
+                return StatusCode(400, "Webhook Error");
+            }
+
+            var user = await _userData.GetUserByExternalUserIdAsync(externalUserId);
+            if (user is null)
+            {
+                return BadRequest("User not found");
+            }
+
+            await _userData.DeleteUserByExternalUserIdAsync(externalUserId);
+
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[USER_CONTROLLER_DELETE]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
     }
 }
