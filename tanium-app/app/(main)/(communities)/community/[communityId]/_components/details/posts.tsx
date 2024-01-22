@@ -36,7 +36,7 @@ export const Posts = ({ posts, self, token, community }: PostsProps) => {
   return (
     <div className="pt-4 flex space-x-2">
       <div className="flex-1 space-y-4">
-        <div className="space-y-4">
+        <div className="space-y-4 mb-10">
           <CreatePostTab self={self} community={community} />
           <FilterTab communityId={community.id} />
           {posts.map((post) => (

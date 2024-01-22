@@ -1,9 +1,10 @@
 import { create } from "zustand";
 
-export type ModalType = "createCommunity";
+export type ModalType = "createCommunity" | "deletePost";
 
 interface ModalData {
   token?: string | null;
+  post?: Post;
 }
 
 interface ModalStore {

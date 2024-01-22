@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -180,12 +181,14 @@ export const CreateCommunityModal = () => {
               />
             </div>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-full font-bold">
-                Cancel
-              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full font-bold">
+                  Cancel
+                </Button>
+              </DialogClose>
               <Button type="submit" className="rounded-full font-bold">
                 Create Community
               </Button>

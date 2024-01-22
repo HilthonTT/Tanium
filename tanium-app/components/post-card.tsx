@@ -4,13 +4,26 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, MoveDown, MoveUp } from "lucide-react";
+import {
+  MessageSquare,
+  MoreVertical,
+  MoveDown,
+  MoveUp,
+  Trash,
+} from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { instance } from "@/lib/axios-config";
 import { UserAvatar } from "@/components/user-avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useModal } from "@/store/use-modal-store";
 
 interface PostCardProps {
   post: Post;
@@ -20,6 +33,7 @@ interface PostCardProps {
 
 export const PostCard = ({ post, token, self }: PostCardProps) => {
   const router = useRouter();
+  const { onOpen } = useModal((state) => state);
 
   const [upvotes, setUpvotes] = useState<Upvote[]>(post.upvotes);
   const [downvotes, setDownvotes] = useState<Downvote[]>(post.downvotes);
@@ -38,6 +52,8 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
   const formattedUploadedDate = formatDistanceToNow(post.dateCreated, {
     addSuffix: true,
   });
+
+  const isOwner = post.userId === self?.id;
 
   const onClick = () => {
     router.push(`/community/${post.communityId}/post/${post.id}`);
@@ -142,17 +158,23 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
         // Update calculatedUpvotes
         setCalculatedUpvotes(upvotes.length - (downvotes.length + 1));
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("Something went wrong");
     }
+  };
+
+  const onDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    onOpen("deletePost", { token, post });
   };
 
   return (
     <div
       onClick={onClick}
-      className="relative bg-secondary rounded-md flex space-x-1 w-full h-full cursor-pointer border-[0.1px] hover:border-zinc-500 transition">
+      className="group relative bg-secondary rounded-md flex space-x-1 w-full h-full cursor-pointer border-[0.1px] hover:border-zinc-500 transition">
       <div className="bg-primary/5 flex-shrink-0 p-3">
-        <div className="flex items-center justify-start flex-col space-y-2">
+        <div className="flex items-center justify-start flex-col space-y-2 ">
           <Button onClick={onUpvote} variant="ghost" className="p-1">
             <MoveUp
               className={cn(
@@ -171,6 +193,24 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             />
           </Button>
         </div>
+
+        {isOwner && (
+          <div className="flex items-center justify-center  opacity-0 group-hover:opacity-100 transition cursor-pointer">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-1" aria-label="Options">
+                  <MoreVertical className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={onDelete} className="cursor-pointer">
+                  <Trash className="h-4 w-4 mr-auto" />
+                  <span className="font-semibold">Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
       </div>
 
       <div className="relative w-full h-full p-1">

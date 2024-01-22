@@ -55,7 +55,7 @@ const formSchema = z.object({
     .max(500, {
       message: "Description is too long",
     }),
-  communityId: z.number().min(1, {
+  communityId: z.string().min(1, {
     message: "Not a valid community",
   }),
   imageUrl: z.string().optional(),
@@ -76,7 +76,7 @@ export const PostForm = ({
     defaultValues: {
       title: "",
       description: "",
-      communityId: communityId || firstCommunity.id || 0,
+      communityId: String(communityId || firstCommunity.id || 0),
       imageUrl: "",
     },
   });
@@ -88,7 +88,7 @@ export const PostForm = ({
       const data = {
         title: values.title || undefined,
         description: values.description || undefined,
-        communityId: values.communityId || firstCommunity.id,
+        communityId: Number(values.communityId || firstCommunity.id),
         imageUrl: values.imageUrl || undefined,
       };
 
@@ -140,6 +140,7 @@ export const PostForm = ({
                       {communities?.map((community) => (
                         <SelectItem
                           key={community.id}
+                          onChange={() => field.onChange(community.id)}
                           value={String(community.id)}>
                           <div className="flex items-center space-x-2">
                             <UserAvatar
@@ -234,7 +235,11 @@ export const PostForm = ({
               </TabsContent>
             </Tabs>
             <div className="flex items-center justify-between">
-              <Button type="button" variant="ghost" className="rounded-full">
+              <Button
+                onClick={() => router.push("/")}
+                type="button"
+                variant="ghost"
+                className="rounded-full">
                 Cancel
               </Button>
               <Button

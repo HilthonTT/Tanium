@@ -23,7 +23,7 @@ export const CommunityDetails = ({
   posts,
 }: CommunityDetailsProps) => {
   return (
-    <div className="relative h-full w-full">
+    <div className="relative w-full bg-black">
       <Header
         self={self}
         community={community}

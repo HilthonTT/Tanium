@@ -179,10 +179,16 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         return output;
     }
 
-    public async Task DeletePostAsync(int id)
+    public async Task DeletePostAsync(int id, int? communityId = null)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
+
+        _cache.Remove(CacheName);
+        if (communityId is not null)
+        {
+            _cache.Remove($"{CacheName}_{communityId}");
+        }
 
         await _sql.SaveDataAsync<PostModel>("dbo.spPost_Delete", parameters);
     }

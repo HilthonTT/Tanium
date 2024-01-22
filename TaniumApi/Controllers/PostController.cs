@@ -308,12 +308,17 @@ public class PostController(
             }
 
             var post = await _postData.GetPostByIdAsync(id);
+            if (post is null)
+            {
+                return BadRequest("Post not found");
+            }
+
             if (post.UserId != loggedInUser.Id)
             {
                 return StatusCode(401, "Unauthorized");
             }
 
-            await _postData.DeletePostAsync(id);
+            await _postData.DeletePostAsync(id, post.CommunityId);
 
             return Ok(post);
         }

@@ -19,10 +19,10 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         }
 
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+        output = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
 
         var userDictionary = users.ToDictionary(u => u.Id);
-        foreach (var community in communities)
+        foreach (var community in output)
         {
             if (userDictionary.TryGetValue(community.UserId, out var user))
             {
@@ -30,9 +30,9 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
             }
         }
 
-        _cache.Set(CacheName, communities, TimeSpan.FromMinutes(30));
+        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));
 
-        return communities;
+        return output;
     }
 
     
