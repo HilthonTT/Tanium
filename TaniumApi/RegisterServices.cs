@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Threading.RateLimiting;
 using TaniumApi.Authentication;
 using TaniumApi.Authentication.Interfaces;
+using TaniumApi.Library.Cache;
+using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess;
 using TaniumApi.Library.DataAccess.Interfaces;
 
@@ -20,7 +22,6 @@ public static class RegisterServices
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-
         builder.Services.AddMemoryCache();
 
         builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
@@ -32,6 +33,7 @@ public static class RegisterServices
         builder.Services.AddTransient<IVoteData, VoteData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
+        builder.Services.AddTransient<IRedisCache, RedisCache>();
 
         builder.Services.AddCors(options =>
         {
@@ -53,6 +55,12 @@ public static class RegisterServices
         builder.Services.AddClerkApiClient(config =>
         {
             config.SecretKey = builder.Configuration["Clerk:SecretKey"];
+        });
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = builder.Configuration.GetConnectionString("Redis");
+            options.InstanceName = "Tanium_";
         });
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

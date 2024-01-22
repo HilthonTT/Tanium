@@ -4,8 +4,8 @@ namespace TaniumApi.Library.DataAccess.Interfaces;
 public interface IUserData
 {
     Task<UserModel> CreateUserAsync(UserModel user);
-    Task DeleteUserAsync(int id);
-    Task DeleteUserByExternalUserIdAsync(string externalUserId);
+    Task DeleteUserAsync(UserModel user);
+    Task DeleteUserByExternalUserIdAsync(UserModel user);
     Task<List<UserModel>> GetAllUsersAsync();
     Task<UserModel> GetUserByExternalUserIdAsync(string externalUserId);
     Task<UserModel> GetUserByIdAsync(int id);

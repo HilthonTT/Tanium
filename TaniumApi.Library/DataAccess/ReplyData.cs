@@ -1,18 +1,18 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Caching.Memory;
+using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;
-public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
+public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
 {
     private const string CacheName = nameof(ReplyData);
     private readonly ISqlDataAccess _sql = sql;
-    private readonly IMemoryCache _cache = cache;
+    private readonly IRedisCache _redisCache = redisCache;
 
     public async Task<List<ReplyModel>> GetAllRepliesAsync()
     {
-        var output = _cache.Get<List<ReplyModel>>(CacheName);
+        var output = await _redisCache.GetRecordAsync<List<ReplyModel>>(CacheName);
         if (output is not null)
         {
             return output;
@@ -38,7 +38,7 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
             }
         }
 
-        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));
+        await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30));
 
         return output;
     }
@@ -125,10 +125,10 @@ public class ReplyData(ISqlDataAccess sql, IMemoryCache cache) : IReplyData
         return output;
     }
 
-    public async Task DeleteReplyAsync(int id)
+    public async Task DeleteReplyAsync(ReplyModel reply)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("Id", id);
+        parameters.Add("Id", reply.Id);
 
         await _sql.SaveDataAsync<ReplyModel>("dbo.spReply_Delete", parameters);
     }

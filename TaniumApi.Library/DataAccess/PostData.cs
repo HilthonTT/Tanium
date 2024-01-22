@@ -1,18 +1,18 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Caching.Memory;
+using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;
-public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
+public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
 {
     private const string CacheName = nameof(PostData);
     private readonly ISqlDataAccess _sql = sql;
-    private readonly IMemoryCache _cache = cache;
+    private readonly IRedisCache _redisCache = redisCache;
 
     public async Task<List<PostModel>> GetAllPostsAsync()
     {
-        var output = _cache.Get<List<PostModel>>(CacheName);
+        var output = await _redisCache.GetRecordAsync<List<PostModel>>(CacheName);
         if (output is not null)
         {
             return output;
@@ -46,7 +46,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
             post.Replies = replies.Where(r => r.PostId  == post.Id).ToList();
         }
 
-        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));  
+        await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30)); 
 
         return posts;
     }
@@ -54,7 +54,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
     public async Task<List<PostModel>> GetPostsByCommunityIdAsync(int communityId)
     {
         string key = $"{CacheName}_{communityId}";
-        var output = _cache.Get<List<PostModel>>(key);
+        var output = await _redisCache.GetRecordAsync<List<PostModel>>(key);
         if (output is not null)
         {
             return output;
@@ -88,7 +88,7 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
             post.Replies = replies.Where(r => r.PostId == post.Id).ToList();
         }
 
-        _cache.Set(key, output, TimeSpan.FromMinutes(20));
+        await _redisCache.SetRecordAsync(key, output, TimeSpan.FromMinutes(30));
 
         return output;
     }
@@ -184,10 +184,10 @@ public class PostData(ISqlDataAccess sql, IMemoryCache cache) : IPostData
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 
-        _cache.Remove(CacheName);
+        await _redisCache.RemoveAsync(CacheName);
         if (communityId is not null)
         {
-            _cache.Remove($"{CacheName}_{communityId}");
+            await _redisCache.RemoveAsync($"{CacheName}_{communityId}");
         }
 
         await _sql.SaveDataAsync<PostModel>("dbo.spPost_Delete", parameters);

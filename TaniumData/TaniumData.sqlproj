@@ -110,6 +110,10 @@
     <Build Include="dbo\StoredProcedures\spPost_GetByCommunityId.sql" />
     <Build Include="dbo\StoredProcedures\spUser_DeleteByExternalUserId.sql" />
     <Build Include="dbo\StoredProcedures\spUser_UpdateByExternalUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spCommunity_DeleteByUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spDownvote_DeleteByUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spUpvote_DeleteByUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spReply_DeleteByUserId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

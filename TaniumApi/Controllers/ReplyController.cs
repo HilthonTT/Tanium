@@ -183,7 +183,7 @@ public class ReplyController(
                 return StatusCode(401, "Unauthorized");
             }
 
-            await _replyData.DeleteReplyAsync(reply.Id);
+            await _replyData.DeleteReplyAsync(reply);
 
             return Ok(reply);
         }

@@ -1,25 +1,25 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Caching.Memory;
+using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;
-public class UserData(ISqlDataAccess sql, IMemoryCache cache) : IUserData
+public class UserData(ISqlDataAccess sql, IRedisCache redisCache) : IUserData
 {
     private const string CacheName = nameof(UserData);
     private readonly ISqlDataAccess _sql = sql;
-    private readonly IMemoryCache _cache = cache;
+    private readonly IRedisCache _redisCache = redisCache;
 
     public async Task<List<UserModel>> GetAllUsersAsync()
     {
-        var output = _cache.Get<List<UserModel>>(CacheName);
+        var output = await _redisCache.GetRecordAsync<List<UserModel>>(CacheName);
         if (output is not null)
         {
             return output;
         }
 
         output = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));
+        await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30));
 
         return output;
     }
@@ -89,19 +89,42 @@ public class UserData(ISqlDataAccess sql, IMemoryCache cache) : IUserData
         return output;
     }
 
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(UserModel user)
     {
+        _sql.StartTransaction();
+
         var parameters = new DynamicParameters();
-        parameters.Add("Id", id);
+        parameters.Add("UserId", user.Id);
+
+        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+        await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
+        await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("Id", user.Id);
 
         await _sql.SaveDataAsync<UserModel>("dbo.spUser_Delete", parameters);
+
+        _sql.CommitTransaction();
     }
 
-    public async Task DeleteUserByExternalUserIdAsync(string externalUserId)
+    public async Task DeleteUserByExternalUserIdAsync(UserModel user)
     {
-        var parameters = new DynamicParameters();
-        parameters.Add("ExternalUserId", externalUserId);
+        _sql.StartTransaction();
 
-        await _sql.SaveDataAsync<UserModel>("dbo.spUser_DeleteByExternalUserId", parameters);
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", user.Id);
+
+        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+        await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
+        await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
+
+        parameters = new DynamicParameters();
+        parameters.Add("ExternalUserId", user.ExternalUserId);
+
+        await _sql.SaveInTransactionAsync<UserModel>("dbo.spUser_DeleteByExternalUserId", parameters);
+
+        _sql.CommitTransaction();
     }
 }

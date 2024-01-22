@@ -12,6 +12,7 @@ export const SearchTabs = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const query = searchParams.get("q") as string;
   const type = searchParams.get("type") as QueryType;
 
   const onClick = (type: QueryType) => {
@@ -19,6 +20,7 @@ export const SearchTabs = () => {
       url: "/search",
       query: {
         type,
+        q: query,
       },
     });
 

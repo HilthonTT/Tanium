@@ -225,7 +225,7 @@ public class UserController(
                 return BadRequest("User not found");
             }
 
-            await _userData.DeleteUserByExternalUserIdAsync(externalUserId);
+            await _userData.DeleteUserByExternalUserIdAsync(user);
 
             return Ok(user);
         }

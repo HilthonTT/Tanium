@@ -1,18 +1,18 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Caching.Memory;
+using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 using TaniumApi.Library.Models;
 
 namespace TaniumApi.Library.DataAccess;
-public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityData
+public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommunityData
 {
     private const string CacheName = nameof(CommunityData);
     private readonly ISqlDataAccess _sql = sql;
-    private readonly IMemoryCache _cache = cache;
+    private readonly IRedisCache _redisCache = redisCache;
 
     public async Task<List<CommunityModel>> GetAllCommunitiesAsync()
     {
-        var output = _cache.Get<List<CommunityModel>>(CacheName);
+        var output = await _redisCache.GetRecordAsync<List<CommunityModel>>(CacheName);
         if (output is not null)
         {
             return output;
@@ -30,8 +30,8 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
             }
         }
 
-        _cache.Set(CacheName, output, TimeSpan.FromMinutes(30));
-
+        await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30));
+        
         return output;
     }
 
@@ -123,10 +123,10 @@ public class CommunityData(ISqlDataAccess sql, IMemoryCache cache) : ICommunityD
         return output;
     }
 
-    public async Task DeleteCommunityAsync(int id)
+    public async Task DeleteCommunityAsync(CommunityModel community)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("Id", id);
+        parameters.Add("Id", community.Id);
 
         await _sql.SaveDataAsync<CommunityModel>("dbo.spCommunity_Delete", parameters);
     }

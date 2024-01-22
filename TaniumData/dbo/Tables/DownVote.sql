@@ -4,8 +4,8 @@
     [UserId] INT NOT NULL, 
     [PostId] INT NOT NULL, 
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
-    CONSTRAINT [FK_Downvote_ToUser] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User]([Id]), 
-    CONSTRAINT [FK_Downvote_ToPost] FOREIGN KEY ([PostId]) REFERENCES [dbo].[Post]([Id]) 
+    CONSTRAINT [FK_Downvote_ToUser] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User]([Id]),
+    CONSTRAINT [FK_Downvote_ToPost] FOREIGN KEY ([PostId]) REFERENCES [dbo].[Post]([Id]) ON DELETE CASCADE
 )
 
 GO

@@ -8,8 +8,8 @@
     [CommunityId] INT NOT NULL,     
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     [DateUpdated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
-    CONSTRAINT [FK_Post_ToCommunity] FOREIGN KEY ([CommunityId]) REFERENCES [dbo].[Community]([Id]), 
-    CONSTRAINT [FK_Post_ToUser] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User]([Id])
+    CONSTRAINT [FK_Post_ToCommunity] FOREIGN KEY ([CommunityId]) REFERENCES [dbo].[Community]([Id]) ON DELETE CASCADE, 
+    CONSTRAINT [FK_Post_ToUser] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User]([Id]) ON DELETE CASCADE
 )
 
 GO

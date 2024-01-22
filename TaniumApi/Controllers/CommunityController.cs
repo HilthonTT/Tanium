@@ -218,7 +218,8 @@ public class CommunityController(
                 return StatusCode(401, "Unauthorized");
             }
 
-			await _communityData.DeleteCommunityAsync(id);
+			await _communityData.DeleteCommunityAsync(community);
+			
 			return Ok("Success!");
 		}
 		catch (Exception ex)

@@ -148,7 +148,7 @@ public class MemberController(
                 return StatusCode(401, "Unauthorized");
             }
 
-            await _memberData.DeleteMemberAsync(id);
+            await _memberData.DeleteMemberAsync(member);
 
             return Ok(member);
         }

@@ -7,7 +7,7 @@
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     [DateUpdated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     CONSTRAINT [FK_Reply_ToUser] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User]([Id]),
-    CONSTRAINT [FK_Reply_ToPost] FOREIGN KEY ([PostId]) REFERENCES [dbo].[Post]([Id])
+    CONSTRAINT [FK_Reply_ToPost] FOREIGN KEY ([PostId]) REFERENCES [dbo].[Post]([Id]) ON DELETE CASCADE,
 )
 
 GO

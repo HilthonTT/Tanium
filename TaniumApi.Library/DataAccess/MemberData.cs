@@ -77,10 +77,10 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         return output;
     }
 
-    public async Task DeleteMemberAsync(int id)
+    public async Task DeleteMemberAsync(MemberModel member)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("Id", id);
+        parameters.Add("Id", member.Id);
 
         await _sql.SaveDataAsync<MemberModel>("dbo.spMember_Delete", parameters);
     }
