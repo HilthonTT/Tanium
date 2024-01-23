@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Svix;
 using System.Net;
 using TaniumApi.Authentication.Interfaces;
@@ -11,6 +12,7 @@ using TaniumApi.Models;
 namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[EnableRateLimiting("fixed")]
 public class UserController(
     IUserData userData,
     IAuthService authService,
@@ -39,6 +41,26 @@ public class UserController(
         }
     }
 
+    [HttpGet("/search/{query}")]
+    [EnableCors("AllowSpecificOrigin")]
+    public async Task<IActionResult> SearchUsersAsync(string query)
+    {
+        try
+        {
+            var users = await _userData.GetAllUsersAsync();
+
+            var queriedUsers = users.Where(u => u.Username.Contains(
+                query, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            return Ok(queriedUsers);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[USER_CONTROLLER_SEARCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpGet("{id}")]
     [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetUserAsync(int id)
@@ -60,8 +82,11 @@ public class UserController(
         }
     }
 
+
+
     [HttpGet("auth")]
     [EnableCors("AllowSpecificOrigin")]
+    [Authorize]
     public async Task<IActionResult> GetUserAuthAsync()
     {
         try

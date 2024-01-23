@@ -46,7 +46,7 @@ public static class RegisterServices
         builder.Services.AddRateLimiter(_ => _
          .AddFixedWindowLimiter(policyName: "fixed", options =>
          {
-             options.PermitLimit = 10;
+             options.PermitLimit = 50;
              options.Window = TimeSpan.FromSeconds(12);
              options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
              options.QueueLimit = 2;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using TaniumApi.Authentication.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
 
@@ -9,6 +10,7 @@ namespace TaniumApi.Controllers;
 [ApiController]
 [Authorize]
 [EnableCors("AllowSpecificOrigin")]
+[EnableRateLimiting("fixed")]
 public class VoteController(
     IVoteData voteData,
     IPostData postData,

@@ -108,18 +108,20 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
           <div className="flex items-center justify-between w-full">
             <div>
               <div className="flex items-center justify-center">
-                {icons.map(({ label, Icon, isVisible }) => (
-                  <>
-                    {isVisible && (
-                      <div
-                        key={label}
-                        className="flex items-center justify-center">
-                        <Icon className="h-6 w-6 mr-2" />
-                        <p className="font-semibold">{label}</p>
-                      </div>
-                    )}
-                  </>
-                ))}
+                {icons.map(({ label, Icon, isVisible }) => {
+                  if (!isVisible) {
+                    return null;
+                  }
+
+                  return (
+                    <div
+                      key={label}
+                      className="flex items-center justify-center">
+                      <Icon className="h-6 w-6 mr-2" />
+                      <p className="font-semibold">{label}</p>
+                    </div>
+                  );
+                })}
 
                 {pathname.includes("/community") && community && (
                   <div className="flex items-center justify-center">

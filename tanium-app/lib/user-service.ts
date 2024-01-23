@@ -11,7 +11,7 @@ export const getSelf = async () => {
       return null;
     }
 
-    const response = await instance.get("/api/User/auth", {
+    const response = await instance.get("/api/user/auth", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -21,5 +21,27 @@ export const getSelf = async () => {
   } catch (error) {
     console.error("[USER_SERVICE_SELF]", error);
     return null;
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const response = await instance.get("/api/user");
+
+    return response.data as User[];
+  } catch (error) {
+    console.error("[USER_SERVICE_GET_ALL]", error);
+    return [];
+  }
+};
+
+export const searchUsers = async (query: string) => {
+  try {
+    const response = await instance.get(`/api/user/${query}`);
+
+    return response.data as User[];
+  } catch (error) {
+    console.error("[USER_SERVICE_SEARCH]", error);
+    return [];
   }
 };
