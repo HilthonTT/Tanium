@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import qs from "query-string";
 import { useRouter } from "next/navigation";
 import { ImageIcon } from "lucide-react";
@@ -45,11 +46,16 @@ export const CreatePostTab = ({ self, community }: CreatePostTabProps) => {
       {self && (
         <div className="bg-secondary rounded-md">
           <div className="flex items-center justify-center px-1.5 py-4">
-            <UserAvatar
-              username={self.username}
-              imageUrl={self.imageUrl}
-              size="md"
-            />
+            <Link
+              href={`/user/${self.id}`}
+              className="hover:opacity-75 transition cursor-pointer"
+              aria-label="Open Profile">
+              <UserAvatar
+                username={self.username}
+                imageUrl={self.imageUrl}
+                size="md"
+              />
+            </Link>
             <Input
               className="w-full h-[40px] ml-2 bg-primary/10"
               placeholder="Create post"

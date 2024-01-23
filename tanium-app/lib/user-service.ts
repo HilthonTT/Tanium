@@ -45,3 +45,14 @@ export const searchUsers = async (query: string) => {
     return [];
   }
 };
+
+export const getUser = async (id: number) => {
+  try {
+    const response = await instance.get(`/api/user/${id}`);
+
+    return response.data as User;
+  } catch (error) {
+    console.error("[USER_SERVICE_GET_ALL]", error);
+    return null;
+  }
+};
