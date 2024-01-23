@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  ArrowUpRightFromCircle,
   ChevronDown,
   Flame,
   Home,
-  LineChart,
+  Pencil,
   Plus,
   Rocket,
   SearchIcon,
@@ -67,6 +66,39 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
     getCurrentCommunity();
   }, [pathname]);
 
+  const icons = [
+    {
+      label: "Home",
+      isVisible: pathname === "/",
+      Icon: Home,
+    },
+    {
+      label: "Create Post",
+      isVisible: pathname === "/submit",
+      Icon: Plus,
+    },
+    {
+      label: "Hot",
+      isVisible: pathname === "/hot",
+      Icon: Flame,
+    },
+    {
+      label: "Best",
+      isVisible: pathname === "/best",
+      Icon: Rocket,
+    },
+    {
+      label: "Search",
+      isVisible: pathname === "/search",
+      Icon: SearchIcon,
+    },
+    {
+      label: "Update",
+      isVisible: pathname.includes("/update"),
+      Icon: Pencil,
+    },
+  ];
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -76,36 +108,19 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
           <div className="flex items-center justify-between w-full">
             <div>
               <div className="flex items-center justify-center">
-                {pathname === "/" && (
+                {icons.map(({ label, Icon, isVisible }) => (
                   <>
-                    <Home className="h-6 w-6 mr-2" />
-                    Home
+                    {isVisible && (
+                      <div
+                        key={label}
+                        className="flex items-center justify-center">
+                        <Icon className="h-6 w-6 mr-2" />
+                        <p className="font-semibold">{label}</p>
+                      </div>
+                    )}
                   </>
-                )}
-                {pathname === "/submit" && (
-                  <>
-                    <Plus className="h-6 w-6 mr-2" />
-                    Create Post
-                  </>
-                )}
-                {pathname === "/best" && (
-                  <>
-                    <Rocket className="h-6 w-6 mr-2" />
-                    Best
-                  </>
-                )}
-                {pathname === "/hot" && (
-                  <>
-                    <Flame className="h-6 w-6 mr-2" />
-                    Hot
-                  </>
-                )}
-                {pathname === "/search" && (
-                  <>
-                    <SearchIcon className="h-6 w-6 mr-2" />
-                    Search
-                  </>
-                )}
+                ))}
+
                 {pathname.includes("/community") && community && (
                   <div className="flex items-center justify-center">
                     <div className="relative h-8 w-8">
@@ -195,18 +210,18 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/popular")}>
+          onClick={() => onClick("/hot")}>
           <div className="flex items-center justify-center">
-            <ArrowUpRightFromCircle className="h-6 w-6 mr-2" />
-            Popular
+            <Flame className="h-6 w-6 mr-2" />
+            Hot
           </div>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/")}>
+          onClick={() => onClick("/best")}>
           <div className="flex items-center justify-center">
-            <LineChart className="h-6 w-6 mr-2" />
-            All
+            <Rocket className="h-6 w-6 mr-2" />
+            Best
           </div>
         </DropdownMenuItem>
 

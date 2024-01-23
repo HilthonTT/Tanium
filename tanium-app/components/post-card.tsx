@@ -4,25 +4,13 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
-import {
-  MessageSquare,
-  MoreVertical,
-  MoveDown,
-  MoveUp,
-  Trash,
-} from "lucide-react";
+import { MessageSquare, MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { instance } from "@/lib/axios-config";
 import { UserAvatar } from "@/components/user-avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useModal } from "@/store/use-modal-store";
 
 interface PostCardProps {
@@ -169,6 +157,12 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
     onOpen("deletePost", { token, post });
   };
 
+  const onUpdate = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    router.push(`/update/${post.id}`);
+  };
+
   return (
     <div
       onClick={onClick}
@@ -193,24 +187,6 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             />
           </Button>
         </div>
-
-        {isOwner && (
-          <div className="flex items-center justify-center  opacity-0 group-hover:opacity-100 transition cursor-pointer">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-1" aria-label="Options">
-                  <MoreVertical className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={onDelete} className="cursor-pointer">
-                  <Trash className="h-4 w-4 mr-auto" />
-                  <span className="font-semibold">Delete</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </div>
 
       <div className="relative w-full h-full p-1">
@@ -238,11 +214,31 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
             <p className="text-sm">{post.description}</p>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 gap-x-1">
           <Button variant="ghost" className="text-muted-foreground">
-            <MessageSquare className="mr-2" />
-            <p className="text-xs">{post.replies.length} Comments</p>
+            <MessageSquare className="mr-2 h-5 w-5" />
+            <p className="text-xs font-semibold">
+              {post.replies.length} Comments
+            </p>
           </Button>
+          {isOwner && (
+            <>
+              <Button
+                onClick={onDelete}
+                variant="ghost"
+                className="text-muted-foreground">
+                <Trash className="h-5 w-5 mr-2" />
+                <p className="text-xs font-semibold">Remove</p>
+              </Button>
+              <Button
+                onClick={onUpdate}
+                variant="ghost"
+                className="text-muted-foreground">
+                <Pencil className="h-5 w-5 mr-2" />
+                <p className="text-xs font-semibold">Update</p>
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <div className="p-1">

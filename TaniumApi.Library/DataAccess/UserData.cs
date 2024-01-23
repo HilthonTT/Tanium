@@ -91,40 +91,56 @@ public class UserData(ISqlDataAccess sql, IRedisCache redisCache) : IUserData
 
     public async Task DeleteUserAsync(UserModel user)
     {
-        _sql.StartTransaction();
+        try
+        {
+            _sql.StartTransaction();
 
-        var parameters = new DynamicParameters();
-        parameters.Add("UserId", user.Id);
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", user.Id);
 
-        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
-        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
-        await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
-        await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
+            await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+            await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+            await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
+            await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
 
-        parameters = new DynamicParameters();
-        parameters.Add("Id", user.Id);
+            parameters = new DynamicParameters();
+            parameters.Add("Id", user.Id);
 
-        await _sql.SaveDataAsync<UserModel>("dbo.spUser_Delete", parameters);
+            await _sql.SaveDataAsync<UserModel>("dbo.spUser_Delete", parameters);
 
-        _sql.CommitTransaction();
+            _sql.CommitTransaction();
+        }
+        catch (Exception ex)
+        {
+            _sql.RollbackTransaction();
+            throw new Exception(ex.Message);
+        }
     }
 
     public async Task DeleteUserByExternalUserIdAsync(UserModel user)
     {
-        _sql.StartTransaction();
+        try
+        {
+            _sql.StartTransaction();
 
-        var parameters = new DynamicParameters();
-        parameters.Add("UserId", user.Id);
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", user.Id);
 
-        await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
-        await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
-        await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
+            await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
+            await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
+            await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
 
-        parameters = new DynamicParameters();
-        parameters.Add("ExternalUserId", user.ExternalUserId);
+            parameters = new DynamicParameters();
+            parameters.Add("ExternalUserId", user.ExternalUserId);
 
-        await _sql.SaveInTransactionAsync<UserModel>("dbo.spUser_DeleteByExternalUserId", parameters);
+            await _sql.SaveInTransactionAsync<UserModel>("dbo.spUser_DeleteByExternalUserId", parameters);
 
-        _sql.CommitTransaction();
+            _sql.CommitTransaction();
+        }
+        catch (Exception ex)
+        {
+            _sql.RollbackTransaction();
+            throw new Exception(ex.Message);
+        }
     }
 }
