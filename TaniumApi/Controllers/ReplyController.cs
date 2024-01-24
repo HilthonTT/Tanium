@@ -16,11 +16,13 @@ namespace TaniumApi.Controllers;
 public class ReplyController(
     IReplyData replyData,
     IPostData postData,
+    IUserData userData,
     IAuthService authService,
     ILogger<ReplyController> logger) : ControllerBase
 {
     private readonly IReplyData _replyData = replyData;
     private readonly IPostData _postData = postData;
+    private readonly IUserData _userData = userData;
     private readonly IAuthService _authService = authService;
     private readonly ILogger<ReplyController> _logger = logger;
 
@@ -82,6 +84,28 @@ public class ReplyController(
             _logger.LogError("[REPLY_CONTROLLER_GET_POST_ID]: {error}", ex.Message);
             return StatusCode(500, "Internal Error");
 		}
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetUserRepliesAsync(int userId)
+    {
+        try
+        {
+            var user = await _userData.GetUserByIdAsync(userId);
+            if (user is null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var replies = await _replyData.GetUserRepliesAsync(userId);
+
+            return Ok(replies);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[REPLY_CONTROLLER_USER]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
     }
 
     [HttpPost]

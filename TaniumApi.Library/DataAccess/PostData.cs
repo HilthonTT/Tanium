@@ -10,6 +10,56 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
     private readonly ISqlDataAccess _sql = sql;
     private readonly IRedisCache _redisCache = redisCache;
 
+    private static List<PostModel> MapDataToPosts(List<PostModel> posts, PostDataModel relatedData)
+    {
+        var communityDictionary = relatedData.Communities.ToDictionary(c => c.Id);
+        var userDictionary = relatedData.Users.ToDictionary(u => u.Id);
+
+        var communityIds = new HashSet<int>(relatedData.Communities.Select(c => c.Id));
+        var userIds = new HashSet<int>(relatedData.Users.Select(u => u.Id));
+
+        Parallel.ForEach(posts, post =>
+        {
+            if (communityIds.Contains(post.CommunityId))
+            {
+                post.Community = communityDictionary[post.CommunityId];
+            }
+
+            if (userIds.Contains(post.UserId))
+            {
+                post.User = userDictionary[post.UserId];
+            }
+
+            post.Downvotes = relatedData.Downvotes.Where(d => d.PostId == post.Id).ToList();
+            post.Upvotes = relatedData.Upvotes.Where(u => u.PostId == post.Id).ToList();
+            post.Replies = relatedData.Replies.Where(r => r.PostId == post.Id).ToList();
+        });
+
+        return posts;
+    }
+
+    private async Task<PostDataModel> GetRelatedDataAsync()
+    {
+        var communitiesTask = _sql.GetAllDataAsync<BasicCommunityModel>("dbo.spCommunity_GetAll");
+        var usersTask = _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
+        var upvotesTask = _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
+        var downvotesTask = _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
+        var repliesTask = _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
+
+        await Task.WhenAll(communitiesTask, usersTask, upvotesTask, downvotesTask, repliesTask);
+
+        var data = new PostDataModel
+        {
+            Communities = communitiesTask.Result,
+            Users = usersTask.Result,
+            Upvotes = upvotesTask.Result,
+            Downvotes = downvotesTask.Result,
+            Replies = repliesTask.Result
+        };
+
+        return data;
+    }
+
     public async Task<List<PostModel>> GetAllPostsAsync()
     {
         var output = await _redisCache.GetRecordAsync<List<PostModel>>(CacheName);
@@ -18,37 +68,53 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
             return output;
         }
 
-        var communities = await _sql.GetAllDataAsync<BasicCommunityModel>("dbo.spCommunity_GetAll");
-        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
         var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetAll");
+        var relatedData = await GetRelatedDataAsync();
 
-        var upvotes = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetAll");
-        var downvotes = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetAll");
-        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
-
-        var communityDictionary = communities.ToDictionary(c => c.Id);
-        var userDictionary = users.ToDictionary(u => u.Id);
-
-        foreach (var post in posts)
-        {
-            if (communityDictionary.TryGetValue(post.CommunityId, out var community))
-            {
-                post.Community = community;
-            }
-
-            if (userDictionary.TryGetValue(post.UserId, out var user))
-            {
-                post.User = user;
-            }
-
-            post.Downvotes = downvotes.Where(d => d.PostId == post.Id).ToList();
-            post.Upvotes = upvotes.Where(u => u.PostId == post.Id).ToList();
-            post.Replies = replies.Where(r => r.PostId  == post.Id).ToList();
-        }
-
+        output = MapDataToPosts(posts, relatedData);
+       
         await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30)); 
 
         return posts;
+    }
+
+    public async Task<List<PostModel>> GetUserPostsAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetByUserId", parameters);
+        var relatedData = await GetRelatedDataAsync();
+
+        var output = MapDataToPosts(posts, relatedData);
+
+        return output;
+    }
+
+    public async Task<List<PostModel>> GetDownvotedPostsAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetUpvoted", parameters);
+        var relatedData = await GetRelatedDataAsync();
+
+        var output = MapDataToPosts(posts, relatedData);
+
+        return output;
+    }
+
+    public async Task<List<PostModel>> GetUpvotedPostsAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetDownvoted", parameters);
+        var relatedData = await GetRelatedDataAsync();
+
+        var output = MapDataToPosts(posts, relatedData);
+
+        return output;
     }
 
     public async Task<List<PostModel>> GetPostsByCommunityIdAsync(int communityId)

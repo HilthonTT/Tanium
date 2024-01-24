@@ -10,6 +10,33 @@ public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommun
     private readonly ISqlDataAccess _sql = sql;
     private readonly IRedisCache _redisCache = redisCache;
 
+    private static List<CommunityModel> MapDataToCommunities(List<CommunityModel> communities, CommunityDataModel relatedData)
+    {
+        var userDictionary = relatedData.Users.ToDictionary(u => u.Id);
+
+        var userIds = new HashSet<int>(relatedData.Users.Select(u => u.Id));
+
+        Parallel.ForEach(communities, community =>
+        {
+            if (userIds.Contains(community.UserId))
+            {
+                community.User = userDictionary[community.UserId];
+            }
+        });
+
+        return communities;
+    }
+
+    private async Task<CommunityDataModel> GetRelatedDataAsync()
+    {
+        var data = new CommunityDataModel
+        {
+            Users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll"),
+        };
+
+        return data;
+    }
+
     public async Task<List<CommunityModel>> GetAllCommunitiesAsync()
     {
         var output = await _redisCache.GetRecordAsync<List<CommunityModel>>(CacheName);
@@ -18,17 +45,10 @@ public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommun
             return output;
         }
 
-        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        output = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+        var relatedData = await GetRelatedDataAsync();
+        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
 
-        var userDictionary = users.ToDictionary(u => u.Id);
-        foreach (var community in output)
-        {
-            if (userDictionary.TryGetValue(community.UserId, out var user))
-            {
-                community.User = user;
-            }
-        }
+        output = MapDataToCommunities(communities, relatedData);
 
         await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30));
         
@@ -40,25 +60,13 @@ public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommun
     {
         var parameters = new DynamicParameters();
         parameters.Add("UserId", userId);
-        var userMembers = await _sql.GetAllDataAsync<MemberModel>("dbo.spMember_GetByUserId", parameters);
 
-        var communityIds = new HashSet<int>(userMembers.Select(m => m.CommunityId));
+        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetByUserId", parameters);
+        var relatedData = await GetRelatedDataAsync();
 
-        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetAll");
+        var output = MapDataToCommunities(communities, relatedData);
 
-        var userDictionary = users.ToDictionary(u => u.Id);
-        foreach (var community in communities)
-        {
-            if (userDictionary.TryGetValue(community.UserId, out var user))
-            {
-                community.User = user;
-            }
-        }
-
-        var userCommunities = communities.Where(c => communityIds.Contains(c.Id)).ToList();
-
-        return userCommunities;
+        return output;
     }
 
     public async Task<CommunityModel> GetCommunityAsync(int id)

@@ -8,5 +8,6 @@ public interface IReplyData
     Task<List<ReplyModel>> GetAllRepliesAsync();
     Task<List<ReplyModel>> GetRepliesByPostIdAsync(int id);
     Task<ReplyModel> GetReplyByIdAsync(int id);
+    Task<List<ReplyModel>> GetUserRepliesAsync(int userId);
     Task<ReplyModel> UpdateReplyAsync(ReplyModel reply);
 }

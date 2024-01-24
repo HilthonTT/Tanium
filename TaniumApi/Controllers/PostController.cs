@@ -16,11 +16,13 @@ namespace TaniumApi.Controllers;
 public class PostController(
     IPostData postData,
     ICommunityData communityData,
+    IUserData userData,
     IAuthService authService,
     ILogger<PostController> logger) : ControllerBase
 {
     private readonly IPostData _postData = postData;
     private readonly ICommunityData _communityData = communityData;
+    private readonly IUserData _userData = userData;
     private readonly IAuthService _authService = authService;
     private readonly ILogger<PostController> _logger = logger;
 
@@ -184,6 +186,75 @@ public class PostController(
         catch (Exception ex)
         {
             _logger.LogError("[POST_CONTROLLER_SEARCH]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("user/{userId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserPostsAsync(int userId)
+    {
+        try
+        {
+            var user = await _userData.GetUserByIdAsync(userId);
+            if (user is null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var posts = await _postData.GetUserPostsAsync(userId);
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_USER]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("user/{userId}/upvoted")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserUpvotedAsync(int userId)
+    {
+        try
+        {
+            var user = await _userData.GetUserByIdAsync(userId);
+            if (user is null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var posts = await _postData.GetUpvotedPostsAsync(userId);
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_USER_UPVOTED]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("user/{userId}/downvoted")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserDownvotedAsync(int userId)
+    {
+        try
+        {
+            var user = await _userData.GetUserByIdAsync(userId);
+            if (user is null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var posts = await _postData.GetDownvotedPostsAsync(userId);
+
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[POST_CONTROLLER_USER_DOWNVOTED]: {error}", ex.Message);
             return StatusCode(500, "Internal Error");
         }
     }

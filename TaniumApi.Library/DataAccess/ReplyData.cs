@@ -10,6 +10,46 @@ public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
     private readonly ISqlDataAccess _sql = sql;
     private readonly IRedisCache _redisCache = redisCache;
 
+    private static List<ReplyModel> MapDataToReplies(List<ReplyModel> replies, ReplyDataModel relatedData)
+    {
+        var userDictionary = relatedData.Users.ToDictionary(u => u.Id);
+        var postDictionary = relatedData.Posts.ToDictionary(p => p.Id);
+
+        var userIds = new HashSet<int>(relatedData.Users.Select(u => u.Id));
+        var postIds = new HashSet<int>(relatedData.Posts.Select(p => p.Id));
+
+        Parallel.ForEach(replies, reply =>
+        {
+            if (userIds.Contains(reply.UserId))
+            {
+                reply.User = userDictionary[reply.UserId];
+            }
+
+            if (postIds.Contains(reply.PostId))
+            {
+                reply.Post = postDictionary[reply.PostId];
+            }
+        });
+
+        return replies;
+    }
+
+    private async Task<ReplyDataModel> GetRelatedDataAsync()
+    {
+        var postsTask = _sql.GetAllDataAsync<BasicPostModel>("dbo.spPost_GetAll");
+        var usersTask = _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
+
+        await Task.WhenAll(postsTask, usersTask);
+
+        var data = new ReplyDataModel
+        {
+            Posts = postsTask.Result,
+            Users = usersTask.Result,
+        };
+
+        return data;
+    }
+
     public async Task<List<ReplyModel>> GetAllRepliesAsync()
     {
         var output = await _redisCache.GetRecordAsync<List<ReplyModel>>(CacheName);
@@ -18,27 +58,25 @@ public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
             return output;
         }
 
-        var posts = await _sql.GetAllDataAsync<BasicPostModel>("dbo.spPost_GetAll");
-        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
-        output = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
+        var relatedData = await GetRelatedDataAsync();
+        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetAll");
 
-        var userDictionary = users.ToDictionary(u => u.Id);
-        var postDictionary = posts.ToDictionary(p => p.Id);
-
-        foreach (var reply in output)
-        {
-            if (userDictionary.TryGetValue(reply.UserId, out var user))
-            {
-                reply.User = user;
-            }
-
-            if (postDictionary.TryGetValue(reply.PostId, out var post))
-            {
-                reply.Post = post;
-            }
-        }
+        output = MapDataToReplies(replies, relatedData);
 
         await _redisCache.SetRecordAsync(CacheName, output, TimeSpan.FromMinutes(30));
+
+        return output;
+    }
+
+    public async Task<List<ReplyModel>> GetUserRepliesAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        var relatedData = await GetRelatedDataAsync();
+        var replies = await _sql.GetAllDataAsync<ReplyModel>("dbo.spReply_GetByUserId", parameters);
+
+        var output = MapDataToReplies(replies, relatedData);
 
         return output;
     }

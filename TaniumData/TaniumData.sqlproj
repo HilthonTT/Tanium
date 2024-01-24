@@ -118,6 +118,7 @@
     <Build Include="dbo\StoredProcedures\spReply_GetByUserId.sql" />
     <Build Include="dbo\StoredProcedures\spPost_GetUpvoted.sql" />
     <Build Include="dbo\StoredProcedures\spPost_GetByDownvoted.sql" />
+    <Build Include="dbo\StoredProcedures\spCommunity_GetByUserId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />
