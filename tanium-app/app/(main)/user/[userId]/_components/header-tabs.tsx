@@ -40,6 +40,7 @@ export const HeaderTabs = ({ user }: HeaderTabsProps) => {
       <div className="space-x-4 flex items-center justify-center">
         {routes.map((route) => (
           <Link
+            key={route.href}
             href={route.href}
             className={cn(
               "uppercase font-semibold text-sm text-muted-foreground",

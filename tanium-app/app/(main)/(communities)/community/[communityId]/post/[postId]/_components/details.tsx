@@ -3,10 +3,11 @@
 import qs from "query-string";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, MessageSquare } from "lucide-react";
+import { Calendar, MessageSquare, Pencil, Trash } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 
+import { useModal } from "@/store/use-modal-store";
 import { UserAvatar } from "@/components/user-avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export const Details = ({
   token,
 }: DetailsProps) => {
   const router = useRouter();
+  const { onOpen } = useModal((state) => state);
 
   const bannerColor = stringToColor(community.name + community.id);
 
@@ -43,6 +45,14 @@ export const Details = ({
     });
 
     router.push(url);
+  };
+
+  const onDelete = () => {
+    onOpen("deletePost", { post });
+  };
+
+  const onUpdate = () => {
+    router.push(`/update/${post.id}`);
   };
 
   return (
@@ -81,13 +91,33 @@ export const Details = ({
           )}
         </div>
         <div className="pt-8">
-          <div className="flex items-center justify-start space-x-3">
+          <div className="flex items-center justify-start space-x-2">
             <div className="flex items-center justify-center gap-x-1">
               <MessageSquare className="text-muted-foreground h-5 w-5" />
               <p className="text-muted-foreground font-semibold text-xs">
                 {replies.length} {replies.length > 1 ? "comments" : "comment"}
               </p>
             </div>
+
+            <Button
+              onClick={onDelete}
+              variant="ghost"
+              className="flex items-center justify-center gap-x-1 hover:opacity-75 transition p-2">
+              <Trash className="text-muted-foreground h-5 w-5" />
+              <p className="text-muted-foreground font-semibold text-xs">
+                Delete
+              </p>
+            </Button>
+
+            <Button
+              onClick={onUpdate}
+              variant="ghost"
+              className="flex items-center justify-center gap-x-1 hover:opacity-75 transition p-2">
+              <Pencil className="text-muted-foreground h-5 w-5" />
+              <p className="text-muted-foreground font-semibold text-xs">
+                Update
+              </p>
+            </Button>
           </div>
           {!!self && (
             <div className="pt-5">

@@ -5,12 +5,14 @@ import { formatDistanceToNow } from "date-fns";
 
 import { UserAvatar } from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 interface ReplyCardProps {
   reply: Reply;
+  size?: "sm" | "md" | "lg" | "xl" | "default";
 }
 
-export const ReplyCard = ({ reply }: ReplyCardProps) => {
+export const ReplyCard = ({ reply, size = "default" }: ReplyCardProps) => {
   const router = useRouter();
 
   const onClick = () => {
@@ -38,6 +40,7 @@ export const ReplyCard = ({ reply }: ReplyCardProps) => {
             <UserAvatar
               username={reply.user.username}
               imageUrl={reply.user.imageUrl}
+              size={size}
             />
             <p className="text-sm font-semibold capitalize pl-2">
               {reply.user.username}
@@ -54,6 +57,18 @@ export const ReplyCard = ({ reply }: ReplyCardProps) => {
         <Button onClick={onClick} variant="link" className="text-sky-500">
           Go to thread
         </Button>
+      </div>
+    </div>
+  );
+};
+
+export const ReplyCardSkeleton = () => {
+  return (
+    <div className="rounded-md bg-secondary/20 w-full h-full p-2">
+      <div className="mx-6 space-y-2">
+        <Skeleton className="w-full h-5" />
+        <Skeleton className="w-full h-20" />
+        <Skeleton className="w-20 h-5" />
       </div>
     </div>
   );

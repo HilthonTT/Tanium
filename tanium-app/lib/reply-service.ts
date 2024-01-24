@@ -32,3 +32,14 @@ export const getPostReplies = async (postId: number) => {
     return [];
   }
 };
+
+export const getUserReplies = async (userId: number) => {
+  try {
+    const response = await instance.get(`/api/reply/user/${userId}`);
+
+    return response.data as Reply[];
+  } catch (error) {
+    console.log("[REPLY_SERVICE_GET_USER]", error);
+    return [];
+  }
+};

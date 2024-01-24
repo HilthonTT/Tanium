@@ -5,7 +5,7 @@ import { getSelf } from "@/lib/user-service";
 import { getPost } from "@/lib/post-service";
 import { Separator } from "@/components/ui/separator";
 
-import { PostForm } from "./_components/post-form";
+import { UpdateForm } from "./_components/update-form";
 
 interface UpdatePageProps {
   params: {
@@ -36,7 +36,7 @@ const UpdatePage = async ({ params }: UpdatePageProps) => {
     <div className="h-full p-4 space-y-2 max-w-4xl mx-auto">
       <h1 className="font-bold text-xl truncate">Update {post.title}</h1>
       <Separator />
-      <PostForm token={token} post={post} />
+      <UpdateForm token={token} post={post} />
     </div>
   );
 };

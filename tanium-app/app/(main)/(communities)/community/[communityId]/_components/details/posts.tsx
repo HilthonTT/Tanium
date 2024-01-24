@@ -12,6 +12,8 @@ import { PostCard } from "@/components/post-card";
 import { CreatePostTab } from "./create-post-tab";
 import { FilterTab } from "./filter-tab";
 
+const DATE_FORMAT = "MMMM dd, yyyy";
+
 interface PostsProps {
   posts: Post[];
   self: User | null;
@@ -55,7 +57,7 @@ export const Posts = ({ posts, self, token, community }: PostsProps) => {
             <div className="flex items-center justify-start">
               <Calendar className="h-6 w-6 mr-2" />
               <p className="text-muted-foreground text-sm">
-                Created {format(community.dateCreated, "MMMM dd, yyyy")}
+                Created {format(community.dateCreated, DATE_FORMAT)}
               </p>
             </div>
             <Separator className="my-4 bg-primary/30" />

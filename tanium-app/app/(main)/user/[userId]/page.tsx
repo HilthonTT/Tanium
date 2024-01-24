@@ -1,9 +1,16 @@
 import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs";
 
-import { Container } from "@/components/container";
 import { getSelf, getUser } from "@/lib/user-service";
+import {
+  getDownvotedPosts,
+  getUpvotedPosts,
+  getUserPosts,
+} from "@/lib/post-service";
+import { getUserReplies } from "@/lib/reply-service";
 
-import { HeaderTabs } from "./_components/header-tabs";
+import { Overview } from "./_components/overview";
+import { UserContainer } from "./_components/user-container";
 
 interface UserIdPageProps {
   params: {
@@ -12,18 +19,34 @@ interface UserIdPageProps {
 }
 
 const UserIdPage = async ({ params }: UserIdPageProps) => {
-  const self = await getSelf();
+  const { getToken } = auth();
 
   const otherUser = await getUser(params.userId);
   if (!otherUser) {
     return notFound();
   }
 
+  const [self, token, posts, replies, upvotedPosts, downvotedPosts] =
+    await Promise.all([
+      getSelf(),
+      getToken(),
+      getUserPosts(params.userId),
+      getUserReplies(params.userId),
+      getUpvotedPosts(params.userId),
+      getDownvotedPosts(params.userId),
+    ]);
+
   return (
-    <>
-      <HeaderTabs user={otherUser} />
-      <Container className="pt-2">e</Container>
-    </>
+    <UserContainer self={self} otherUser={otherUser}>
+      <Overview
+        posts={posts}
+        replies={replies}
+        upvoted={upvotedPosts}
+        downvoted={downvotedPosts}
+        self={self}
+        token={token}
+      />
+    </UserContainer>
   );
 };
 

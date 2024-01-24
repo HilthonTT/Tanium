@@ -96,7 +96,7 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
         var parameters = new DynamicParameters();
         parameters.Add("UserId", userId);
 
-        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetUpvoted", parameters);
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetDownvoted", parameters);
         var relatedData = await GetRelatedDataAsync();
 
         var output = MapDataToPosts(posts, relatedData);
@@ -109,7 +109,7 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
         var parameters = new DynamicParameters();
         parameters.Add("UserId", userId);
 
-        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetDownvoted", parameters);
+        var posts = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetUpvoted", parameters);
         var relatedData = await GetRelatedDataAsync();
 
         var output = MapDataToPosts(posts, relatedData);

@@ -87,6 +87,7 @@ public class ReplyController(
     }
 
     [HttpGet("user/{userId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUserRepliesAsync(int userId)
     {
         try

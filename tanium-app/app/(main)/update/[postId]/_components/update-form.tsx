@@ -46,7 +46,7 @@ const formSchema = z.object({
   imageUrl: z.string().optional(),
 });
 
-export const PostForm = ({ token, post }: PostFormProps) => {
+export const UpdateForm = ({ token, post }: PostFormProps) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,7 +70,7 @@ export const PostForm = ({ token, post }: PostFormProps) => {
 
       form.reset();
       router.refresh();
-      router.push(`/post/${post.id}`);
+      router.push(`/community/${post.communityId}/post/${post.id}`);
     } catch (error) {
       toast.error("Something went wrong");
     }

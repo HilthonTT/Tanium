@@ -91,3 +91,36 @@ export const getPost = async (id: number) => {
     return null;
   }
 };
+
+export const getUserPosts = async (userId: number) => {
+  try {
+    const response = await instance.get(`/api/post/user/${userId}`);
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_USER]", error);
+    return [];
+  }
+};
+
+export const getUpvotedPosts = async (userId: number) => {
+  try {
+    const response = await instance.get(`/api/post/user/${userId}/upvoted`);
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_USER_UPVOTED]", error);
+    return [];
+  }
+};
+
+export const getDownvotedPosts = async (userId: number) => {
+  try {
+    const response = await instance.get(`/api/post/user/${userId}/downvoted`);
+
+    return response.data as Post[];
+  } catch (error) {
+    console.log("[POST_SERVICE_GET_USER_DOWNVOTED]", error);
+    return [];
+  }
+};

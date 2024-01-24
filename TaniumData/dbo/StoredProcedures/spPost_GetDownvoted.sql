@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spPost_GetByDownvoted]
+﻿CREATE PROCEDURE [dbo].[spPost_GetDownvoted]
 	@UserId INT
 AS
 BEGIN
