@@ -57,7 +57,7 @@ export const Details = ({
 
   return (
     <div className="relative w-full h-full flex items-start justify-start space-x-3">
-      <div className="rounded-md bg-secondary p-2 w-full">
+      <div className="rounded-md bg-secondary p-2 w-full h-full">
         <div className="flex items-center justify-start gap-x-1">
           <UserAvatar
             username={community.name}
@@ -124,7 +124,7 @@ export const Details = ({
               <ReplyForm token={token} postId={post.id} self={self} />
             </div>
           )}
-          <div className="pt-5 space-y-2">
+          <div className="pt-5 space-y-2 ">
             {replies.map((reply) => (
               <ReplyCard key={reply.id} reply={reply} />
             ))}

@@ -18,7 +18,7 @@ export const Navbar = async () => {
   ]);
 
   return (
-    <div className="fixed top-0 h-16 w-full bg-zinc-900">
+    <div className="fixed top-0 h-16 w-full bg-zinc-900 z-50">
       <div className="flex items-center justify-between mx-4 my-1">
         <div className="flex items-center justify-center space-x-4">
           <Logo />

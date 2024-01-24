@@ -43,7 +43,7 @@ const CommunityPostIdPage = async ({ params }: CommunityPostIdPageProps) => {
         token={token}
         self={self}
       />
-      <div className="pt-20">
+      <div className="pt-20 pb-10">
         <Details
           post={post}
           community={community}

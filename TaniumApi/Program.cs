@@ -23,6 +23,35 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var policyCollection = new HeaderPolicyCollection()
+    .AddDefaultSecurityHeaders()
+    .AddFrameOptionsDeny()
+    .AddXssProtectionBlock()
+    .AddContentTypeOptionsNoSniff()
+    .AddStrictTransportSecurityMaxAgeIncludeSubDomains(maxAgeInSeconds: 60 * 60 * 24 * 365) // maxage = one year in seconds
+    .AddReferrerPolicyStrictOriginWhenCrossOrigin()
+    .RemoveServerHeader()
+    .AddContentSecurityPolicy(builder =>
+    {
+        builder.AddObjectSrc().None();
+        builder.AddFormAction().Self();
+        builder.AddFrameAncestors().None();
+    })
+    .AddCrossOriginOpenerPolicy(builder =>
+    {
+        builder.SameOrigin();
+    })
+    .AddCrossOriginEmbedderPolicy(builder =>
+    {
+        builder.RequireCorp();
+    })
+    .AddCrossOriginResourcePolicy(builder =>
+    {
+        builder.SameOrigin();
+    });
+
+app.UseSecurityHeaders(policyCollection);
+
 app.MapControllers();
 
 app.Run();

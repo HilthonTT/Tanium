@@ -36,7 +36,7 @@ export default function RootLayout({
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <ModalProvider />
             <Toaster />
-            {children}
+            <div className="bg-black h-full w-full">{children}</div>
           </ThemeProvider>
         </body>
       </html>
