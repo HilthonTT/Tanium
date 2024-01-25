@@ -189,9 +189,9 @@ public class CommunityController(
 				BannerUrl = body.BannerUrl,
 			};
 
-            var createdCommunity = await _communityData.CreateCommunityAsync(data);
+            var updatedCommunity = await _communityData.UpdateCommunityAsync(data);
 
-			return Ok(createdCommunity);
+			return Ok(updatedCommunity);
         }
 		catch (Exception ex)
 		{

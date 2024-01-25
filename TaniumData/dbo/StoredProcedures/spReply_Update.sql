@@ -9,4 +9,8 @@ BEGIN
 	SET [Content] = @Content,
 		[DateUpdated] = GETUTCDATE()
 	WHERE [Id] = @Id;
+
+	SELECT [Id], [Content], [UserId], [PostId], [DateCreated], [DateUpdated]
+	FROM [dbo].[Reply]
+	WHERE [Id] = @Id;
 END

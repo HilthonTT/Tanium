@@ -132,10 +132,22 @@ export const Details = ({
         </div>
       </div>
       <div className="rounded-md bg-secondary w-96 relative">
-        <div
-          className="w-full rounded-md rounded-b-none h-10"
-          style={{ backgroundColor: bannerColor }}
-        />
+        {!community.bannerUrl && (
+          <div
+            className="w-full rounded-md rounded-b-none h-16"
+            style={{ backgroundColor: bannerColor }}
+          />
+        )}
+        {community.bannerUrl && (
+          <div className="relative w-full h-16">
+            <Image
+              src={community.bannerUrl}
+              alt="Banner Image"
+              className="object-cover rounded-md rounded-b-none"
+              fill
+            />
+          </div>
+        )}
         <div className="pt-3 p-2">
           <div className="flex items-center justify-start gap-x-2">
             <UserAvatar

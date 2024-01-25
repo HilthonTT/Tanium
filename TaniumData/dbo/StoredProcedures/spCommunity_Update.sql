@@ -15,4 +15,8 @@ BEGIN
 		[BannerUrl] = @BannerUrl,
 		[DateUpdated] = GETUTCDATE()
 	WHERE [Id] = @Id;
+
+	SELECT [Id], [Name], [Description], [ImageUrl], [BannerUrl], [UserId], [DateCreated], [DateUpdated]
+	FROM [dbo].[Community]
+	WHERE [Id] = @Id;
 END

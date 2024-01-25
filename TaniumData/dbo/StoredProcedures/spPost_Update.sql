@@ -12,4 +12,8 @@ BEGIN
 		[Description] = @Description,
 		[ImageUrl] = @ImageUrl
 	WHERE [Id] = @Id;
+
+	SELECT [Id], [Title], [Description], [ImageUrl], [UserId], [CommunityId], [DateCreated], [DateUpdated]
+	FROM [dbo].[Post]
+	WHERE [Id] = @Id;
 END
