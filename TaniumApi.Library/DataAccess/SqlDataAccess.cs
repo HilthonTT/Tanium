@@ -68,6 +68,15 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         return result;
     }
 
+    public async Task CheckHealthAsync(string connectionStringName = DefaultDatabase)
+    {
+        string connectionString = GetConnectionString(connectionStringName);
+
+        using var connection = new SqlConnection(connectionString);
+        var result = await connection.QueryFirstOrDefaultAsync<int>("SELECT 1", 
+            commandType: CommandType.Text);
+    }
+
     public void StartTransaction(string connectionStringName = DefaultDatabase)
     {
         string connectionString = GetConnectionString(connectionStringName);

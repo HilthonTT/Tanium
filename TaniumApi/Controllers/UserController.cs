@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
 using Svix;
 using System.Net;
@@ -13,6 +14,7 @@ namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [EnableRateLimiting("fixed")]
+[OutputCache(PolicyName = "Default")]
 public class UserController(
     IUserData userData,
     IAuthService authService,

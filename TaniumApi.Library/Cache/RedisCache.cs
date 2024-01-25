@@ -35,6 +35,16 @@ public class RedisCache(
         return JsonSerializer.Deserialize<T>(jsonData);
     }
 
+    public async Task CheckHealthAsync()
+    {
+        const string healthCheckKey = "health_check_key";
+        const string testData = "health_check_data";
+
+        await _redisCache.SetStringAsync(healthCheckKey, testData);
+
+        await _redisCache.RemoveAsync(healthCheckKey);
+    }
+
     public async Task RemoveAsync(string recordId)
     {
         await _redisCache.RemoveAsync(recordId);

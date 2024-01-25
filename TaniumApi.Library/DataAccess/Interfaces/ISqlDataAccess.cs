@@ -3,6 +3,7 @@
 namespace TaniumApi.Library.DataAccess.Interfaces;
 public interface ISqlDataAccess
 {
+    Task CheckHealthAsync(string connectionStringName = "Default");
     void CommitTransaction();
     Task<List<T>> GetAllDataAsync<T>(string storedProcedure, DynamicParameters parameters = null, string connectionStringName = "Default");
     Task<T> GetDataAsync<T>(string storedProcedure, DynamicParameters parameters = null, string connectionStringName = "Default");

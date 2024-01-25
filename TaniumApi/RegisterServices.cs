@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 using TaniumApi.Authentication;
 using TaniumApi.Authentication.Interfaces;
+using TaniumApi.Heath;
 using TaniumApi.Library.Cache;
 using TaniumApi.Library.Cache.Interfaces;
 using TaniumApi.Library.DataAccess;
@@ -17,12 +19,30 @@ public static class RegisterServices
 {
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
+        const string RedisInstanceName = "Tanium_";
+        string redisConfiguration = builder.Configuration.GetConnectionString("Redis");
+
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>("Database")
+            .AddCheck<RedisHealthCheck>("Redis");
+
         builder.Services.AddMemoryCache();
+        builder.Services.AddOutputCache(options =>
+        {
+            options.AddPolicy("Default", builder => 
+            {
+                builder.Expire(TimeSpan.FromSeconds(30));
+            });
+        }).AddStackExchangeRedisCache(options =>
+        {
+            options.InstanceName = RedisInstanceName;
+            options.Configuration = redisConfiguration;
+        });
 
         builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
         builder.Services.AddTransient<IUserData, UserData>();
@@ -59,8 +79,8 @@ public static class RegisterServices
 
         builder.Services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = builder.Configuration.GetConnectionString("Redis");
-            options.InstanceName = "Tanium_";
+            options.InstanceName = RedisInstanceName;
+            options.Configuration = redisConfiguration;
         });
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

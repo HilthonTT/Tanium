@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using TaniumApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +18,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapHealthChecks("/_health", new HealthCheckOptions
+{
+    AllowCachingResponses = true,
+});
+
 app.UseCors("AllowSpecificOrigin");
 app.UseRateLimiter();
+app.UseOutputCache();
 
 app.UseAuthentication();
 app.UseAuthorization();
