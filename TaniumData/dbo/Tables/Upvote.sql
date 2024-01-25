@@ -16,3 +16,7 @@ CREATE INDEX [IX_Upvote_UserId] ON [dbo].[Upvote] ([UserId])
 GO
 
 CREATE INDEX [IX_Upvote_PostId] ON [dbo].[Upvote] ([PostId])
+
+GO
+
+CREATE INDEX [IX_Upvote_Id] ON [dbo].[Upvote] ([Id])

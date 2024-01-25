@@ -6,5 +6,6 @@ BEGIN
 
 	SELECT [Id], [Title], [Description], [ImageUrl], [UserId], [CommunityId], [DateCreated], [DateUpdated]
 	FROM [dbo].[Post]
-	WHERE [CommunityId] = @CommunityId;
+	WHERE [CommunityId] = @CommunityId
+	ORDER BY [DateCreated] DESC;
 END

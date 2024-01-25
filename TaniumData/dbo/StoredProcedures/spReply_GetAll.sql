@@ -5,4 +5,5 @@ BEGIN
 
 	SELECT [Id], [Content], [UserId], [PostId], [DateCreated], [DateUpdated]
 	FROM [dbo].[Reply]
+	ORDER BY [DateCreated] DESC;
 END

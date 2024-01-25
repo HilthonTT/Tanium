@@ -10,3 +10,11 @@
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     [DateUpdated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
 )
+
+GO
+
+CREATE INDEX [IX_User_Id] ON [dbo].[User] ([Id])
+
+GO
+
+CREATE INDEX [IX_User_ExternalUserId] ON [dbo].[User] ([ExternalUserId])

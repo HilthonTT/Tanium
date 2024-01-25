@@ -18,3 +18,7 @@ GO
 
 
 CREATE INDEX [IX_Reply_Post] ON [dbo].[Reply] ([PostId])
+
+GO
+
+CREATE INDEX [IX_Reply_Id] ON [dbo].[Reply] ([Id])

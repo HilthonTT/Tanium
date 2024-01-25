@@ -15,3 +15,7 @@
 GO
 
 CREATE INDEX [IX_Post_CommunityId] ON [dbo].[Post] ([CommunityId])
+
+GO
+
+CREATE INDEX [IX_Post_Id] ON [dbo].[Post] ([Id])

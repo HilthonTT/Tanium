@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
-using StackExchange.Redis;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 using TaniumApi.Authentication;

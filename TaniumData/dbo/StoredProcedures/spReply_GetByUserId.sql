@@ -6,5 +6,6 @@ BEGIN
 
 	SELECT [Id], [Content], [UserId], [PostId], [DateCreated], [DateUpdated]
 	FROM [dbo].[Reply]
-	WHERE [UserId] = @UserId;
+	WHERE [UserId] = @UserId
+	ORDER BY [DateCreated] DESC;
 END

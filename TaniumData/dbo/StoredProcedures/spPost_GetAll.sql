@@ -5,5 +5,5 @@ BEGIN
 
 	SELECT [Id], [Title], [Description], [ImageUrl], [UserId], [CommunityId], [DateCreated], [DateUpdated]
 	FROM [dbo].[Post]
-	ORDER BY [DateUpdated] DESC;
+	ORDER BY [DateCreated] DESC;
 END

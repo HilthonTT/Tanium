@@ -14,3 +14,7 @@
 GO
 
 CREATE INDEX [IX_Community_UserId] ON [dbo].[Community] ([UserId])
+
+GO
+
+CREATE INDEX [IX_Community_Id] ON [dbo].[Community] ([Id])

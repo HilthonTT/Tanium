@@ -5,4 +5,5 @@ BEGIN
 
 	SELECT [Id], [ExternalUserId], [Username], [FirstName], [LastName], [ImageUrl], [EmailAddress], [DateCreated], [DateUpdated]
 	FROM [dbo].[User]
+	ORDER BY [DateCreated] DESC;
 END
