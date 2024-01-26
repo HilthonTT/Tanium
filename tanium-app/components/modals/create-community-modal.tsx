@@ -59,7 +59,7 @@ export const CreateCommunityModal = () => {
 
   const isModalOpen = isOpen && type === "createCommunity";
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -120,7 +120,7 @@ export const CreateCommunityModal = () => {
                   <FormItem>
                     <FormControl>
                       <FileUpload
-                        value={field.value}
+                        value={field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>

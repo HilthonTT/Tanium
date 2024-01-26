@@ -23,20 +23,20 @@ import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
-  bannerUrl: z.string(),
+  imageUrl: z.string(),
 });
 
-export const EditCommunityBannerModal = () => {
+export const EditCommunityImageModal = () => {
   const router = useRouter();
   const { isOpen, onClose, type, data } = useModal((state) => state);
   const { token, community } = data;
 
-  const isModalOpen = isOpen && type === "editCommunityBanner";
+  const isModalOpen = isOpen && type === "editCommunityImage";
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      bannerUrl: "",
+      imageUrl: "",
     },
   });
 
@@ -48,8 +48,8 @@ export const EditCommunityBannerModal = () => {
         id: community?.id,
         name: community?.name,
         description: community?.description,
-        imageUrl: community?.imageUrl || undefined,
-        bannerUrl: values?.bannerUrl || undefined,
+        imageUrl: values.imageUrl || undefined,
+        bannerUrl: community?.bannerUrl || undefined,
       };
 
       await instance.patch("/api/community", data, {
@@ -58,8 +58,7 @@ export const EditCommunityBannerModal = () => {
         },
       });
 
-      form.reset();
-      router.refresh();
+      handleClose();
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -68,6 +67,7 @@ export const EditCommunityBannerModal = () => {
 
   const handleClose = () => {
     form.reset();
+    router.refresh();
     onClose();
   };
 
@@ -75,7 +75,7 @@ export const EditCommunityBannerModal = () => {
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader className="text-start">
-          <DialogTitle>Update Community Banner</DialogTitle>
+          <DialogTitle>Update Community Image</DialogTitle>
           <DialogDescription>
             This might take up to 30 seconds for changes to apply.
           </DialogDescription>
@@ -86,7 +86,7 @@ export const EditCommunityBannerModal = () => {
             <div className="flex items-center justify-center">
               <FormField
                 control={form.control}
-                name="bannerUrl"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -113,7 +113,7 @@ export const EditCommunityBannerModal = () => {
                 type="submit"
                 disabled={isLoading}
                 className="rounded-full font-bold">
-                Update Banner
+                Update Image
               </Button>
             </DialogFooter>
           </form>

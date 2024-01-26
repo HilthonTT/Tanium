@@ -102,8 +102,6 @@ export const Header = ({
     onOpen("editCommunityBanner", { token, community });
   };
 
-  console.log(community.bannerUrl);
-
   return (
     <>
       {!community.bannerUrl && (

@@ -3,7 +3,8 @@ import { create } from "zustand";
 export type ModalType =
   | "createCommunity"
   | "deletePost"
-  | "editCommunityBanner";
+  | "editCommunityBanner"
+  | "editCommunityImage";
 
 interface ModalData {
   token?: string | null;

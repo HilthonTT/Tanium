@@ -2,21 +2,19 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
 
 import { getCommunity } from "@/lib/community-service";
-import { getSelf } from "@/lib/user-service";
-import { Container } from "@/components/container";
 import { getCommunityMembers } from "@/lib/member-service";
+import { Container } from "@/components/container";
+import { getSelf } from "@/lib/user-service";
 
-import { Header } from "./_components/header";
-import { EditForm } from "./_components/edit-form";
-import { Footer } from "./_components/footer";
+import { Header } from "../_components/header";
 
-interface SettingsPageProps {
+interface SettingsMemberPageProps {
   params: {
     communityId: number;
   };
 }
 
-const SettingsPage = async ({ params }: SettingsPageProps) => {
+const SettingsMemberPage = async ({ params }: SettingsMemberPageProps) => {
   const { getToken } = auth();
 
   const [self, token, community, members] = await Promise.all([
@@ -34,9 +32,9 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
     return redirect("/");
   }
 
-  const isOwner = community.userId === self.id;
+  const isOwner = self.id === community.userId;
   if (!isOwner) {
-    return redirect("/");
+    return redirect(`/community/${community.id}`);
   }
 
   return (
@@ -44,15 +42,12 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
       <Header
         community={community}
         isOwner={isOwner}
-        token={token}
         members={members}
+        token={token}
       />
-      <Container>
-        <EditForm community={community} token={token} />
-        <Footer community={community} />
-      </Container>
+      <Container>Members</Container>
     </>
   );
 };
 
-export default SettingsPage;
+export default SettingsMemberPage;
