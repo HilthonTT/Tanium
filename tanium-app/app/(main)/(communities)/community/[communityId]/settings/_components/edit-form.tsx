@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { instance } from "@/lib/axios-config";
 import { Button } from "@/components/ui/button";
-import { Pencil, Verified, X } from "lucide-react";
+import { ArrowLeft, Pencil, Verified, X } from "lucide-react";
 import { Hint } from "@/components/hint";
 import {
   Form,
@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 interface EditFormProps {
   community: Community;
@@ -145,6 +146,17 @@ export const EditForm = ({ community, token }: EditFormProps) => {
 
   return (
     <div className="w-full h-full space-y-4 pt-10">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Settings Page</h1>
+        <Button variant="outline" asChild>
+          <Link href={`/community/${community.id}`}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Go Back
+          </Link>
+        </Button>
+      </div>
+      <Separator className="my-4" />
+
       <h2 className="text-xl font-bold">Name</h2>
       <Separator className="my-4" />
       <div className="rounded-md bg-secondary p-2">
@@ -203,10 +215,10 @@ export const EditForm = ({ community, token }: EditFormProps) => {
       </div>
       <h2 className="text-xl font-bold">Description</h2>
       <Separator className="my-4" />
-      <div className="rounded-md bg-secondary p-2 h-auto">
+      <div className="rounded-md bg-secondary p-2 h-auto min-h-36">
         {!isEditingDescription && (
           <div className="flex items-center justify-between">
-            <p className="text-xl font-semibold break-words">{description}</p>
+            <p className="text-base font-semibold break-words">{description}</p>
             <Hint label="Edit Description" asChild>
               <Button
                 onClick={onEditDescription}

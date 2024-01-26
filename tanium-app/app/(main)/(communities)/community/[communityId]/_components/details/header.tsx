@@ -102,6 +102,10 @@ export const Header = ({
     onOpen("editCommunityBanner", { token, community });
   };
 
+  const onEditImageClick = () => {
+    onOpen("editCommunityImage", { token, community });
+  };
+
   return (
     <>
       {!community.bannerUrl && (
@@ -143,11 +147,27 @@ export const Header = ({
 
       <div className="rounded-md rounded-t-none bg-secondary h-20 w-full flex items-center justify-between">
         <div className="max-w-3xl mx-auto flex items-center space-x-4 w-full">
-          <UserAvatar
-            username={community.name}
-            imageUrl={community.imageUrl || ""}
-            size="xl"
-          />
+          {!isOwner && (
+            <UserAvatar
+              username={community.name}
+              imageUrl={community.imageUrl || ""}
+              size="xl"
+            />
+          )}
+
+          {isOwner && (
+            <button
+              onClick={onEditImageClick}
+              className="hover:opacity-75 transition"
+              aria-label="Edit Image">
+              <UserAvatar
+                username={community.name}
+                imageUrl={community.imageUrl || ""}
+                size="xl"
+              />
+            </button>
+          )}
+
           <div className="ml-5 space-y-1 space-x">
             <p className="font-bold text-xl">{community.name}</p>
             <p className="text-muted-foreground text-xs">

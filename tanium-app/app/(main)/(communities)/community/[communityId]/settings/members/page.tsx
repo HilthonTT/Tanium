@@ -1,12 +1,17 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
+import { ArrowLeft } from "lucide-react";
 
 import { getCommunity } from "@/lib/community-service";
 import { getCommunityMembers } from "@/lib/member-service";
 import { Container } from "@/components/container";
 import { getSelf } from "@/lib/user-service";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 import { Header } from "../_components/header";
+import { Members } from "./_components/members";
 
 interface SettingsMemberPageProps {
   params: {
@@ -45,7 +50,19 @@ const SettingsMemberPage = async ({ params }: SettingsMemberPageProps) => {
         members={members}
         token={token}
       />
-      <Container>Members</Container>
+      <Container>
+        <div className="flex items-center justify-between pt-10">
+          <h1 className="text-2xl font-semibold">Members ({members.length})</h1>
+          <Button variant="outline" asChild>
+            <Link href={`/community/${community.id}/settings`}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Go Back
+            </Link>
+          </Button>
+        </div>
+        <Separator className="my-4" />
+        <Members members={members} community={community} token={token} />
+      </Container>
     </>
   );
 };
