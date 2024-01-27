@@ -26,25 +26,51 @@ public class MemberController(
     private readonly IAuthService _authService = authService;
     private readonly ILogger<MemberController> _logger = logger;
 
-    [HttpGet("community/{id}")]
+    [HttpGet("community/{communityId}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllCommunityMembersAsync(int id)
+    public async Task<IActionResult> GetAllCommunityMembersAsync(int communityId)
     {
         try
         {
-            var community = await _communityData.GetCommunityAsync(id);
+            var community = await _communityData.GetCommunityAsync(communityId);
             if (community is null)
             {
                 return BadRequest("Community not found");
             }
 
-            var members = await _memberData.GetAllMemberByCommunityIdAsync(id);
+            var members = await _memberData.GetAllMemberByCommunityIdAsync(communityId);
 
             return Ok(members);
         }
         catch (Exception ex)
         {
             _logger.LogError("[MEMBER_CONTROLLER_COMMUNITY_GET]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("community/{communityId}/search/{query}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> SearchMembersAsync(int communityId, string query)
+    {
+        try
+        {
+            var community = await _communityData.GetCommunityAsync(communityId);
+            if (community is null)
+            {
+                return BadRequest("Community not found");
+            }
+
+            var members = await _memberData.GetAllMemberByCommunityIdAsync(communityId);
+
+            var queriedMembers = members.Where(m => m.User.Username.Contains(
+                query, StringComparison.InvariantCultureIgnoreCase));
+
+            return Ok(queriedMembers);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[MEMBER_CONTROLLER_COMMUNITY_SEARCH]: {error}", ex.Message);
             return StatusCode(500, "Internal Error");
         }
     }

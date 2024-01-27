@@ -40,3 +40,20 @@ export const getCommunityMembers = async (
     return [];
   }
 };
+
+export const searchCommunityMembers = async (
+  communityId: number,
+  query: string
+): Promise<Member[]> => {
+  try {
+    const response = await instance.get(
+      `/api/member/community/${communityId}/search/${query}`
+    );
+    const members = response.data as Member[];
+
+    return members;
+  } catch (error) {
+    console.log("[MEMBER_GET_COMMUNITY_MEMBER_SEARCH]", error);
+    return [];
+  }
+};

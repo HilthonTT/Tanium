@@ -4,7 +4,10 @@ import { auth } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 
 import { getCommunity } from "@/lib/community-service";
-import { getCommunityMembers } from "@/lib/member-service";
+import {
+  getCommunityMembers,
+  searchCommunityMembers,
+} from "@/lib/member-service";
 import { Container } from "@/components/container";
 import { getSelf } from "@/lib/user-service";
 import { Button } from "@/components/ui/button";
@@ -12,21 +15,36 @@ import { Separator } from "@/components/ui/separator";
 
 import { Header } from "../_components/header";
 import { Members } from "./_components/members";
+import { Search } from "./_components/search";
 
 interface SettingsMemberPageProps {
   params: {
     communityId: number;
   };
+  searchParams: {
+    username: string;
+  };
 }
 
-const SettingsMemberPage = async ({ params }: SettingsMemberPageProps) => {
+const getMembers = async (communityId: number, query?: string) => {
+  if (!!query) {
+    return await searchCommunityMembers(communityId, query);
+  }
+
+  return await getCommunityMembers(communityId);
+};
+
+const SettingsMemberPage = async ({
+  params,
+  searchParams,
+}: SettingsMemberPageProps) => {
   const { getToken } = auth();
 
   const [self, token, community, members] = await Promise.all([
     getSelf(),
     getToken(),
     getCommunity(params.communityId),
-    getCommunityMembers(params.communityId),
+    getMembers(params.communityId, searchParams.username),
   ]);
 
   if (!self || !token) {
@@ -61,6 +79,7 @@ const SettingsMemberPage = async ({ params }: SettingsMemberPageProps) => {
           </Button>
         </div>
         <Separator className="my-4" />
+        <Search />
         <Members members={members} community={community} token={token} />
       </Container>
     </>
