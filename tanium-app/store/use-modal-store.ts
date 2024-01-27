@@ -4,12 +4,15 @@ export type ModalType =
   | "createCommunity"
   | "deletePost"
   | "editCommunityBanner"
-  | "editCommunityImage";
+  | "editCommunityImage"
+  | "banMember"
+  | "kickMember";
 
 interface ModalData {
   token?: string | null;
   post?: Post;
   community?: Community;
+  member?: Member;
 }
 
 interface ModalStore {

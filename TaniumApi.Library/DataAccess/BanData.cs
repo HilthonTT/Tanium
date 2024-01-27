@@ -80,16 +80,36 @@ public class BanData(ISqlDataAccess sql) : IBanData
 
     public async Task<BanModel> CreateBanAsync(BanModel ban)
     {
-        var parameters = new DynamicParameters();
-        parameters.Add("Reason", ban.Reason);
-        parameters.Add("BannerUserId", ban.BannerUserId);
-        parameters.Add("BannedUserId", ban.BannedUserId);
-        parameters.Add("CommunityId", ban.CommunityId);
+        try
+        {
+            _sql.StartTransaction();
 
-        var output = await _sql.SaveDataAsync<BanModel>("dbo.spBan_Insert", parameters);
-        output = await GetBanAsync(output.Id);
+            var parameters = new DynamicParameters();
+            parameters.Add("Reason", ban.Reason);
+            parameters.Add("BannerUserId", ban.BannerUserId);
+            parameters.Add("BannedUserId", ban.BannedUserId);
+            parameters.Add("CommunityId", ban.CommunityId);
 
-        return output;
+            var output = await _sql.SaveInTransactionAsync<BanModel>("dbo.spBan_Insert", parameters);
+
+            parameters = new DynamicParameters();
+            parameters.Add("UserId", output.BannedUserId);
+            parameters.Add("CommunityId", output.CommunityId);
+
+            await _sql.SaveInTransactionAsync<MemberModel>(
+                "dbo.spMember_DeleteByUserIdAndCommunityId", parameters);
+
+            _sql.CommitTransaction();
+
+            output = await GetBanAsync(output.Id);
+
+            return output;
+        }
+        catch (Exception ex)
+        {
+            _sql.RollbackTransaction();
+            throw new Exception(ex.Message);
+        }
     }
 
     public async Task DeleteBanAsync(int id)

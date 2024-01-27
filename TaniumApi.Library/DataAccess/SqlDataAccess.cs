@@ -108,7 +108,8 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         DynamicParameters parameters = null)
     {
         var rows = await _connection?.QueryAsync<T>(storedProcedure, parameters,
-            commandType: CommandType.StoredProcedure);
+            commandType: CommandType.StoredProcedure, 
+            transaction: _transaction);
 
         return rows.ToList();
     }
@@ -120,7 +121,8 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         var row = await _connection?.QueryFirstOrDefaultAsync(
             storedProcedure,
             parameters,
-            commandType: CommandType.StoredProcedure);
+            commandType: CommandType.StoredProcedure, 
+            transaction: _transaction);
 
         return row;
     }
@@ -129,8 +131,8 @@ public class SqlDataAccess(IConfiguration config) : ISqlDataAccess
         string storedProcedure,
         DynamicParameters parameters = null)
     {
-        var result = await _connection?.ExecuteScalarAsync<T>(storedProcedure, parameters,
-            commandType: CommandType.StoredProcedure);
+        var result = await _connection?.QueryFirstOrDefaultAsync<T>(storedProcedure, parameters,
+            commandType: CommandType.StoredProcedure, transaction: _transaction);
 
         return result;
     }

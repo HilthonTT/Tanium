@@ -8,6 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { UserAvatar } from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
 import { instance } from "@/lib/axios-config";
+import { useModal } from "@/store/use-modal-store";
 
 interface MemberCardProps {
   member: Member;
@@ -16,42 +17,15 @@ interface MemberCardProps {
 }
 
 export const MemberCard = ({ member, community, token }: MemberCardProps) => {
-  const router = useRouter();
-
+  const { onOpen } = useModal((state) => state);
   const isOwner = member.user.id == community.user.id;
 
-  const onBanClick = async () => {
-    try {
-      const data = {
-        communityId: community.id,
-        userId: member.user.id,
-      };
-
-      await instance.post(`/api/ban/community`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      router.refresh();
-      toast.success("User banned!");
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
+  const onBanClick = () => {
+    onOpen("banMember", { token, member, community });
   };
 
   const onKickClick = async () => {
-    try {
-      await instance.delete(`/api/member/${member.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      toast.success("User kicked!");
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
+    onOpen("kickMember", { token, member });
   };
 
   return (

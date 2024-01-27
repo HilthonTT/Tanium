@@ -141,7 +141,7 @@ public class MemberController(
 
             if (loggedInUser.Id == member.UserId)
             {
-                return BadRequest("You are the owner of the community");
+                return BadRequest("You cannot ban yourself");
             }
 
             bool isCommunityOwner = community.UserId == loggedInUser.Id;
