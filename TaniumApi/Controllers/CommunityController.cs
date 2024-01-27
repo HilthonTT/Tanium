@@ -108,7 +108,7 @@ public class CommunityController(
 	}
 
 	[HttpPost]
-    public async Task<IActionResult> CreateCommunityAsync(CreateCommunityModel body)
+    public async Task<IActionResult> CreateCommunityAsync([FromBody] CreateCommunityModel body)
 	{
 		try
 		{
@@ -152,7 +152,7 @@ public class CommunityController(
 	}
 
 	[HttpPatch]
-	public async Task<IActionResult> UpdateCommunityAsync(UpdateCommunityModel body)
+	public async Task<IActionResult> UpdateCommunityAsync([FromBody] UpdateCommunityModel body)
 	{
 		try
 		{

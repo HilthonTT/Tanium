@@ -8,7 +8,7 @@ public interface IUserData
     Task DeleteUserByExternalUserIdAsync(UserModel user);
     Task<List<UserModel>> GetAllUsersAsync();
     Task<UserModel> GetUserByExternalUserIdAsync(string externalUserId);
-    Task<UserModel> GetUserByIdAsync(int id);
+    Task<UserModel> GetUserAsync(int id);
     Task<UserModel> UpdateUserAsync(UserModel user);
     Task<UserModel> UpdateUserByExternalUserIdAsync(UserModel user);
 }

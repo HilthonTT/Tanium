@@ -69,7 +69,7 @@ public class UserController(
     {
         try
         {
-            var user = await _userData.GetUserByIdAsync(id);
+            var user = await _userData.GetUserAsync(id);
             if (user is null)
             {
                 return NotFound("User not found");
@@ -110,7 +110,7 @@ public class UserController(
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> CreateUserAsync(CreateUserModel body)
+    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserModel body)
     {
         try
         {
@@ -161,7 +161,7 @@ public class UserController(
 
     [HttpPatch]
     [AllowAnonymous]
-    public async Task<IActionResult> UpdateUserAsync(UpdateUserModel body)
+    public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserModel body)
     {
         try
         {

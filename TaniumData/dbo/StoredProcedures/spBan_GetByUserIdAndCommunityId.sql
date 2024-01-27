@@ -5,7 +5,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT [Id], [CommunityId], [BannedUserId], [BannerUserId], [DateCreated]
+	SELECT [Id], [Reason], [CommunityId], [BannedUserId], [BannerUserId], [DateCreated]
 	FROM [dbo].[Ban]
 	WHERE [BannedUserId] = @UserId AND [CommunityId] = @CommunityId;
 END

@@ -198,7 +198,7 @@ public class PostController(
     {
         try
         {
-            var user = await _userData.GetUserByIdAsync(userId);
+            var user = await _userData.GetUserAsync(userId);
             if (user is null)
             {
                 return BadRequest("User not found");
@@ -221,7 +221,7 @@ public class PostController(
     {
         try
         {
-            var user = await _userData.GetUserByIdAsync(userId);
+            var user = await _userData.GetUserAsync(userId);
             if (user is null)
             {
                 return BadRequest("User not found");
@@ -244,7 +244,7 @@ public class PostController(
     {
         try
         {
-            var user = await _userData.GetUserByIdAsync(userId);
+            var user = await _userData.GetUserAsync(userId);
             if (user is null)
             {
                 return BadRequest("User not found");
@@ -283,7 +283,7 @@ public class PostController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreatePostAsync(CreatePostModel body)
+    public async Task<IActionResult> CreatePostAsync([FromBody] CreatePostModel body)
     {
         try
         {
@@ -325,7 +325,7 @@ public class PostController(
     }
 
     [HttpPatch]
-    public async Task<IActionResult> UpdatePostAsync(UpdatePostModel body)
+    public async Task<IActionResult> UpdatePostAsync([FromBody] UpdatePostModel body)
     {
         try
         {

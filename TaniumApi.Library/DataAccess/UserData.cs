@@ -24,7 +24,7 @@ public class UserData(ISqlDataAccess sql, IRedisCache redisCache) : IUserData
         return output;
     }
 
-    public async Task<UserModel> GetUserByIdAsync(int id)
+    public async Task<UserModel> GetUserAsync(int id)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);

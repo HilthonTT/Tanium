@@ -78,7 +78,7 @@ public class MemberController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateMemberAsync(CreateMemberModel body)
+    public async Task<IActionResult> CreateMemberAsync([FromBody] CreateMemberModel body)
     {
         try
         {

@@ -94,7 +94,7 @@ public class ReplyController(
     {
         try
         {
-            var user = await _userData.GetUserByIdAsync(userId);
+            var user = await _userData.GetUserAsync(userId);
             if (user is null)
             {
                 return BadRequest("User not found");
@@ -112,7 +112,7 @@ public class ReplyController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReplyAsync(CreateReplyModel body)
+    public async Task<IActionResult> CreateReplyAsync([FromBody] CreateReplyModel body)
     {
         try
         {
@@ -152,7 +152,7 @@ public class ReplyController(
     }
 
     [HttpPatch]
-    public async Task<IActionResult> UpdateReplyAsync(UpdateReplyModel body)
+    public async Task<IActionResult> UpdateReplyAsync([FromBody] UpdateReplyModel body)
     {
         try
         {

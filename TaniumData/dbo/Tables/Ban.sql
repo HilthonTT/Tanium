@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[Ban]
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [Reason] NVARCHAR(500) NOT NULL,
     [CommunityId] INT NOT NULL, 
     [BannedUserId] INT NOT NULL, 
     [BannerUserId] INT NULL,
