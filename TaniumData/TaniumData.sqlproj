@@ -119,6 +119,12 @@
     <Build Include="dbo\StoredProcedures\spPost_GetUpvoted.sql" />
     <Build Include="dbo\StoredProcedures\spPost_GetDownvoted.sql" />
     <Build Include="dbo\StoredProcedures\spCommunity_GetByUserId.sql" />
+    <Build Include="dbo\Tables\Ban.sql" />
+    <Build Include="dbo\StoredProcedures\spBan_GetByUserIdAndCommunityId.sql" />
+    <Build Include="dbo\StoredProcedures\spBan_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spBan_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spBan_DeleteByUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spBan_GetByCommunityId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

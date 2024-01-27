@@ -20,14 +20,14 @@ public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
 
         Parallel.ForEach(replies, reply =>
         {
-            if (userIds.Contains(reply.UserId))
+            if (userIds.TryGetValue(reply.UserId, out int userId))
             {
-                reply.User = userDictionary[reply.UserId];
+                reply.User = userDictionary[userId];
             }
 
-            if (postIds.Contains(reply.PostId))
+            if (postIds.TryGetValue(reply.UserId, out int postId))
             {
-                reply.Post = postDictionary[reply.PostId];
+                reply.Post = postDictionary[postId];
             }
         });
 
@@ -94,14 +94,16 @@ public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
         var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
 
         var userDictionary = users.ToDictionary(u => u.Id);
-        foreach (var reply in replies)
+        var userIds = new HashSet<int>(users.Select(u => u.Id));
+
+        Parallel.ForEach(replies, reply =>
         {
             reply.Post = post;
-            if (userDictionary.TryGetValue(reply.UserId, out var user))
+            if (userIds.TryGetValue(reply.UserId, out int userId))
             {
-                reply.User = user;
+                reply.User = userDictionary[userId];
             }
-        }
+        });
 
         return replies;
     }

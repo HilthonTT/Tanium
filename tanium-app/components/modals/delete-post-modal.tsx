@@ -35,6 +35,7 @@ export const DeletePostModal = () => {
       });
 
       router.refresh();
+      toast.success("Post deleted!");
 
       closeRef?.current?.click();
     } catch (error) {
@@ -47,7 +48,7 @@ export const DeletePostModal = () => {
       <DialogContent>
         <DialogHeader className="text-start">
           <DialogTitle className="truncate">
-            Delete "{post?.title}"?
+            Delete &apos;{post?.title}&apos;?
           </DialogTitle>
           <DialogDescription>This action is irreversible.</DialogDescription>
         </DialogHeader>

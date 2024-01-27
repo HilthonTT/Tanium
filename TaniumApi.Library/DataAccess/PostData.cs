@@ -20,14 +20,14 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
 
         Parallel.ForEach(posts, post =>
         {
-            if (communityIds.Contains(post.CommunityId))
+            if (communityIds.TryGetValue(post.CommunityId, out int communityId))
             {
-                post.Community = communityDictionary[post.CommunityId];
+                post.Community = communityDictionary[communityId];
             }
 
-            if (userIds.Contains(post.UserId))
+            if (userIds.TryGetValue(post.UserId, out int userId))
             {
-                post.User = userDictionary[post.UserId];
+                post.User = userDictionary[userId];
             }
 
             post.Downvotes = relatedData.Downvotes.Where(d => d.PostId == post.Id).ToList();
@@ -141,18 +141,20 @@ public class PostData(ISqlDataAccess sql, IRedisCache redisCache) : IPostData
         output = await _sql.GetAllDataAsync<PostModel>("dbo.spPost_GetByCommunityId", parameters);
 
         var userDictionary = users.ToDictionary(u => u.Id);
-        foreach (var post in output)
+        var userIds = new HashSet<int>(users.Select(u => u.Id));
+
+        Parallel.ForEach(output, post =>
         {
             post.Community = community;
-            if (userDictionary.TryGetValue(community.UserId, out var user))
+            if (userIds.TryGetValue(post.UserId, out int userId))
             {
-                post.User = user;  
+                post.User = userDictionary[userId];
             }
 
             post.Upvotes = upvotes.Where(u => u.PostId == post.Id).ToList();
             post.Downvotes = downvotes.Where(d => d.PostId == post.Id).ToList();
             post.Replies = replies.Where(r => r.PostId == post.Id).ToList();
-        }
+        });
 
         await _redisCache.SetRecordAsync(key, output, TimeSpan.FromMinutes(30));
 

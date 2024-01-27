@@ -17,9 +17,9 @@ public class MemberData(ISqlDataAccess sql) : IMemberData
         {
             member.Community = relatedData.Community;
 
-            if (userIds.Contains(member.UserId))
+            if (userIds.TryGetValue(member.UserId, out int userId))
             {
-                member.User = userDictionary[member.UserId];
+                member.User = userDictionary[userId];
             }
         });
 

@@ -58,6 +58,8 @@ export const EditCommunityImageModal = () => {
         },
       });
 
+      toast.success("Image updated!");
+
       handleClose();
     } catch (error) {
       toast.error("Something went wrong");

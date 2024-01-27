@@ -58,8 +58,8 @@ export const EditCommunityBannerModal = () => {
         },
       });
 
-      form.reset();
-      router.refresh();
+      toast.success("Banner updated!");
+      handleClose();
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -68,6 +68,7 @@ export const EditCommunityBannerModal = () => {
 
   const handleClose = () => {
     form.reset();
+    router.refresh();
     onClose();
   };
 

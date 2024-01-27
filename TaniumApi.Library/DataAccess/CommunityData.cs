@@ -18,9 +18,9 @@ public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommun
 
         Parallel.ForEach(communities, community =>
         {
-            if (userIds.Contains(community.UserId))
+            if (userIds.TryGetValue(community.UserId, out int userId))
             {
-                community.User = userDictionary[community.UserId];
+                community.User = userDictionary[userId];
             }
         });
 

@@ -129,6 +129,7 @@ public class UserData(ISqlDataAccess sql, IRedisCache redisCache) : IUserData
             await _sql.SaveInTransactionAsync<CommunityModel>("dbo.spDeleteCommunity_ByUserId", parameters);
             await _sql.SaveInTransactionAsync<DownvoteModel>("dbo.spDownvote_DeleteByUserId", parameters);
             await _sql.SaveInTransactionAsync<ReplyModel>("dbo.spUpvote_DeleteByUserId", parameters);
+            await _sql.SaveInTransactionAsync<BanModel>("dbo.spBan_DeleteByUserId", parameters);
 
             parameters = new DynamicParameters();
             parameters.Add("ExternalUserId", user.ExternalUserId);
