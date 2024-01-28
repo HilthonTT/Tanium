@@ -152,7 +152,7 @@ public class BanController(
                 return BadRequest("Community not found");
             }
 
-            var isBanned = await _banData.IsBannedAsync(loggedInUser.Id, communityId);
+            bool isBanned = await _banData.IsBannedAsync(loggedInUser.Id, communityId);
             
             return Ok(isBanned);
         }

@@ -5,10 +5,12 @@ import { Container } from "@/components/container";
 import { getCommunity } from "@/lib/community-service";
 import { getPost } from "@/lib/post-service";
 import { getSelf } from "@/lib/user-service";
+import { getPostReplies } from "@/lib/reply-service";
+import { isCommunityBanned } from "@/lib/ban-service";
+import { Ban } from "@/components/ban";
 
 import { Header } from "./_components/header";
 import { Details } from "./_components/details";
-import { getPostReplies } from "@/lib/reply-service";
 
 interface CommunityPostIdPageProps {
   params: {
@@ -20,14 +22,23 @@ interface CommunityPostIdPageProps {
 const CommunityPostIdPage = async ({ params }: CommunityPostIdPageProps) => {
   const { getToken } = auth();
 
-  const [community, post, token, self] = await Promise.all([
-    getCommunity(params.communityId),
+  const community = await getCommunity(params.communityId);
+  if (!community) {
+    return notFound();
+  }
+
+  const isBanned = await isCommunityBanned(community.id);
+  if (isBanned) {
+    return <Ban />;
+  }
+
+  const [post, token, self] = await Promise.all([
     getPost(params.postId),
     getToken(),
     getSelf(),
   ]);
 
-  if (!community || !post) {
+  if (!post) {
     return notFound();
   }
 

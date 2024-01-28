@@ -21,6 +21,7 @@ public class PostController(
     IUserData userData,
     IAuthService authService,
     IMemberData memberData,
+    IBanData banData,
     ILogger<PostController> logger) : ControllerBase
 {
     private readonly IPostData _postData = postData;
@@ -28,6 +29,7 @@ public class PostController(
     private readonly IUserData _userData = userData;
     private readonly IAuthService _authService = authService;
     private readonly IMemberData _memberData = memberData;
+    private readonly IBanData _banData = banData;
     private readonly ILogger<PostController> _logger = logger;
 
     [HttpGet]
@@ -310,6 +312,12 @@ public class PostController(
             if (isMember is false)
             {
                 return BadRequest("You are not a member");
+            }
+
+            bool isBanned = await _banData.IsBannedAsync(loggedInUser.Id, community.Id);
+            if (isBanned)
+            {
+                return BadRequest("You are banned from the community");
             }
 
             var data = new PostModel()

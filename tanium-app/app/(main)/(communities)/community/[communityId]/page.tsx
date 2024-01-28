@@ -7,6 +7,8 @@ import { getCommunityMembers, isCommunityMember } from "@/lib/member-service";
 import { getCommunityPosts } from "@/lib/post-service";
 
 import { CommunityDetails } from "./_components/details";
+import { isCommunityBanned } from "@/lib/ban-service";
+import { Ban } from "@/components/ban";
 
 interface CommunityIdPageProps {
   params: {
@@ -19,6 +21,11 @@ const CommunityIdPage = async ({ params }: CommunityIdPageProps) => {
 
   if (!community) {
     return notFound();
+  }
+
+  const isBanned = await isCommunityBanned(community.id);
+  if (isBanned) {
+    return <Ban />;
   }
 
   const { getToken } = auth();
