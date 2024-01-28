@@ -32,7 +32,13 @@ export const CommunityDetails = ({
         token={token}
       />
       <Container className="pt-4">
-        <Posts posts={posts} self={self} token={token} community={community} />
+        <Posts
+          posts={posts}
+          self={self}
+          token={token}
+          community={community}
+          isMember={isMember}
+        />
       </Container>
     </div>
   );

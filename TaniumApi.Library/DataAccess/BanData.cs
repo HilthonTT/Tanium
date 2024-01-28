@@ -44,7 +44,7 @@ public class BanData(ISqlDataAccess sql) : IBanData
         parameters.Add("CommunityId", communityId);
 
         var bans = await _sql.GetAllDataAsync<BanModel>("dbo.spBan_GetByCommunityId", parameters);
-        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll", parameters);
+        var users = await _sql.GetAllDataAsync<UserModel>("dbo.spUser_GetAll");
 
         var userDictionary = users.ToDictionary(u => u.Id);
         var userIds = new HashSet<int>(users.Select(u => u.Id));
@@ -58,7 +58,7 @@ public class BanData(ISqlDataAccess sql) : IBanData
 
             if (userIds.TryGetValue(ban.BannedUserId, out int bannedUserId))
             {
-                ban.BannerUser = userDictionary[bannedUserId];
+                ban.BannedUser = userDictionary[bannedUserId];
             }
         });
 

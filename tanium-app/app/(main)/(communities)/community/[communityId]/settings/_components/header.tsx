@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Camera, ImageIcon, UserIcon } from "lucide-react";
+import { Camera, HomeIcon, ImageIcon, UserIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { usePathname } from "next/navigation";
 
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ community, isOwner, token, members }: HeaderProps) => {
+  const pathname = usePathname();
   const { onOpen } = useModal((state) => state);
 
   const bannerColor = stringToColor(community.name + community.id);
@@ -30,6 +32,8 @@ export const Header = ({ community, isOwner, token, members }: HeaderProps) => {
   const onEditImageClick = () => {
     onOpen("editCommunityImage", { token, community });
   };
+
+  const isMemberPage = pathname.includes("/settings/members");
 
   return (
     <>
@@ -56,7 +60,7 @@ export const Header = ({ community, isOwner, token, members }: HeaderProps) => {
           <Image
             src={community.bannerUrl}
             alt="Community Banner"
-            className="object-fill  w-full h-full"
+            className="object-fill w-full h-full"
             fill
           />
           <Hint label="Edit Banner" side="left" asChild>
@@ -95,19 +99,33 @@ export const Header = ({ community, isOwner, token, members }: HeaderProps) => {
             </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          className="mr-4 flex items-center justify-center hover:opacity-75 transition"
-          asChild>
-          <Link
-            href={`/community/${community.id}/settings/members`}
-            className="gap-x-1">
-            <UserIcon />
-            <p className="text-muted-foreground text-sm">
-              {members.length} {members.length > 1 ? "members" : "member"}
-            </p>
-          </Link>
-        </Button>
+        {!isMemberPage && (
+          <Button
+            className="mr-4 flex items-center justify-center hover:opacity-75 transition"
+            aria-label="Manage Members"
+            asChild>
+            <Link
+              href={`/community/${community.id}/settings/members`}
+              className="gap-x-1">
+              <UserIcon className="h-5 w-5" />
+              <p className="font-semibold text-sm">
+                Manage {members.length}{" "}
+                {members.length > 1 ? "members" : "member"}
+              </p>
+            </Link>
+          </Button>
+        )}
+        {isMemberPage && (
+          <Button
+            className="mr-4 flex items-center justify-center hover:opacity-75 transition"
+            aria-label="Go to community main page"
+            asChild>
+            <Link href={`/community/${community.id}`} className="gap-x-1">
+              <HomeIcon className="w-5 h-5" />
+              <p className="font-semibold text-sm">Go to community main page</p>
+            </Link>
+          </Button>
+        )}
       </div>
     </>
   );

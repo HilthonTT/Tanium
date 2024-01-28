@@ -8,14 +8,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
 
-export const Search = () => {
+export const SearchUsername = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const username = searchParams.get("username");
 
   const [value, setValue] = useState<string>(username || "");
-  const debouncedValue = useDebounce<string>(value, 500);
+  const debouncedValue = useDebounce<string>(value, 1000);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);

@@ -6,13 +6,15 @@ export type ModalType =
   | "editCommunityBanner"
   | "editCommunityImage"
   | "banMember"
-  | "kickMember";
+  | "kickMember"
+  | "unbanMember";
 
 interface ModalData {
   token?: string | null;
   post?: Post;
   community?: Community;
   member?: Member;
+  ban?: Ban;
 }
 
 interface ModalStore {

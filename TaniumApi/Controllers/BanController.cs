@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -13,6 +14,7 @@ namespace TaniumApi.Controllers;
 [Authorize]
 [EnableRateLimiting("fixed")]
 [OutputCache(PolicyName = "Default")]
+[EnableCors("AllowSpecificOrigin")]
 public class BanController(
     IBanData banData,
     ICommunityData communityData,
@@ -89,6 +91,42 @@ public class BanController(
             var bans = await _banData.GetCommunityBansAsync(communityId);
 
             return Ok(bans);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[BAN_CONTROLLER_COMMUNITY_GET]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
+    [HttpGet("community/{communityId}/search/{query}")]
+    public async Task<IActionResult> SearchCommunityBansAsync(int communityId, string query)
+    {
+        try
+        {
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+
+            var community = await _communityData.GetCommunityAsync(communityId);
+            if (community is null)
+            {
+                return BadRequest("Community not found");
+            }
+
+            if (community.UserId != loggedInUser.Id)
+            {
+                return StatusCode(401, "Unauthorized to view the bans");
+            }
+
+            var bans = await _banData.GetCommunityBansAsync(communityId);
+
+            var queriedBans = bans.Where(b => b.BannedUser.Username.Contains(
+                query, StringComparison.InvariantCultureIgnoreCase));
+
+            return Ok(queriedBans);
         }
         catch (Exception ex)
         {
@@ -201,7 +239,7 @@ public class BanController(
                 return BadRequest("Community not found");
             }
 
-            bool isOwner = community?.UserId != loggedInUser.Id;
+            bool isOwner = community?.UserId == loggedInUser.Id;
             if (isOwner is false)
             {
                 return StatusCode(401, "Unauthorized");

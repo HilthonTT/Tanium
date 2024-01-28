@@ -7,6 +7,7 @@ import { EditCommunityBannerModal } from "@/components/modals/edit-community-ban
 import { EditCommunityImageModal } from "@/components/modals/edit-community-image-modal";
 import { BanMemberModal } from "@/components/modals/ban-member-modal";
 import { KickMemberModal } from "@/components/modals/kick-member-modal";
+import { UnBanMemberModal } from "@/components/modals/unban-member-modal";
 
 export const ModalProvider = () => {
   const isClient = useIsClient();
@@ -23,6 +24,7 @@ export const ModalProvider = () => {
       <EditCommunityImageModal />
       <BanMemberModal />
       <KickMemberModal />
+      <UnBanMemberModal />
     </>
   );
 };

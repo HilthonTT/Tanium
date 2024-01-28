@@ -20,12 +20,14 @@ public class PostController(
     ICommunityData communityData,
     IUserData userData,
     IAuthService authService,
+    IMemberData memberData,
     ILogger<PostController> logger) : ControllerBase
 {
     private readonly IPostData _postData = postData;
     private readonly ICommunityData _communityData = communityData;
     private readonly IUserData _userData = userData;
     private readonly IAuthService _authService = authService;
+    private readonly IMemberData _memberData = memberData;
     private readonly ILogger<PostController> _logger = logger;
 
     [HttpGet]
@@ -302,6 +304,12 @@ public class PostController(
             if (community is null)
             {
                 return BadRequest("Community is not found");
+            }
+
+            bool isMember = await _memberData.IsMemberAsync(loggedInUser.Id, community.Id);
+            if (isMember is false)
+            {
+                return BadRequest("You are not a member");
             }
 
             var data = new PostModel()

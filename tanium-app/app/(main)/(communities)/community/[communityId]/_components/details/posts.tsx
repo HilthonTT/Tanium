@@ -19,9 +19,16 @@ interface PostsProps {
   self: User | null;
   token: string | null;
   community: Community;
+  isMember: boolean;
 }
 
-export const Posts = ({ posts, self, token, community }: PostsProps) => {
+export const Posts = ({
+  posts,
+  self,
+  token,
+  community,
+  isMember,
+}: PostsProps) => {
   const router = useRouter();
 
   const onCreatePost = () => {
@@ -39,7 +46,7 @@ export const Posts = ({ posts, self, token, community }: PostsProps) => {
     <div className="pt-4 flex space-x-2">
       <div className="flex-1 space-y-4">
         <div className="space-y-4 mb-10">
-          <CreatePostTab self={self} community={community} />
+          {isMember && <CreatePostTab self={self} community={community} />}
           <FilterTab communityId={community.id} />
           {posts.map((post) => (
             <PostCard key={post.id} post={post} token={token} self={self} />

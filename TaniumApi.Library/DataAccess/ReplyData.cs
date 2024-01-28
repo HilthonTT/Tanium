@@ -25,7 +25,7 @@ public class ReplyData(ISqlDataAccess sql, IRedisCache redisCache) : IReplyData
                 reply.User = userDictionary[userId];
             }
 
-            if (postIds.TryGetValue(reply.UserId, out int postId))
+            if (postIds.TryGetValue(reply.PostId, out int postId))
             {
                 reply.Post = postDictionary[postId];
             }

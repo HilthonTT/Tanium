@@ -94,3 +94,15 @@ type Member = {
   dateCreated: Date;
   dateUpdated: Date;
 };
+
+type Ban = {
+  id: number;
+  reason: string;
+  communityId: number;
+  community: Community;
+  bannedUserId: number;
+  bannedUser: User;
+  bannerUserId: number;
+  bannerUser: User;
+  dateCreated: Date;
+};
