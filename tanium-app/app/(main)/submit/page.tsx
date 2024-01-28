@@ -23,7 +23,7 @@ const SubmitPage = async ({ searchParams }: SubmitPageProps) => {
   const communities = await getUserCommunity();
 
   return (
-    <div className="h-full p-4 space-y-2 max-w-4xl mx-auto">
+    <div className="h-full p-4 space-y-2 max-w-4xl mx-auto bg-black">
       <h1 className="font-bold text-xl">Create a post</h1>
       <Separator />
       <PostForm

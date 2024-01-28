@@ -66,7 +66,7 @@ export const Profile = ({ user, self }: ProfileProps) => {
         </div>
       </div>
       {isOwner && (
-        <div className="mx-2">
+        <div className="mx-2 pb-2">
           <Button
             onClick={onCreatePost}
             className="w-full rounded-full font-bold">

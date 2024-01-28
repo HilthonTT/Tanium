@@ -145,7 +145,7 @@ export const EditForm = ({ community, token }: EditFormProps) => {
   };
 
   return (
-    <div className="w-full h-full space-y-4 pt-10">
+    <div className="w-full h-full space-y-4 pt-10 px-4 lg:px-0">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Settings Page</h1>
         <Button variant="outline" asChild>

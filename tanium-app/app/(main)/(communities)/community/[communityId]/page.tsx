@@ -39,14 +39,16 @@ const CommunityIdPage = async ({ params }: CommunityIdPageProps) => {
   ]);
 
   return (
-    <CommunityDetails
-      self={self}
-      isMember={isMember}
-      members={members}
-      token={token}
-      posts={posts}
-      community={community}
-    />
+    <div className="bg-black w-full">
+      <CommunityDetails
+        self={self}
+        isMember={isMember}
+        members={members}
+        token={token}
+        posts={posts}
+        community={community}
+      />
+    </div>
   );
 };
 

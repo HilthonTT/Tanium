@@ -25,7 +25,7 @@ export const Options = ({ token }: OptionsProps) => {
           onClick={handleOpen}
           aria-label="Create post"
           variant="ghost"
-          className="p-1">
+          className="p-1 hidden md:block">
           <Plus className="h-6 w-6" />
         </Button>
       </Hint>

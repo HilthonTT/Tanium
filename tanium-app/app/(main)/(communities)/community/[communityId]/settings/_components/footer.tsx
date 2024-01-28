@@ -13,7 +13,7 @@ const DATE_FORMAT = "MMMM dd, yyyy";
 
 export const Footer = ({ community }: FooterProps) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4 px-4 lg:px-0">
       <h2 className="font-bold text-xl">Information</h2>
       <Separator className="my-4" />
       <div className="rounded-md bg-secondary p-2">

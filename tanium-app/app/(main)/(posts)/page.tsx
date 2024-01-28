@@ -16,9 +16,11 @@ const MainPage = async () => {
   ]);
 
   return (
-    <Container>
-      <Posts posts={posts} self={self} token={token} />
-    </Container>
+    <div className="bg-black">
+      <Container>
+        <Posts posts={posts} self={self} token={token} />
+      </Container>
+    </div>
   );
 };
 

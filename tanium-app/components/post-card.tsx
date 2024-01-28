@@ -242,9 +242,9 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
           )}
         </div>
       </div>
-      <div className="p-1">
+      <div className="p-1 mt-auto">
         {post.imageUrl && (
-          <div className="relative h-40 w-40">
+          <div className="relative h-20 w-20 md:h-32 md:w-32 lg:h-40 lg:w-40">
             <Image
               src={post.imageUrl}
               alt="Image"

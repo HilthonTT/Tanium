@@ -47,23 +47,25 @@ const CommunityPostIdPage = async ({ params }: CommunityPostIdPageProps) => {
   const calculatedUpvotes = post.upvotes.length - post.downvotes.length;
 
   return (
-    <Container>
-      <Header
-        post={post}
-        calculatedUpvotes={calculatedUpvotes}
-        token={token}
-        self={self}
-      />
-      <div className="pt-20 pb-10">
-        <Details
+    <div className="bg-black">
+      <Container>
+        <Header
           post={post}
-          community={community}
-          replies={replies}
-          self={self}
+          calculatedUpvotes={calculatedUpvotes}
           token={token}
+          self={self}
         />
-      </div>
-    </Container>
+        <div className="pt-20 pb-10">
+          <Details
+            post={post}
+            community={community}
+            replies={replies}
+            self={self}
+            token={token}
+          />
+        </div>
+      </Container>
+    </div>
   );
 };
 

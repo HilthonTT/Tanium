@@ -158,7 +158,7 @@ export const Header = ({
           {isOwner && (
             <button
               onClick={onEditImageClick}
-              className="hover:opacity-75 transition"
+              className="hover:opacity-75 transition z-[100]"
               aria-label="Edit Image">
               <UserAvatar
                 username={community.name}
@@ -183,7 +183,7 @@ export const Header = ({
               Leave
             </Button>
           )}
-          {!isCommunityMember && (
+          {!isCommunityMember && !isOwner && (
             <Button onClick={onJoin} className="rounded-full font-semibold">
               <DoorClosed className="h-6 w-6 mr-2" />
               Join

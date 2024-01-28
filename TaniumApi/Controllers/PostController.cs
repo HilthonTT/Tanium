@@ -309,9 +309,11 @@ public class PostController(
             }
 
             bool isMember = await _memberData.IsMemberAsync(loggedInUser.Id, community.Id);
-            if (isMember is false)
+            bool isOwner = loggedInUser.Id == community.Id;
+            bool isAllowed = isOwner || isMember;
+            if (isAllowed is false)
             {
-                return BadRequest("You are not a member");
+                return StatusCode(401, "Unauthorized");
             }
 
             bool isBanned = await _banData.IsBannedAsync(loggedInUser.Id, community.Id);

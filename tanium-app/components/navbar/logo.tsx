@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export const Logo = () => {
   return (
-    <Link href="/" className="hover:opacity-85 transition">
+    <Link href="/" className="hover:opacity-85 transition hidden sm:block">
       <div className="flex items-center justify-center space-x-2">
         <div className="relative h-14 w-14">
           <Image
@@ -16,7 +16,7 @@ export const Logo = () => {
             fill
           />
         </div>
-        <p className="font-bold text-xl text-white">Tanium</p>
+        <p className="font-bold text-xl text-white hidden md:block">Tanium</p>
       </div>
     </Link>
   );

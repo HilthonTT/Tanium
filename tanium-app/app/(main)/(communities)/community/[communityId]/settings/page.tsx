@@ -40,7 +40,7 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
   }
 
   return (
-    <>
+    <div className="bg-black">
       <Header
         community={community}
         isOwner={isOwner}
@@ -51,7 +51,7 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
         <EditForm community={community} token={token} />
         <Footer community={community} />
       </Container>
-    </>
+    </div>
   );
 };
 

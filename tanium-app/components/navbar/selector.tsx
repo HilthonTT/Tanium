@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import {
   ChevronDown,
   Flame,
@@ -26,7 +25,10 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useModal } from "@/store/use-modal-store";
-import { instance } from "@/lib/axios-config";
+import { useCommunity } from "@/hooks/use-community";
+import { useUser } from "@/hooks/use-user";
+
+import { DataItem } from "./data-item";
 
 interface SelectorProps {
   self: User | null;
@@ -37,7 +39,10 @@ interface SelectorProps {
 export const Selector = ({ self, communities, token }: SelectorProps) => {
   const pathname = usePathname();
   const router = useRouter();
-  const [community, setCommunity] = useState<Community | null>(null);
+
+  const community = useCommunity();
+  const user = useUser();
+
   const { onOpen } = useModal((state) => state);
 
   const onClick = (url: string) => {
@@ -47,24 +52,6 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
   const onCommunityClick = (community: Community) => {
     router.push(`/community/${community.id}`);
   };
-
-  useEffect(() => {
-    const hasCommunity = pathname.includes("/community");
-    if (!hasCommunity) {
-      return;
-    }
-
-    const getCurrentCommunity = async () => {
-      const [initialSlash, community, id] = pathname.split("/");
-
-      const response = await instance.get(`/api/community/${id}`);
-      const data = response.data as Community;
-
-      setCommunity(data);
-    };
-
-    getCurrentCommunity();
-  }, [pathname]);
 
   const icons = [
     {
@@ -101,13 +88,13 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger className="w-full" asChild>
         <Button
           variant="ghost"
-          className="w-56 border border-white/10  hover:border-white/50 transition">
+          className="sm:w-32 md:w-32 xl:w-56 border border-white/10 hover:border-white/50 transition">
           <div className="flex items-center justify-between w-full">
             <div>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center w-full">
                 {icons.map(({ label, Icon, isVisible }) => {
                   if (!isVisible) {
                     return null;
@@ -124,33 +111,14 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
                 })}
 
                 {pathname.includes("/community") && community && (
-                  <div className="flex items-center justify-center">
-                    <div className="relative h-8 w-8">
-                      {community.imageUrl && (
-                        <Image
-                          src={community.imageUrl}
-                          alt="Community"
-                          className="object-cover rounded-full"
-                          fill
-                        />
-                      )}
-                      {!community.imageUrl && (
-                        <Avatar className="bg-secondary">
-                          <AvatarFallback>
-                            <p className="capitalize">
-                              {community.name[0]}{" "}
-                              {community.name[community.name.length - 1]}
-                            </p>
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
-                    <div className="ml-2 flex items-center justify-center">
-                      <p className="font-semibold truncate text-xs max-w-[90%]">
-                        {community.name}
-                      </p>
-                    </div>
-                  </div>
+                  <DataItem
+                    label={community.name}
+                    imageUrl={community.imageUrl}
+                  />
+                )}
+
+                {pathname.includes("/user") && user && (
+                  <DataItem label={user.username} imageUrl={user.imageUrl} />
                 )}
               </div>
             </div>

@@ -28,10 +28,12 @@ const renderPosts = async (
 ) => {
   const posts = query ? await searchPosts(query) : await getPosts();
   return (
-    <Container className="mt-4 space-y-4">
-      <SearchTabs />
-      <Posts posts={posts} self={self} token={token} />
-    </Container>
+    <div className="bg-black">
+      <Container className="mt-4 space-y-4">
+        <SearchTabs />
+        <Posts posts={posts} self={self} token={token} />
+      </Container>
+    </div>
   );
 };
 
@@ -39,10 +41,12 @@ const renderReplies = async (query: string | null) => {
   const replies = query ? await searchReplies(query) : await getReplies();
 
   return (
-    <Container className="mt-4 space-y-4">
-      <SearchTabs />
-      <Replies replies={replies} />
-    </Container>
+    <div className="bg-black">
+      <Container className="mt-4 space-y-4">
+        <SearchTabs />
+        <Replies replies={replies} />
+      </Container>
+    </div>
   );
 };
 
@@ -52,10 +56,12 @@ const renderCommunities = async (query: string | null) => {
     : await getCommunities();
 
   return (
-    <Container className="mt-4 space-y-4">
-      <SearchTabs />
-      <Communities communities={communities} />
-    </Container>
+    <div className="bg-black">
+      <Container className="mt-4 space-y-4">
+        <SearchTabs />
+        <Communities communities={communities} />
+      </Container>
+    </div>
   );
 };
 
@@ -63,10 +69,12 @@ const renderUsers = async (query: string | null) => {
   const users = query ? await searchUsers(query) : await getUsers();
 
   return (
-    <Container className="mt-4 space-y-4">
-      <SearchTabs />
-      <Users users={users} />
-    </Container>
+    <div className="bg-black">
+      <Container className="mt-4 space-y-4">
+        <SearchTabs />
+        <Users users={users} />
+      </Container>
+    </div>
   );
 };
 

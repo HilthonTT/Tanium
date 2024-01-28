@@ -33,7 +33,7 @@ const UpdatePage = async ({ params }: UpdatePageProps) => {
   }
 
   return (
-    <div className="h-full p-4 space-y-2 max-w-4xl mx-auto">
+    <div className="h-full p-4 space-y-2 max-w-4xl mx-auto bg-black">
       <h1 className="font-bold text-xl truncate">Update {post.title}</h1>
       <Separator />
       <UpdateForm token={token} post={post} />

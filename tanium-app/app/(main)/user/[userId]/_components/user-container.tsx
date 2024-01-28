@@ -17,7 +17,7 @@ export const UserContainer = ({
   return (
     <div className="bg-black">
       <HeaderTabs user={otherUser} />
-      <Container className="pt-2 w-full">
+      <Container className="pt-2 w-full px-4 lg:px-0">
         <div className="bg-secondary rounded-md">
           <Profile user={otherUser} self={self} />
         </div>

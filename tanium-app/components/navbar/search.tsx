@@ -37,7 +37,7 @@ export const Search = () => {
   };
 
   return (
-    <div className="relative w-full px-4">
+    <div className="relative px-4 w-56 md:w-full xl:w-full">
       <SearchIcon
         onClick={onSearch}
         className="absolute left-6 top-2 hover:opacity-85 transition cursor-pointer"

@@ -75,11 +75,11 @@ export const Header = ({ community, isOwner, token, members }: HeaderProps) => {
       )}
 
       <div className="rounded-md rounded-t-none bg-secondary h-20 w-full flex items-center justify-between">
-        <div className="max-w-3xl mx-auto flex items-center space-x-4 w-full">
+        <div className="relative max-w-3xl mx-auto flex items-center space-x-4 w-full">
           <Hint label="Edit Image" side="bottom" asChild>
             <button
               onClick={onEditImageClick}
-              className="relative hover:opacity-75 transition"
+              className="relative hover:opacity-75 transition z-[100]"
               aria-label="Edit Image">
               <UserAvatar
                 username={community.name}
