@@ -9,6 +9,7 @@ import {
   Plus,
   Rocket,
   SearchIcon,
+  Settings,
   UserPlus,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -83,6 +84,11 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
       label: "Update",
       isVisible: pathname.includes("/update"),
       Icon: Pencil,
+    },
+    {
+      label: "Settings",
+      isVisible: pathname === "/settings",
+      Icon: Settings,
     },
   ];
 

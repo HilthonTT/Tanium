@@ -106,3 +106,10 @@ type Ban = {
   bannerUser: User;
   dateCreated: Date;
 };
+
+type UserSettings = {
+  id: number;
+  userId: number;
+  user: User;
+  isProfilePublic: boolean;
+};
