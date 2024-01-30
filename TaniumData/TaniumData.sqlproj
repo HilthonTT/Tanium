@@ -127,6 +127,10 @@
     <Build Include="dbo\StoredProcedures\spBan_GetByCommunityId.sql" />
     <Build Include="dbo\StoredProcedures\spBan_GetById.sql" />
     <Build Include="dbo\StoredProcedures\spMember_DeleteByUserIdAndCommunityId.sql" />
+    <Build Include="dbo\Tables\UserSettings.sql" />
+    <Build Include="dbo\StoredProcedures\spUserSettings_GetByUserId.sql" />
+    <Build Include="dbo\StoredProcedures\spUserSettings_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spUserSettings_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />

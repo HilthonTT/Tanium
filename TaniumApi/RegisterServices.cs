@@ -51,6 +51,7 @@ public static class RegisterServices
         builder.Services.AddTransient<IMemberData, MemberData>();
         builder.Services.AddTransient<IVoteData, VoteData>();
         builder.Services.AddTransient<IBanData, BanData>();
+        builder.Services.AddTransient<IUserSettingsData, UserSettingsData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
         builder.Services.AddTransient<IRedisCache, RedisCache>();
