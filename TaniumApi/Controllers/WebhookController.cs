@@ -10,23 +10,14 @@ namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("OpenCors")]
-public class WebhookController : ControllerBase
+public class WebhookController(
+    IConfiguration config,
+    ISubscriptionData subscriptionData,
+    ILogger<WebhookController> logger) : ControllerBase
 {
-    private readonly string _endpointSecret;
-    private readonly IConfiguration _config;
-    private readonly ISubscriptionData _subscriptionData;
-    private readonly ILogger<WebhookController> _logger;
-
-    public WebhookController(
-        IConfiguration config,
-        ISubscriptionData subscriptionData,
-        ILogger<WebhookController> logger)
-    {
-        _config = config;
-        _subscriptionData = subscriptionData;
-        _logger = logger;
-        _endpointSecret = _config["Stripe:WebhookSecret"];
-    }
+    private readonly string _endpointSecret = config["Stripe:WebhookSecret"];
+    private readonly ISubscriptionData _subscriptionData = subscriptionData;
+    private readonly ILogger<WebhookController> _logger = logger;
 
     private async Task HandleCheckoutSessionCompletedAsync(Subscription subscription, CheckoutSession session)
     {
