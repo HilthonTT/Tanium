@@ -14,6 +14,7 @@ namespace TaniumApi.Controllers;
 [Authorize]
 [EnableRateLimiting("fixed")]
 [OutputCache(PolicyName = "Default")]
+[EnableCors]
 public class PostController(
     IPostData postData,
     ICommunityData communityData,

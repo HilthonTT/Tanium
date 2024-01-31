@@ -15,6 +15,7 @@ namespace TaniumApi.Controllers;
 [ApiController]
 [EnableRateLimiting("fixed")]
 [OutputCache(PolicyName = "Default")]
+[EnableCors]
 public class UserController(
     IUserData userData,
     IAuthService authService,

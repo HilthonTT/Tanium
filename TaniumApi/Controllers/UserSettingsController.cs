@@ -12,7 +12,7 @@ namespace TaniumApi.Controllers;
 [ApiController]
 [Authorize]
 [EnableRateLimiting("fixed")]
-[EnableCors("AllowSpecificOrigin")]
+[EnableCors]
 public class UserSettingsController(
     IUserSettingsData userSettingsData,
     IAuthService authService,
