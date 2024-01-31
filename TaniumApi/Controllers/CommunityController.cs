@@ -12,7 +12,6 @@ namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-[EnableCors("AllowSpecificOrigin")]
 [EnableRateLimiting("fixed")]
 [OutputCache(PolicyName = "Default")]
 public class CommunityController(

@@ -131,8 +131,15 @@
     <Build Include="dbo\StoredProcedures\spUserSettings_GetByUserId.sql" />
     <Build Include="dbo\StoredProcedures\spUserSettings_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spUserSettings_Update.sql" />
+    <Build Include="dbo\Tables\Subscription.sql" />
+    <Build Include="dbo\StoredProcedures\spSubscription_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spSubscription_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spSubscription_GetByUserId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\TaniumData.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="TaniumData.refactorlog" />
   </ItemGroup>
 </Project>

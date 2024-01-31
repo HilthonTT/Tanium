@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 using TaniumApi.Authentication;
@@ -16,10 +17,13 @@ namespace TaniumApi;
 
 public static class RegisterServices
 {
+    private const string RedisInstanceName = "Tanium_";
+
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
-        const string RedisInstanceName = "Tanium_";
         string redisConfiguration = builder.Configuration.GetConnectionString("Redis");
+
+        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -52,16 +56,26 @@ public static class RegisterServices
         builder.Services.AddTransient<IVoteData, VoteData>();
         builder.Services.AddTransient<IBanData, BanData>();
         builder.Services.AddTransient<IUserSettingsData, UserSettingsData>();
+        builder.Services.AddTransient<ISubscriptionData, SubscriptionData>();
 
         builder.Services.AddTransient<IAuthService, AuthService>();
         builder.Services.AddTransient<IRedisCache, RedisCache>();
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowSpecificOrigin",
-                policy => policy.WithOrigins(builder.Configuration["AllowedOrigins:Url"])
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins(builder.Configuration["AllowedOrigins:Url"])
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+            });
+
+            options.AddPolicy("OpenCors", policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
         });
 
         builder.Services.AddRateLimiter(_ => _

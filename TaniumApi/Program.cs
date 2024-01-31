@@ -23,7 +23,8 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
     AllowCachingResponses = true,
 });
 
-app.UseCors("AllowSpecificOrigin");
+app.UseCors();
+app.UseCors("OpenCors");
 app.UseRateLimiter();
 app.UseOutputCache();
 

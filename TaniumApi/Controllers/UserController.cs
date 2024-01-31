@@ -27,7 +27,6 @@ public class UserController(
     private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet]
-    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetAllUsersAsync()
     {
         try
@@ -44,7 +43,6 @@ public class UserController(
     }
 
     [HttpGet("/search/{query}")]
-    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> SearchUsersAsync(string query)
     {
         try
@@ -64,7 +62,6 @@ public class UserController(
     }
 
     [HttpGet("{id}")]
-    [EnableCors("AllowSpecificOrigin")]
     public async Task<IActionResult> GetUserAsync(int id)
     {
         try
@@ -87,7 +84,6 @@ public class UserController(
 
 
     [HttpGet("auth")]
-    [EnableCors("AllowSpecificOrigin")]
     [Authorize]
     public async Task<IActionResult> GetUserAuthAsync()
     {
@@ -110,6 +106,7 @@ public class UserController(
 
     [HttpPost]
     [AllowAnonymous]
+    [EnableCors("OpenCors")]
     public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserModel body)
     {
         try
@@ -161,6 +158,7 @@ public class UserController(
 
     [HttpPatch]
     [AllowAnonymous]
+    [EnableCors("OpenCors")]
     public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserModel body)
     {
         try
@@ -218,6 +216,7 @@ public class UserController(
 
     [HttpDelete("{externalUserId}")]
     [AllowAnonymous]
+    [EnableCors("OpenCors")]
     public async Task<IActionResult> DeleteUserAsync(string externalUserId)
     {
         try

@@ -67,7 +67,7 @@ public class UserSettingsController(
     }
 
     [HttpPatch]
-    public async Task<IActionResult> UpdateUserSettingsAsync(UpdateUserSettingsModel body)
+    public async Task<IActionResult> UpdateUserSettingsAsync([FromBody] UpdateUserSettingsModel body)
     {
         try
         {

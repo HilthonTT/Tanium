@@ -14,7 +14,6 @@ namespace TaniumApi.Controllers;
 [Authorize]
 [EnableRateLimiting("fixed")]
 [OutputCache(PolicyName = "Default")]
-[EnableCors("AllowSpecificOrigin")]
 public class BanController(
     IBanData banData,
     ICommunityData communityData,

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="44a9d62c-9e46-4ebe-be9b-2ea00c55e53e" ChangeDateTime="01/31/2024 12:24:40">
+    <Property Name="ElementName" Value="[dbo].[Subscription].[userId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7b3a25ac-1e5a-46f7-a84b-24bfda32f639" ChangeDateTime="01/31/2024 12:24:52">
+    <Property Name="ElementName" Value="[dbo].[Subscription].[Str]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StripeCurrentPeriodEnd" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="29a6a2b8-d887-4f53-a0fe-f2f187d2ec99" ChangeDateTime="01/31/2024 12:25:02">
+    <Property Name="ElementName" Value="[dbo].[Subscription].[StripDATETIME2eNOT riodEnd]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StripeCurrentPeriodEnd" />
+  </Operation>
+</Operations>
