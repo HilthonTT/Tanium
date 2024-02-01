@@ -113,3 +113,12 @@ type UserSettings = {
   user: User;
   isProfilePublic: boolean;
 };
+
+type Subscription = {
+  id: number;
+  userId: number;
+  stripeCustomerId: number;
+  stripeSubscriptionId: number;
+  stripePriceId: number;
+  stripeCurrentPeriodEnd: Date;
+};

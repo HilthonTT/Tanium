@@ -19,8 +19,16 @@ public class WebhookController(
     private readonly ISubscriptionData _subscriptionData = subscriptionData;
     private readonly ILogger<WebhookController> _logger = logger;
 
-    private async Task HandleCheckoutSessionCompletedAsync(Subscription subscription, CheckoutSession session)
+    private async Task HandleCheckoutSessionCompletedAsync(CheckoutSession session)
     {
+        var stripeSubscriptionService = new SubscriptionService();
+
+        var subscription = await stripeSubscriptionService.GetAsync(session.SubscriptionId);
+        if (subscription is null)
+        {
+            throw new Exception("Not subscription");
+        }
+
         if (session.Metadata.TryGetValue("UserId", out string userId) is false || 
             int.TryParse(userId, out int parsedUserId) is false)
         {
@@ -39,8 +47,15 @@ public class WebhookController(
         await _subscriptionData.CreateSubscriptionAsync(data);
     }
 
-    private async Task HandleInvoicePaymentSucceededAsync(Subscription subscription)
+    private async Task HandleInvoicePaymentSucceededAsync(CheckoutSession session)
     {
+        var stripeSubscriptionService = new SubscriptionService();
+        var subscription = await stripeSubscriptionService.GetAsync(session.SubscriptionId);
+        if (subscription is null)
+        {
+            throw new Exception("Not subscription");
+        }
+
         var data = new SubscriptionModel()
         {
             StripeSubscriptionId = subscription.Id,
@@ -67,21 +82,14 @@ public class WebhookController(
                 return BadRequest("Session not found");
             }
 
-            var stripeSubscriptionService = new SubscriptionService();
-            var subscription = await stripeSubscriptionService.GetAsync(session.Subscription.Id);
-            if (subscription is null)
-            {
-                return BadRequest("Subscription not found");
-            }
-
             switch(stripeEvent.Type)
             {
                 case Events.CheckoutSessionCompleted:
-                    await HandleCheckoutSessionCompletedAsync(subscription, session);
+                    await HandleCheckoutSessionCompletedAsync(session);
                     break;
 
                 case Events.InvoicePaymentSucceeded:
-                    await HandleInvoicePaymentSucceededAsync(subscription);
+                    await HandleInvoicePaymentSucceededAsync(session);
                     break;
 
                 default:

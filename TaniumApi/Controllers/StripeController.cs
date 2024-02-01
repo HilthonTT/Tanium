@@ -105,4 +105,30 @@ public class StripeController(
             return StatusCode(500, "Internal Error");
         }
     }
+
+    [HttpGet("auth/subscription")]
+    public async Task<IActionResult> GetUserSubscriptionAsync()
+    {
+        try
+        {
+            var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+            if (loggedInUser is null)
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+
+            var subscription = await _subscriptionData.GetUserSubscriptionAsync(loggedInUser.Id);
+            if (subscription is null)
+            {
+                return NotFound("Subscription not found");
+            }
+
+            return Ok(subscription);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[STRIPE_CONTROLLER_AUTH_SUBSCRIPTION]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
 }
