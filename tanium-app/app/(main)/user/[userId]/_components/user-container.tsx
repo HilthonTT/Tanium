@@ -7,16 +7,18 @@ interface UserContainerProps {
   children: React.ReactNode;
   otherUser: User;
   self: User | null;
+  isPrivate: boolean;
 }
 
 export const UserContainer = ({
   children,
   otherUser,
   self,
+  isPrivate,
 }: UserContainerProps) => {
   return (
     <div className="bg-black">
-      <HeaderTabs user={otherUser} />
+      <HeaderTabs user={otherUser} isPrivate={isPrivate} />
       <Container className="pt-2 w-full px-4 lg:px-0">
         <div className="bg-secondary rounded-md">
           <Profile user={otherUser} self={self} />

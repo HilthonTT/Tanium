@@ -1,17 +1,20 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth, currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 
 import { Container } from "@/components/container";
 import { getPersonalSettings } from "@/lib/settings-service";
 import { isPro } from "@/lib/subscription";
 import { UserAvatar } from "@/components/user-avatar";
+import { getSelf } from "@/lib/user-service";
 
 import { PublicizeCard } from "./_components/publicize-card";
 import { SubscriptionCard } from "./_components/subscription-card";
 
 const SettingsPage = async () => {
-  const user = await currentUser();
-  if (!user) {
+  const self = await getSelf();
+
+  if (!self) {
     return redirect("sign-in");
   }
 
@@ -36,12 +39,17 @@ const SettingsPage = async () => {
             <h1 className="text-2xl font-semibold">Settings</h1>
             <div className="flex items-center justify-center space-x-2">
               <p className="font-semibold text-xs capitalize">
-                Logged in as {user.username}
+                Logged in as {self.username}
               </p>
-              <UserAvatar
-                username={user.username || ""}
-                imageUrl={user.imageUrl}
-              />
+
+              <Link
+                href={`/user/${self.id}`}
+                className="hover:opacity-75 transition">
+                <UserAvatar
+                  username={self.username || ""}
+                  imageUrl={self.imageUrl}
+                />
+              </Link>
             </div>
           </div>
           <PublicizeCard settings={settings} token={token} />

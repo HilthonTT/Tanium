@@ -66,6 +66,25 @@ public class UserSettingsController(
         }
     }
 
+    [HttpGet("user/{userId}/isPrivate")]
+    [AllowAnonymous]
+    public async Task<IActionResult> IsUserPrivateAsync(int userId)
+    {
+        try
+        {
+            var settings = await _userSettingsData.GetUserSettingsAsync(userId);
+
+            bool isPrivate = settings.IsProfilePublic is false;
+
+            return Ok(isPrivate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("[USERSETTINGS_CONTROLLER_PRIVATE]: {error}", ex.Message);
+            return StatusCode(500, "Internal Error");
+        }
+    }
+
     [HttpPatch]
     public async Task<IActionResult> UpdateUserSettingsAsync([FromBody] UpdateUserSettingsModel body)
     {

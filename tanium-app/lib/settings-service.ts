@@ -24,7 +24,9 @@ export const getPersonalSettings = async (): Promise<UserSettings | null> => {
   }
 };
 
-export const getUserSettings = async (userId: number) => {
+export const getUserSettings = async (
+  userId: number
+): Promise<UserSettings | null> => {
   try {
     const { getToken } = auth();
 
@@ -43,5 +45,18 @@ export const getUserSettings = async (userId: number) => {
   } catch (error) {
     console.log("[SETTINGS_SERVICE_USER]", error);
     return null;
+  }
+};
+
+export const isProfilePrivate = async (userId: number): Promise<boolean> => {
+  try {
+    const response = await instance.get(
+      `/api/usersettings/user/${userId}/isPrivate`
+    );
+
+    return response.data as boolean;
+  } catch (error) {
+    console.log("[SETTINGS_SERVICE_PRIVATE]", error);
+    return false;
   }
 };
