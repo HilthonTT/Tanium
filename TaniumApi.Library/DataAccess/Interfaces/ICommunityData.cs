@@ -8,5 +8,6 @@ public interface ICommunityData
     Task<List<CommunityModel>> GetAllCommunitiesAsync();
     Task<List<CommunityModel>> GetCommunitiesUserAsync(int userId);
     Task<CommunityModel> GetCommunityAsync(int id);
+    Task<int> GetCreatedCommunityCountAsync(int userId);
     Task<CommunityModel> UpdateCommunityAsync(CommunityModel community);
 }

@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Flame,
   Home,
+  PenLine,
   Pencil,
   Plus,
   Rocket,
@@ -13,6 +14,8 @@ import {
   UserPlus,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -28,6 +31,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useModal } from "@/store/use-modal-store";
 import { useCommunity } from "@/hooks/use-community";
 import { useUser } from "@/hooks/use-user";
+import { instance } from "@/lib/axios-config";
 
 import { DataItem } from "./data-item";
 
@@ -35,9 +39,17 @@ interface SelectorProps {
   self: User | null;
   token: string | null;
   communities: Community[] | null;
+  allowedToCreateCommunity: boolean;
 }
 
-export const Selector = ({ self, communities, token }: SelectorProps) => {
+export const Selector = ({
+  self,
+  communities,
+  token,
+  allowedToCreateCommunity,
+}: SelectorProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -91,6 +103,31 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
       Icon: Settings,
     },
   ];
+
+  const onCreateCommunity = async () => {
+    if (allowedToCreateCommunity) {
+      onOpen("createCommunity", { token });
+    }
+
+    // Redirect to subscribe page
+    try {
+      setIsLoading(true);
+
+      const response = await instance.get("/api/stripe", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const url = response.data as string;
+
+      window.location.href = url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -178,7 +215,8 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
         </DropdownMenuLabel>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/")}>
+          onClick={() => onClick("/")}
+          disabled={isLoading}>
           <div className="flex items-center justify-center">
             <Home className="h-6 w-6 mr-2" />
             Home
@@ -186,7 +224,8 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/hot")}>
+          onClick={() => onClick("/hot")}
+          disabled={isLoading}>
           <div className="flex items-center justify-center">
             <Flame className="h-6 w-6 mr-2" />
             Hot
@@ -194,7 +233,8 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onClick("/best")}>
+          onClick={() => onClick("/best")}
+          disabled={isLoading}>
           <div className="flex items-center justify-center">
             <Rocket className="h-6 w-6 mr-2" />
             Best
@@ -209,7 +249,8 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
             </DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => onClick("/settings")}>
+              onClick={() => onClick("/settings")}
+              disabled={isLoading}>
               <div className="flex items-center justify-center">
                 <UserAvatar
                   username={self?.username}
@@ -222,7 +263,8 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => onClick("/submit")}>
+              onClick={() => onClick("/submit")}
+              disabled={isLoading}>
               <div className="flex items-center justify-center">
                 <Plus className="h-6 w-6 mr-2" />
                 Create Post
@@ -230,10 +272,16 @@ export const Selector = ({ self, communities, token }: SelectorProps) => {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => onOpen("createCommunity", { token })}>
+              disabled={allowedToCreateCommunity === false || isLoading}
+              onClick={onCreateCommunity}>
               <div className="flex items-center justify-center">
-                <UserPlus className="h-6 w-6 mr-2" />
-                Create Community
+                {allowedToCreateCommunity && (
+                  <UserPlus className="h-6 w-6 mr-2" />
+                )}
+                {!allowedToCreateCommunity && (
+                  <PenLine className="h-6 w-6 mr-2" />
+                )}
+                {allowedToCreateCommunity ? "Create Community" : "Subscribe"}
               </div>
             </DropdownMenuItem>
           </>

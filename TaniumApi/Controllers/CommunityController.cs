@@ -18,11 +18,13 @@ namespace TaniumApi.Controllers;
 public class CommunityController(
     ICommunityData communityData,
 	IMemberData memberData,
+	ISubscriptionData subscriptionData,
     IAuthService authService,
     ILogger<CommunityController> logger) : ControllerBase
 {
     private readonly ICommunityData _communityData = communityData;
     private readonly IMemberData _memberData = memberData;
+    private readonly ISubscriptionData _subscriptionData = subscriptionData;
     private readonly IAuthService _authService = authService;
     private readonly ILogger<CommunityController> _logger = logger;
 
@@ -107,6 +109,34 @@ public class CommunityController(
         }
 	}
 
+	[HttpGet("IsAllowedToCreate")]
+	public async Task<IActionResult> IsAllowedToCreateCommunitiesAsync()
+	{
+		try
+		{
+			var loggedInUser = await _authService.GetUserFromAuthAsync(HttpContext);
+			if (loggedInUser is null)
+			{
+				return StatusCode(401, "Unauthorized");
+			}
+			
+			bool isPro = await _subscriptionData.IsValidAsync(loggedInUser.Id);
+            int createdCommunityCount = await _communityData.GetCreatedCommunityCountAsync(loggedInUser.Id);
+
+            if (createdCommunityCount > 10 && isPro is false)
+            {
+				return Ok(false);
+            }
+
+			return Ok(true);
+        }
+		catch (Exception ex)
+		{
+			_logger.LogError("[COMMUNITY_CONTROLLER_ALLOWED]: {error}", ex.Message);
+			return StatusCode(500, "Internal Error");
+		}
+	}
+
 	[HttpPost]
     public async Task<IActionResult> CreateCommunityAsync([FromBody] CreateCommunityModel body)
 	{
@@ -121,6 +151,14 @@ public class CommunityController(
 			if (loggedInUser is null)
 			{
 				return StatusCode(401, "Unauthorized");
+            }
+
+			bool isPro = await _subscriptionData.IsValidAsync(loggedInUser.Id);
+            int createdCommunityCount = await _communityData.GetCreatedCommunityCountAsync(loggedInUser.Id);
+
+			if (createdCommunityCount > 10 && isPro is false)
+			{
+				return BadRequest("You must have a pro subscription to create more than 10 communities");
 			}
 
 			var communityData = new CommunityModel()

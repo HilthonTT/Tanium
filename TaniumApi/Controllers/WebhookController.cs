@@ -26,7 +26,7 @@ public class WebhookController(
         var subscription = await stripeSubscriptionService.GetAsync(session.SubscriptionId);
         if (subscription is null)
         {
-            throw new Exception("Not subscription");
+            throw new Exception("No subscription found");
         }
 
         if (session.Metadata.TryGetValue("UserId", out string userId) is false || 
@@ -53,7 +53,7 @@ public class WebhookController(
         var subscription = await stripeSubscriptionService.GetAsync(session.SubscriptionId);
         if (subscription is null)
         {
-            throw new Exception("Not subscription");
+            throw new Exception("No subscription found");
         }
 
         var data = new SubscriptionModel()
@@ -82,7 +82,7 @@ public class WebhookController(
                 return BadRequest("Session not found");
             }
 
-            switch(stripeEvent.Type)
+            switch (stripeEvent.Type)
             {
                 case Events.CheckoutSessionCompleted:
                     await HandleCheckoutSessionCompletedAsync(session);

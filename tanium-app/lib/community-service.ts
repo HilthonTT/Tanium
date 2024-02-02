@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs";
 
 import { instance } from "@/lib/axios-config";
 
-export const getCommunities = async () => {
+export const getCommunities = async (): Promise<Community[]> => {
   try {
     const response = await instance.get("/api/community");
 
@@ -36,7 +36,7 @@ export const getUserCommunity = async (): Promise<Community[]> => {
   }
 };
 
-export const getCommunity = async (id: number) => {
+export const getCommunity = async (id: number): Promise<Community | null> => {
   try {
     const response = await instance.get(`/api/community/${id}`);
 
@@ -47,7 +47,9 @@ export const getCommunity = async (id: number) => {
   }
 };
 
-export const searchCommunities = async (query: string) => {
+export const searchCommunities = async (
+  query: string
+): Promise<Community[]> => {
   try {
     const response = await instance.get(`/api/community/search/${query}`);
 
@@ -55,5 +57,27 @@ export const searchCommunities = async (query: string) => {
   } catch (error) {
     console.error("[COMMUNITY_SERVICE_SEARCH]", error);
     return [];
+  }
+};
+
+export const isAllowedToCreateCommunity = async () => {
+  try {
+    const { getToken } = auth();
+    const token = await getToken();
+
+    if (!token) {
+      return false;
+    }
+
+    const response = await instance.get("/api/community/IsAllowedToCreate", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data as boolean;
+  } catch (error) {
+    console.error("[COMMUNITY_SERVICE_ALLOWED]", error);
+    return false;
   }
 };

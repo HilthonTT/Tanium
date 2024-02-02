@@ -89,6 +89,16 @@ public class CommunityData(ISqlDataAccess sql, IRedisCache redisCache) : ICommun
         return output;
     }
 
+    public async Task<int> GetCreatedCommunityCountAsync(int userId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        var communities = await _sql.GetAllDataAsync<CommunityModel>("dbo.spCommunity_GetCreatedByUserId", parameters);
+
+        return communities.Count;
+    }
+
     public async Task<CommunityModel> CreateCommunityAsync(CommunityModel community)
     {
         var parameters = new DynamicParameters();

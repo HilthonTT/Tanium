@@ -5,5 +5,6 @@ public interface ISubscriptionData
 {
     Task<SubscriptionModel> CreateSubscriptionAsync(SubscriptionModel subscription);
     Task<SubscriptionModel> GetUserSubscriptionAsync(int userId);
+    Task<bool> IsValidAsync(int userId);
     Task<SubscriptionModel> UpdateSubscriptionAsync(SubscriptionModel subscription);
 }
