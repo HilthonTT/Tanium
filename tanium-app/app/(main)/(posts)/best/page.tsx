@@ -1,24 +1,16 @@
-import { auth } from "@clerk/nextjs";
+import { Suspense } from "react";
 
-import { getSelf } from "@/lib/user-service";
-import { getBestPosts } from "@/lib/post-service";
 import { Container } from "@/components/container";
 
-import { Posts } from "../_components/posts";
+import { Posts, PostsSkeleton } from "../_components/posts";
 
-const BestPage = async () => {
-  const { getToken } = auth();
-
-  const [self, posts, token] = await Promise.all([
-    getSelf(),
-    getBestPosts(),
-    getToken(),
-  ]);
-
+const BestPage = () => {
   return (
     <div className="bg-black">
       <Container>
-        <Posts posts={posts} self={self} token={token} />
+        <Suspense fallback={<PostsSkeleton />}>
+          <Posts type="best" />
+        </Suspense>
       </Container>
     </div>
   );

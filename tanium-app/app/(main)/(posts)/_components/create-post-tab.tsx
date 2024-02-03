@@ -8,7 +8,8 @@ import { ImageIcon } from "lucide-react";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserAvatar } from "@/components/user-avatar";
+import { UserAvatar, UserAvatarSkeleton } from "@/components/user-avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CreatePostTabProps {
   self: User | null;
@@ -66,5 +67,16 @@ export const CreatePostTab = ({ self }: CreatePostTabProps) => {
         </div>
       )}
     </>
+  );
+};
+
+export const CreatePostTabSkeleton = () => {
+  return (
+    <div className="flex items-center justify-between  gap-x-2">
+      <UserAvatarSkeleton />
+
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-10" />
+    </div>
   );
 };

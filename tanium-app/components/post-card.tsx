@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { instance } from "@/lib/axios-config";
-import { UserAvatar, UserAvatarSkeleton } from "@/components/user-avatar";
+import { UserAvatar } from "@/components/user-avatar";
 import { useModal } from "@/store/use-modal-store";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -259,11 +259,15 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
 };
 
 export const PostCardSkeleton = () => {
+  const random = Math.random();
+
   return (
     <div className="w-full h-full rounded-md bg-secondary/20 p-2">
       <div className="space-y-4">
         <Skeleton className="w-full h-5" />
-        <Skeleton className="w-24 h-10 ml-auto" />
+        <Skeleton
+          className={cn("w-24 h-10", random < 0.5 ? "ml-auto" : "mr-auto")}
+        />
         <Skeleton className="w-full h-20" />
       </div>
     </div>

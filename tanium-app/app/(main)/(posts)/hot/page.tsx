@@ -1,22 +1,17 @@
-import { auth } from "@clerk/nextjs";
+import { Suspense } from "react";
 
-import { getHotPosts } from "@/lib/post-service";
-import { getSelf } from "@/lib/user-service";
+import { Container } from "@/components/container";
 
-import { Posts } from "../_components/posts";
+import { Posts, PostsSkeleton } from "../_components/posts";
 
-const HotPage = async () => {
-  const { getToken } = auth();
-
-  const [self, posts, token] = await Promise.all([
-    getSelf(),
-    getHotPosts(),
-    getToken(),
-  ]);
-
+const HotPage = () => {
   return (
-    <div className="h-full mx-auto max-w-5xl space-y-4">
-      <Posts posts={posts} self={self} token={token} />
+    <div className="bg-black">
+      <Container>
+        <Suspense fallback={<PostsSkeleton />}>
+          <Posts type="hot" />
+        </Suspense>
+      </Container>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useModal } from "@/store/use-modal-store";
 import { instance } from "@/lib/axios-config";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface AdvertisingProps {
   token: string | null;
@@ -116,5 +117,31 @@ export const Advertising = ({
         </div>
       </div>
     </>
+  );
+};
+
+export const AdvertisingSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <div className="flex items-center justify-start space-x-2">
+          <Skeleton className="w-6 h-6" />
+          <Skeleton className="w-40 h-6" />
+        </div>
+        <Skeleton className="w-48 h-4" />
+        <Skeleton className="rounded-full bg-emerald-500 w-full h-10" />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-start space-x-2">
+          <Skeleton className="w-6 h-6" />
+          <Skeleton className="w-40 h-6" />
+        </div>
+        <Separator className="my-2" />
+        <Skeleton className="w-48 h-4" />
+        <Skeleton className="rounded-full bg-white w-full h-10" />
+        <Skeleton className="rounded-full border-white border-2 w-full h-10" />
+      </div>
+    </div>
   );
 };
