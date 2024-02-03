@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { format } from "date-fns";
 
-import { UserAvatar } from "@/components/user-avatar";
+import { UserAvatar, UserAvatarSkeleton } from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CommunityCardProps {
   community: Community;
@@ -35,6 +36,18 @@ export const CommunityCard = ({ community }: CommunityCardProps) => {
           asChild>
           <Link href={`/community/${community.id}`}>Check out</Link>
         </Button>
+      </div>
+    </div>
+  );
+};
+
+export const CommunityCardSkeleton = () => {
+  return (
+    <div className="flex items-start justify-start gap-x-2">
+      <UserAvatarSkeleton size="lg" />
+      <div className="space-y-2 w-full">
+        <Skeleton className="w-20 h-5" />
+        <Skeleton className="w-full h-5" />
       </div>
     </div>
   );

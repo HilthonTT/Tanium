@@ -106,7 +106,7 @@ export const Selector = ({
 
   const onCreateCommunity = async () => {
     if (allowedToCreateCommunity) {
-      onOpen("createCommunity", { token });
+      return onOpen("createCommunity", { token });
     }
 
     // Redirect to subscribe page

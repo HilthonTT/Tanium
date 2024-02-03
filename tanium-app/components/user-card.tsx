@@ -3,8 +3,9 @@
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 
-import { UserAvatar } from "@/components/user-avatar";
+import { UserAvatar, UserAvatarSkeleton } from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserCardProps {
   user: User;
@@ -39,6 +40,18 @@ export const UserCard = ({ user }: UserCardProps) => {
             View
           </Button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const UserCardSkeleton = () => {
+  return (
+    <div className="flex items-start justify-start gap-x-2">
+      <UserAvatarSkeleton size="lg" />
+      <div className="space-y-2 w-full">
+        <Skeleton className="w-20 h-5" />
+        <Skeleton className="w-full h-5" />
       </div>
     </div>
   );

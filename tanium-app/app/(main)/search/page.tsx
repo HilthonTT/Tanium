@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 import { Container } from "@/components/container";
 import { getPosts, searchPosts } from "@/lib/post-service";
@@ -7,10 +8,10 @@ import { getCommunities, searchCommunities } from "@/lib/community-service";
 import { getSelf, getUsers, searchUsers } from "@/lib/user-service";
 
 import { SearchTabs } from "./_components/search-tabs";
-import { Posts } from "./_components/posts";
-import { Communities } from "./_components/communities";
-import { Replies } from "./_components/replies";
-import { Users } from "./_components/users";
+import { Posts, PostsSkeleton } from "./_components/posts";
+import { Communities, CommunitiesSkeleton } from "./_components/communities";
+import { Replies, RepliesSkeleton } from "./_components/replies";
+import { Users, UsersSkeleton } from "./_components/users";
 
 type QueryType = "posts" | "comments" | "communities" | "people";
 
@@ -21,23 +22,26 @@ interface SearchPageProps {
   };
 }
 
-const renderPosts = async (
-  query: string | null,
-  self: User | null,
-  token: string | null
-) => {
+interface RenderProps {
+  query: string | null;
+  self?: User | null;
+  token?: string | null;
+}
+
+const RenderPosts = async ({ query, self, token }: RenderProps) => {
   const posts = query ? await searchPosts(query) : await getPosts();
+
   return (
     <div className="bg-black">
       <Container className="mt-4 space-y-4">
         <SearchTabs />
-        <Posts posts={posts} self={self} token={token} />
+        <Posts posts={posts} self={self || null} token={token || null} />
       </Container>
     </div>
   );
 };
 
-const renderReplies = async (query: string | null) => {
+export const RenderReplies = async ({ query }: RenderProps) => {
   const replies = query ? await searchReplies(query) : await getReplies();
 
   return (
@@ -50,7 +54,7 @@ const renderReplies = async (query: string | null) => {
   );
 };
 
-const renderCommunities = async (query: string | null) => {
+const RenderCommunities = async ({ query }: RenderProps) => {
   const communities = query
     ? await searchCommunities(query)
     : await getCommunities();
@@ -65,7 +69,7 @@ const renderCommunities = async (query: string | null) => {
   );
 };
 
-const renderUsers = async (query: string | null) => {
+const RenderUsers = async ({ query }: RenderProps) => {
   const users = query ? await searchUsers(query) : await getUsers();
 
   return (
@@ -85,19 +89,39 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 
   switch (searchParams.type) {
     case "posts":
-      return renderPosts(searchParams.q, self, token);
+      return (
+        <Suspense fallback={<PostsSkeleton />}>
+          <RenderPosts query={searchParams.q} self={self} />
+        </Suspense>
+      );
 
     case "comments":
-      return renderReplies(searchParams.q);
+      return (
+        <Suspense fallback={<RepliesSkeleton />}>
+          <RenderReplies query={searchParams.q} />
+        </Suspense>
+      );
 
     case "communities":
-      return renderCommunities(searchParams.q);
+      return (
+        <Suspense fallback={<CommunitiesSkeleton />}>
+          <RenderCommunities query={searchParams.q} />
+        </Suspense>
+      );
 
     case "people":
-      return renderUsers(searchParams.q);
+      return (
+        <Suspense fallback={<UsersSkeleton />}>
+          <RenderUsers query={searchParams.q} />
+        </Suspense>
+      );
 
     default:
-      return renderPosts(searchParams.q, self, token);
+      return (
+        <Suspense fallback={<PostsSkeleton />}>
+          <RenderPosts query={searchParams.q} self={self} token={token} />
+        </Suspense>
+      );
   }
 };
 
