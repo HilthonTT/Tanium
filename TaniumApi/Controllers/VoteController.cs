@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
 using TaniumApi.Authentication.Interfaces;
 using TaniumApi.Library.DataAccess.Interfaces;
+using TaniumApi.Library.Models;
 
 namespace TaniumApi.Controllers;
 [Route("api/[controller]")]
@@ -41,11 +42,16 @@ public class VoteController(
                 return BadRequest("Post not found");
             }
 
+            var totalUpvotes = new List<UpvoteModel>();
+
             var existingUpvote = await _voteData.GetUpvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
             if (existingUpvote is not null)
             {
                 await _voteData.DeleteUpvoteAsync(loggedInUser.Id, postId);
-                return Ok(existingUpvote);
+
+                totalUpvotes = await _voteData.GetPostUpvotesAsync(postId);
+
+                return Ok(totalUpvotes);
             }
 
             var existingDownVote = await _voteData.GetDownvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
@@ -56,7 +62,9 @@ public class VoteController(
 
             var createdUpvote = await _voteData.CreateUpvoteAsync(loggedInUser.Id, postId);
 
-            return Ok(createdUpvote);
+            totalUpvotes = await _voteData.GetPostUpvotesAsync(postId);
+
+            return Ok(totalUpvotes);
         }
         catch (Exception ex)
         {
@@ -82,11 +90,16 @@ public class VoteController(
                 return BadRequest("Post not found");
             }
 
+            var totalDownvotes = new List<DownvoteModel>();
+
             var existingDownvote = await _voteData.GetDownvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
             if (existingDownvote is not null)
             {
                 await _voteData.DeleteDownvoteAsync(loggedInUser.Id, postId);
-                return Ok(existingDownvote);
+
+                totalDownvotes = await _voteData.GetPostDownvotesAsync(postId);
+
+                return Ok(totalDownvotes);
             }
 
             var existingUpvote = await _voteData.GetUpvoteByUserIdAndPostIdAsync(loggedInUser.Id, postId);
@@ -96,7 +109,10 @@ public class VoteController(
             }
 
             var createdDownvote = await _voteData.CreateDownvoteAsync(loggedInUser.Id, postId);
-            return Ok(createdDownvote);
+
+            totalDownvotes = await _voteData.GetPostDownvotesAsync(postId);
+
+            return Ok(totalDownvotes);
         }
         catch (Exception ex)
         {

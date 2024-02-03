@@ -8,5 +8,7 @@ public interface IVoteData
     Task DeleteDownvoteAsync(int userId, int postId);
     Task DeleteUpvoteAsync(int userId, int postId);
     Task<UpvoteModel> GetDownvoteByUserIdAndPostIdAsync(int userId, int postId);
+    Task<List<DownvoteModel>> GetPostDownvotesAsync(int postId);
+    Task<List<UpvoteModel>> GetPostUpvotesAsync(int postId);
     Task<UpvoteModel> GetUpvoteByUserIdAndPostIdAsync(int userId, int postId);
 }

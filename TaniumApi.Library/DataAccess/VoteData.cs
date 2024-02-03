@@ -7,6 +7,26 @@ public class VoteData(ISqlDataAccess sql) : IVoteData
 {
     private readonly ISqlDataAccess _sql = sql;
 
+    public async Task<List<UpvoteModel>> GetPostUpvotesAsync(int postId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("PostId", postId);
+
+        var output = await _sql.GetAllDataAsync<UpvoteModel>("dbo.spUpvote_GetByPostId", parameters);
+
+        return output;
+    }
+    
+    public async Task<List<DownvoteModel>> GetPostDownvotesAsync(int postId)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("PostId", postId);
+
+        var output = await _sql.GetAllDataAsync<DownvoteModel>("dbo.spDownvote_GetByPostId", parameters);
+
+        return output;
+    }
+
     public async Task<UpvoteModel> GetUpvoteByUserIdAndPostIdAsync(int userId, int postId)
     {
         var parameters = new DynamicParameters();

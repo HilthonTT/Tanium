@@ -1,18 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { instance } from "@/lib/axios-config";
 import { UserAvatar } from "@/components/user-avatar";
 import { useModal } from "@/store/use-modal-store";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useVote } from "@/hooks/use-vote";
 
 interface PostCardProps {
   post: Post;
@@ -24,19 +22,14 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
   const router = useRouter();
   const { onOpen } = useModal((state) => state);
 
-  const [upvotes, setUpvotes] = useState<Upvote[]>(post.upvotes);
-  const [downvotes, setDownvotes] = useState<Downvote[]>(post.downvotes);
-  const [calculatedUpvotes, setCalculatedUpvotes] = useState<number>(
-    post.upvotes.length - post.downvotes.length
-  );
-
-  const hasUpvoted = !!upvotes.find((upvote) => upvote.userId === self?.id);
-  const hasDownvoted = !!downvotes.find(
-    (downvote) => downvote.userId === self?.id
-  );
-
-  const [upvoted, setUpvoted] = useState<boolean>(hasUpvoted);
-  const [downvoted, setDownvoted] = useState<boolean>(hasDownvoted);
+  const {
+    onUpvote,
+    onDownvote,
+    isLoading,
+    hasUpvoted,
+    hasDownvoted,
+    calculatedUpvotes,
+  } = useVote(post, self);
 
   const formattedUploadedDate = formatDistanceToNow(post.dateCreated, {
     addSuffix: true,
@@ -52,104 +45,6 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
     e.stopPropagation();
 
     router.push(`/community/${post.communityId}`);
-  };
-
-  const onUpvote = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!token) {
-      return router.push("/sign-in");
-    }
-
-    setUpvoted(true);
-    setDownvoted(false);
-
-    try {
-      const response = await instance.post(
-        `/api/vote/upvote/${post.id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const upvote = response.data as Upvote;
-
-      // Check if the user has already upvoted
-      const upvoteIndex = upvotes.findIndex((u) => u.userId === upvote.userId);
-
-      if (upvoteIndex !== -1) {
-        // Remove the upvote
-        const newUpvotes = [...upvotes];
-        newUpvotes.splice(upvoteIndex, 1);
-        setUpvotes(newUpvotes);
-
-        // Update calculatedUpvotes
-        setCalculatedUpvotes(
-          (prevCalculatedUpvotes) => prevCalculatedUpvotes - 1
-        );
-      } else {
-        // Add the upvote
-        setUpvotes([...upvotes, upvote]);
-
-        // Update calculatedUpvotes
-        setCalculatedUpvotes(
-          (prevCalculatedUpvotes) => prevCalculatedUpvotes + 1
-        );
-      }
-    } catch {
-      toast.error("Something went wrong");
-    }
-  };
-
-  const onDownvote = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!token) {
-      return router.push("/sign-in");
-    }
-
-    setUpvoted(false);
-    setDownvoted(true);
-
-    try {
-      const response = await instance.post(
-        `/api/vote/downvote/${post.id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const downvote = response.data as Downvote;
-
-      // Check if the user has already downvoted
-      const downvoteIndex = downvotes.findIndex(
-        (d) => d.userId === downvote.userId
-      );
-
-      if (downvoteIndex !== -1) {
-        // Remove the downvote
-        const newDownvotes = [...downvotes];
-        newDownvotes.splice(downvoteIndex, 1);
-        setDownvotes(newDownvotes);
-
-        // Update calculatedUpvotes
-        setCalculatedUpvotes(upvotes.length - newDownvotes.length);
-      } else {
-        // Add the downvote
-        setDownvotes([...downvotes, downvote]);
-
-        // Update calculatedUpvotes
-        setCalculatedUpvotes(upvotes.length - (downvotes.length + 1));
-      }
-    } catch {
-      toast.error("Something went wrong");
-    }
   };
 
   const onDelete = (e: React.MouseEvent) => {
@@ -170,20 +65,28 @@ export const PostCard = ({ post, token, self }: PostCardProps) => {
       className="group relative bg-secondary rounded-md flex space-x-1 w-full h-full cursor-pointer border-[0.1px] hover:border-zinc-500 transition">
       <div className="bg-primary/5 flex-shrink-0 p-3">
         <div className="flex items-center justify-start flex-col space-y-2 ">
-          <Button onClick={onUpvote} variant="ghost" className="p-1">
+          <Button
+            disabled={isLoading}
+            onClick={onUpvote}
+            variant="ghost"
+            className="p-1">
             <MoveUp
               className={cn(
                 "h-5 w-5 text-muted-foreground",
-                upvoted && "text-emerald-500"
+                hasUpvoted && "text-emerald-500"
               )}
             />
           </Button>
           <span className="text-muted-foreground">{calculatedUpvotes}</span>
-          <Button onClick={onDownvote} variant="ghost" className="p-1">
+          <Button
+            disabled={isLoading}
+            onClick={onDownvote}
+            variant="ghost"
+            className="p-1">
             <MoveDown
               className={cn(
                 "h-5 w-5 text-muted-foreground",
-                downvoted && "text-red-500"
+                hasDownvoted && "text-red-500"
               )}
             />
           </Button>

@@ -19,7 +19,7 @@ export const NoResults = () => {
       </div>
       <div className="block space-y-2 max-w-[80%]">
         <h2 className="font-semibold text-xl truncate">
-          Hmm... we couldn&apos;t find any result with "{query}"
+          Hmm... we couldn&apos;t find any result with &quot;{query}&quot;
         </h2>
         <p className="text-muted-foreground text-sm">
           Double-check your spelling or try different keywords to adjust your
