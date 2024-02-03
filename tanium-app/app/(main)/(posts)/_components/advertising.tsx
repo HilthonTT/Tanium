@@ -2,16 +2,27 @@
 
 import { useRouter } from "next/navigation";
 import { Home, ShieldPlus } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useModal } from "@/store/use-modal-store";
+import { instance } from "@/lib/axios-config";
 
 interface AdvertisingProps {
   token: string | null;
+  pro: boolean;
+  allowedToCreateCommunities: boolean;
 }
 
-export const Advertising = ({ token }: AdvertisingProps) => {
+export const Advertising = ({
+  token,
+  pro,
+  allowedToCreateCommunities,
+}: AdvertisingProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const router = useRouter();
   const { onOpen } = useModal((state) => state);
 
@@ -23,9 +34,32 @@ export const Advertising = ({ token }: AdvertisingProps) => {
     onOpen("createCommunity", { token });
   };
 
+  const onSubcribe = async () => {
+    if (!token) {
+      return router.push("/sign-in");
+    }
+
+    try {
+      setIsLoading(true);
+
+      const response = await instance.get("/api/stripe", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const url = response.data;
+
+      window.location.href = url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
-      {" "}
       <div className="rounded-md p-2 bg-secondary">
         <div className="flex items-center mb-2">
           <ShieldPlus className="h-8 w-8 text-emerald-500" />
@@ -34,9 +68,24 @@ export const Advertising = ({ token }: AdvertisingProps) => {
             <p className="text-xs">The best Tanium experience</p>
           </div>
         </div>
-        <Button variant="premium" className="rounded-full w-full">
-          Try now
-        </Button>
+        {!pro && (
+          <Button
+            onClick={onSubcribe}
+            disabled={isLoading}
+            variant="premium"
+            className="rounded-full w-full">
+            <span className="truncate">Try now</span>
+          </Button>
+        )}
+        {pro && (
+          <Button
+            onClick={onSubcribe}
+            disabled={isLoading}
+            variant="premium"
+            className="rounded-full w-full">
+            <span className="truncate">Manage Subscription</span>
+          </Button>
+        )}
       </div>
       <div className="rounded-md p-2 bg-secondary">
         <div className="flex items-center">
@@ -55,9 +104,14 @@ export const Advertising = ({ token }: AdvertisingProps) => {
           </Button>
           <Button
             onClick={onCreateCommunity}
+            disabled={allowedToCreateCommunities === false}
             variant="outline"
             className="rounded-full font-bold border-white bg-secondary hover:bg-background/10">
-            Create Community
+            <span className="truncate">
+              {allowedToCreateCommunities
+                ? "Create Community"
+                : "You can't create communities"}
+            </span>
           </Button>
         </div>
       </div>
