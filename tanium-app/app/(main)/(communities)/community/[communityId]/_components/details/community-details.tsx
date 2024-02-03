@@ -7,6 +7,7 @@ import { Calendar } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DATE_FORMAT = "MMMM dd, yyyy";
 
@@ -57,6 +58,23 @@ export const CommunityDetails = ({
           </>
         )}
       </div>
+    </div>
+  );
+};
+
+export const CommunityDetailsSkeleton = () => {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-start space-x-2">
+        <Skeleton className="w-6 h-6" />
+        <Skeleton className="w-40 h-6" />
+      </div>
+      <div className="flex items-center justify-start space-x-2">
+        <Skeleton className="w-6 h-6" />
+        <Skeleton className="w-40 h-6" />
+      </div>
+      <Skeleton className="w-48 h-4" />
+      <Skeleton className="rounded-full bg-white w-full h-10" />
     </div>
   );
 };

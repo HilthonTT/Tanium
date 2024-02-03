@@ -5,10 +5,10 @@ import { getCommunity } from "@/lib/community-service";
 import { getSelf } from "@/lib/user-service";
 import { getCommunityMembers, isCommunityMember } from "@/lib/member-service";
 import { getCommunityPosts } from "@/lib/post-service";
-
-import { CommunityDetails } from "./_components/details";
 import { isCommunityBanned } from "@/lib/ban-service";
 import { Ban } from "@/components/ban";
+
+import { CommunityDetails } from "./_components/details";
 
 interface CommunityIdPageProps {
   params: {

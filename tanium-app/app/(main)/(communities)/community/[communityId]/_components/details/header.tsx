@@ -14,11 +14,12 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/user-avatar";
+import { UserAvatar, UserAvatarSkeleton } from "@/components/user-avatar";
 import { stringToColor } from "@/lib/utils";
 import { instance } from "@/lib/axios-config";
 import { Hint } from "@/components/hint";
 import { useModal } from "@/store/use-modal-store";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface HeaderProps {
   community: Community;
@@ -206,5 +207,25 @@ export const Header = ({
         </div>
       </div>
     </>
+  );
+};
+
+export const HeaderSkeleton = () => {
+  return (
+    <div className="w-full p-2 relative space-y-2">
+      <Skeleton className="w-full h-32" />
+
+      <div className="max-w-3xl mx-auto flex items-center space-x-4 w-full h-full">
+        <div className="absolute top-20 -bottom-2 z-[100]">
+          <div className="flex items-center justify-center space-x-2">
+            <UserAvatarSkeleton size="xl" className="bg-zinc-300" />
+            <div className="space-y-2 top-1">
+              <Skeleton className="h-5 w-20 bg-white mb-2" />
+              <Skeleton className="h-5 w-40 bg-white mb-2" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

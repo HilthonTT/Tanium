@@ -46,8 +46,17 @@ export const UserAvatar = ({
   );
 };
 
-interface UserAvatarSkeletonProps extends VariantProps<typeof avatarSizes> {}
+interface UserAvatarSkeletonProps extends VariantProps<typeof avatarSizes> {
+  className?: string;
+}
 
-export const UserAvatarSkeleton = ({ size }: UserAvatarSkeletonProps) => {
-  return <Skeleton className={cn("rounded-full", avatarSizes({ size }))} />;
+export const UserAvatarSkeleton = ({
+  size,
+  className,
+}: UserAvatarSkeletonProps) => {
+  return (
+    <Skeleton
+      className={cn("rounded-full", className, avatarSizes({ size }))}
+    />
+  );
 };

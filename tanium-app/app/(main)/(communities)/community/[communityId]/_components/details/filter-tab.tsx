@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FilterTabProps {
   communityId: number;
@@ -73,6 +74,20 @@ export const FilterTab = ({ communityId }: FilterTabProps) => {
           </p>
         </Button>
       </div>
+    </div>
+  );
+};
+
+export const FilterTabSkeleton = () => {
+  return (
+    <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center space-x-2">
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-20" />
+      </div>
+
+      <Skeleton className="h-10 w-20 ml-auto" />
     </div>
   );
 };

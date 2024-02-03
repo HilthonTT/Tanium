@@ -1,9 +1,10 @@
 "use client";
 
 import { Container } from "@/components/container";
+import { useIsClient } from "@/hooks/use-is-client";
 
-import { Header } from "./header";
-import { Posts } from "./posts";
+import { Header, HeaderSkeleton } from "./header";
+import { Posts, PostsSkeleton } from "./posts";
 
 interface CommunityDetailsProps {
   self: User | null;
@@ -22,6 +23,19 @@ export const CommunityDetails = ({
   token,
   posts,
 }: CommunityDetailsProps) => {
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    return (
+      <div className="relative w-full bg-black">
+        <HeaderSkeleton />
+        <Container className="pt-4">
+          <PostsSkeleton />
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full bg-black">
       <Header
@@ -31,6 +45,7 @@ export const CommunityDetails = ({
         members={members}
         token={token}
       />
+
       <Container className="pt-4">
         <Posts
           posts={posts}
