@@ -31,25 +31,25 @@ Subscription Handling: Integration with Stripe allows Tanium to offer premium su
 ## Getting Started
 
 1. Clone the repository
-``bash 
+```bash 
   git clone https://github.com/HilthonTT/Tanium.git
-``
+```
 
 3. Install dependencies
 
-``bash
+```bash
   cd tanium-app 
   npm install
   cd TaniumApi.Library
   dotnet restore
   cd TaniumApi
   dotnet restore
-``
+```
 
 3.1 ASP.NET Env variables
 Make sure to replace placeholders (<YOUR-...>) with your actual configuration values. In you ASP.NET Web API appsettings.json
 
-``json
+```json
 {
   "ConnectionStrings": {
     "Default": "<YOUR-CONNECTIONSTRING>",
@@ -69,12 +69,12 @@ Make sure to replace placeholders (<YOUR-...>) with your actual configuration va
     "SecretKey": "<YOUR-STRIPE-SECRET-KEY>"
   }
 }
-``
+```
 
 3.2 NEXTJS Env variables
 Ensure to replace placeholders (<YOUR-...>) with your actual configuration values. The NEXT_PUBLIC_API_URL should match the base URL of your ASP.NET Core backend.
 
-``env
+```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
@@ -85,26 +85,31 @@ NEXT_PUBLIC_API_URL=
 UPLOADTHING_SECRET=
 UPLOADTHING_APP_ID=
 CLERK_WEBHOOK_SECRET=
-``
+```
 
 ## Launching the app
 
 Launch a terminal
-``bash
+```bash
 cd tanium-app
 npm run dev
-``
+```
 
 Launch another terminal
-``bash 
+```bash 
 cd TaniumApi
 dotnet run
-``
+```
 
 ## Demonstration
 
+
 ![image](https://github.com/HilthonTT/Tanium/assets/118371200/c947c87e-298b-4f13-8163-02526b7bac93)
+
+
 ![image](https://github.com/HilthonTT/Tanium/assets/118371200/8da3988c-7192-410f-a814-eae90697ac54)
+
+
 ![image](https://github.com/HilthonTT/Tanium/assets/118371200/aa929ca9-41bf-412c-add1-ffd6c39bca31)
 
 
